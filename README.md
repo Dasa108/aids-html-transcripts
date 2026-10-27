@@ -16,7 +16,8 @@ Each tab also has its own standalone page in `transcripts/` (`transcripts.html`,
 2. Add it to `TABS` in `build.py`, either as a new tab or as another part of an existing tab.
 3. Run `python3 build.py`, then commit and push.
 
-Claude Code `/export` files, `## User` / `## Claude` Markdown and Codex exports all work.
+Claude Code `/export` files, `## User` / `## Claude` Markdown, Codex exports and Antigravity
+exports all work.
 Each tab uses its project website's colours and fonts (`STYLE` in `build.py`); the Venheilheim
 fonts are in `fonts/` under the SIL Open Font License.
 Anything listed in `REDACT` in `build.py` is replaced before publishing.

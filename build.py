@@ -22,7 +22,7 @@ TABS = [
     ("focusbank", "FocusBank", "transcript_focusbank.html",
      [("transcript_focusbank.md", None)]),
     ("lecture", "Lecture notes", "transcript_lecture.html",
-     [("transript_lecture.md", None)]),
+     [("conversation_transcript.md", "Precursor (Antigravity)"), ("transript_lecture.md", "Claude Code")]),
 ]
 
 # Personal details that must not appear on the public site.
@@ -102,8 +102,38 @@ def parse_export(path):
     return turns
 
 
+def parse_antigravity(path):
+    """Antigravity export: '### 👤 User' / '### 🤖 Assistant (…)' under '## Turn N:' headings."""
+    turns, role, buf = [], None, []
+
+    def flush():
+        nonlocal buf
+        text = "\n".join(l for l in buf if not l.startswith("> *Timestamp:*"))
+        text = re.sub(r"\n---\s*$", "", text.strip()).strip()
+        buf = []
+        if role == "User":
+            turns.append([text or "(empty message)", ""])
+        elif role == "Assistant" and turns:
+            turns[-1][1] = text
+
+    for line in open(path, encoding="utf-8"):
+        line = line.rstrip("\n")
+        if line.startswith("### 👤 User") or line.startswith("### 🤖 Assistant"):
+            flush()
+            role = "User" if "👤" in line else "Assistant"
+        elif re.match(r"## Turn \d+", line):
+            flush()
+            role = None
+        elif role:
+            buf.append(line)
+    flush()
+    return [(u, tidy(r)) for u, r in turns]
+
+
 def parse(path):
     text = open(path, encoding="utf-8").read()
+    if "### 👤 User" in text:
+        return parse_antigravity(path)
     if re.search(r"^## (User|Claude|Assistant)$", text, re.M):
         return parse_sections(path)
     return parse_export(path)
