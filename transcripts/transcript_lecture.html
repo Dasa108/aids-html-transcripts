@@ -49,13 +49,17 @@ summary:hover{color:var(--accent)}
 .pv{display:block;font:400 13px var(--body);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 details[open] .pv{display:none}
 .resp{padding:10px 14px 14px;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.5 var(--mono);background:var(--resp);max-height:80vh;overflow:auto}
+.prep{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:-6px 0 18px}
+.prep span{font:600 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.prep a{font:600 14px var(--display);color:var(--accent-ink);background:var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none}
+.prep a:hover{filter:brightness(1.1)}
 .transcript,.turn{scroll-margin-top:110px}
 .hidden{display:none}
 </style></head><body>
 <div class="bar"><h1>Lecture notes Transcript</h1>
 <input id="q" type="search" placeholder="Filter turns…">
 <button id="open">Expand all</button><button id="close">Collapse all</button></div>
-<main><section class="transcript" id="lecture"><h2>Lecture notes <span class="count">34 turns</span></h2><h3 class="part">Precursor (Antigravity) <span class="count">turns 1–7</span></h3><article class="turn" id="lecture-1"><header><a class="num" href="#lecture-1">Turn 1</a></header><div class="user">my goal is to transcript lecturees and then make notes from it. ( using a whisper model rather than building my model from scratch).
+<main><section class="transcript" id="lecture"><h2>Lecture notes <span class="count">34 turns</span></h2><nav class="prep"><span>Interview prep</span><a href="../prep/lecture-notes-field-guide.html">Lecture Notes Field Guide (interview guide) →</a><a href="../prep/lecture-notes-course.html">Lecture Notes Build Course →</a></nav><h3 class="part">Precursor (Antigravity) <span class="count">turns 1–7</span></h3><article class="turn" id="lecture-1"><header><a class="num" href="#lecture-1">Turn 1</a></header><div class="user">my goal is to transcript lecturees and then make notes from it. ( using a whisper model rather than building my model from scratch).
 can my phone run whisper models on it??</div><details><summary>Response <span class="len">644 words</span><span class="pv">**Yes, absolutely.** Modern smartphones can run Whisper models directly on-device without needing an internet …</span></summary><div class="resp">**Yes, absolutely.** Modern smartphones can run Whisper models directly on-device without needing an internet connection. 
 
 However, how well it runs depends on the **model size**, your **phone&#x27;s hardware**, and the fact that **lectures are long (45–90+ minutes)**.

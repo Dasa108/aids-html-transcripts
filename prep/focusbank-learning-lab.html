@@ -1,0 +1,2076 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>FocusBank Learning Lab</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+    :root { color-scheme: dark; }
+    html { background: #0b0f19; }
+    :root {
+      --bg-color: #0b0f19;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.25);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --code-bg: #030712;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .gradient-border {
+      border: 1px solid var(--card-border);
+      transition: all 0.25s ease;
+    }
+    .gradient-border:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .code-block {
+      background: var(--code-bg);
+      border-radius: 0.5rem;
+      border: 1px solid #1e293b;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    .phone-screen {
+      border: 12px solid #1f2937;
+      border-radius: 36px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+  </style>
+<div class="min-h-screen p-4 md:p-8">
+
+  <!-- Header Banner -->
+  <header class="max-w-6xl mx-auto mb-8 text-center md:text-left">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-gray-800">
+      <div class="flex flex-col md:flex-row items-center md:items-start gap-4">
+        <svg viewBox="18 18 72 72" class="w-14 h-14 rounded-2xl shadow-lg shadow-lime-500/10 flex-shrink-0" aria-label="FocusBank logo" role="img">
+            <defs>
+              <linearGradient id="fbBg" x1="0" y1="0" x2="108" y2="108" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0B1A36"/><stop offset="1" stop-color="#0A2E2B"/></linearGradient>
+              <linearGradient id="fbArc" x1="54" y1="37" x2="37" y2="54" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#83D5D0"/><stop offset="1" stop-color="#FFB870"/></linearGradient>
+            </defs>
+            <rect width="108" height="108" fill="url(#fbBg)"/>
+            <circle cx="54" cy="54" r="30" fill="#132A4A" stroke="#B9F27C" stroke-width="3.5"/>
+            <g fill="#B9F27C" fill-opacity="0.55"><circle cx="79.5" cy="54" r="1.7"/><circle cx="72.03" cy="72.03" r="1.7"/><circle cx="54" cy="79.5" r="1.7"/><circle cx="35.97" cy="72.03" r="1.7"/><circle cx="28.5" cy="54" r="1.7"/><circle cx="35.97" cy="35.97" r="1.7"/><circle cx="54" cy="28.5" r="1.7"/><circle cx="72.03" cy="35.97" r="1.7"/></g>
+            <circle cx="54" cy="54" r="17" fill="none" stroke="#24406A" stroke-width="5.5"/>
+            <path d="M54,37 A17,17 0 1,1 37,54" fill="none" stroke="url(#fbArc)" stroke-width="5.5" stroke-linecap="round"/>
+            <path d="M46.5,54.5 L51.5,59.5 L61.5,48.5" fill="none" stroke="#B9F27C" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+      <div>
+        <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-2">
+          <span class="badge bg-blue-900/60 text-blue-300 border border-blue-700">FocusBank Case Study</span>
+          <span class="badge bg-lime-900/60 text-lime-300 border border-lime-700">v1.7.0</span>
+          <span class="badge bg-emerald-900/60 text-emerald-300 border border-emerald-700">Targets Android 16</span>
+          <span class="badge bg-purple-900/60 text-purple-300 border border-purple-700">Beginner Friendly</span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">Android App Architecture & Engineering Lab</h1>
+        <p class="text-gray-400 mt-2 text-sm md:text-base max-w-3xl">
+          Learn how high-privilege Android systems are engineered from scratch. Using <span class="text-blue-400 font-semibold">FocusBank</span> as your living blueprint, discover how UI, SQLite databases, background accessibility daemons, and OS kernel events unite into a production application.
+        </p>
+      </div>
+      </div>
+      <div class="flex justify-center md:justify-end gap-2">
+        <a href="#" onclick="switchTab('tab-simulator'); return false;" class="px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition shadow-lg shadow-blue-500/20 flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Try Live Simulator
+        </a>
+        <a href="#" onclick="switchTab('tab-interview'); return false;" class="px-4 py-2.5 rounded-lg bg-lime-700 hover:bg-lime-600 text-white font-medium text-sm transition flex items-center gap-2">
+          Interview Prep
+        </a>
+      </div>
+    </div>
+
+    <!-- Navigation Pills -->
+    <nav class="flex flex-wrap gap-2 mt-6 justify-center md:justify-start" id="nav-tabs">
+      <button onclick="switchTab('tab-anatomy')" class="tab-btn active px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white transition">1. The Blueprint (Anatomy)</button>
+      <button onclick="switchTab('tab-compose')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition">2. The Face (Compose UI)</button>
+      <button onclick="switchTab('tab-storage')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition">3. Long-Term Memory (Room DB)</button>
+      <button onclick="switchTab('tab-guardian')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition">4. Background Guardian (Accessibility)</button>
+      <button onclick="switchTab('tab-simulator')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition">5. Live Simulator & Flow</button>
+      <button onclick="switchTab('tab-code')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition">6. Code Translator</button>
+      <button onclick="switchTab('tab-deploy')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition">7. Build & Deploy</button>
+      <button onclick="switchTab('tab-quiz')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-amber-950/60 text-amber-300 hover:bg-amber-900/60 border border-amber-800/80 transition flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+        8. Master Certification Quiz
+      </button>
+      <button onclick="switchTab('tab-audit')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition">9. Spec Audit (v1.2)</button>
+      <button onclick="switchTab('tab-lessons')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition">10. Engineering Lessons</button>
+      <button onclick="switchTab('tab-publish')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition">11. Keystores &amp; Publishing</button>
+      <button onclick="switchTab('tab-interview')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-lime-300 hover:bg-gray-700 border border-lime-800/70 transition">12. Interview Prep</button>
+    </nav>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-6xl mx-auto space-y-8">
+
+    <!-- TAB 1: ANATOMY 101 -->
+    <section id="tab-anatomy" class="tab-pane space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Card 1 -->
+        <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+          <div class="w-10 h-10 rounded-lg bg-blue-900/50 text-blue-400 flex items-center justify-center font-bold text-lg">1</div>
+          <h3 class="text-lg font-bold text-white">What is an Android App?</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            An Android app is a sandboxed package (<code class="text-blue-300">.apk</code> or <code class="text-blue-300">.aab</code>) running inside the Android Linux runtime (ART). Each app runs under its own Linux User ID (UID), completely isolated from other apps unless granted explicit OS permissions.
+          </p>
+          <div class="p-3 bg-gray-950 rounded border border-gray-800 text-xs text-gray-300">
+            <strong>Analogy:</strong> Think of the phone as a secure office tower. Each app is a locked private office. To look out into the hallway (other apps), FocusBank must request an official security badge (Accessibility permission).
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+          <div class="w-10 h-10 rounded-lg bg-emerald-900/50 text-emerald-400 flex items-center justify-center font-bold text-lg">2</div>
+          <h3 class="text-lg font-bold text-white">The Conductor: Gradle</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Gradle is the automated build robot. When you run <code class="text-emerald-300">./gradlew assembleDebug</code>, Gradle fetches libraries (Compose, Room, Coroutines), compiles Kotlin files into Java bytecode, transforms them into Dalvik Executable (<code class="text-emerald-300">.dex</code>) files, and bundles your resources.
+          </p>
+          <div class="p-3 bg-gray-950 rounded border border-gray-800 text-xs text-gray-300">
+            <strong>Key File:</strong> <code class="text-blue-300">build.gradle.kts</code> defines dependencies and targets Android 16 (<code class="text-white">targetSdk = 36</code>). From API 35, Android forces apps to draw edge to edge, so screens must pad themselves around the system bars.
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+          <div class="w-10 h-10 rounded-lg bg-purple-900/50 text-purple-400 flex items-center justify-center font-bold text-lg">3</div>
+          <h3 class="text-lg font-bold text-white">The Passport: Manifest</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            <code class="text-purple-300">AndroidManifest.xml</code> is the app's official identity declaration submitted to the Android OS. If a permission, activity, service, or receiver isn't registered here, Android will crash with a SecurityException if the app attempts to run it.
+          </p>
+          <div class="p-3 bg-gray-950 rounded border border-gray-800 text-xs text-gray-300">
+            <strong>Key Registrations:</strong> <code class="text-white">AppMonitorService</code> (Accessibility), <code class="text-white">BlockOverlayActivity</code> (Overlay), <code class="text-white">TaskDeadlineReceiver</code> (Alarms).
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Anatomy Diagram -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800">
+        <h3 class="text-lg font-bold text-white mb-4">The 4 Fundamental Android Building Blocks</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 border-l-4 border-l-blue-500">
+            <h4 class="font-bold text-blue-400 text-sm">1. Activity</h4>
+            <p class="text-xs text-gray-400 mt-1">The visual screen the user interacts with. FocusBank has <code class="text-gray-200">MainActivity</code> (dashboard/tabs) and <code class="text-gray-200">BlockOverlayActivity</code> (full-screen shield).</p>
+          </div>
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 border-l-4 border-l-emerald-500">
+            <h4 class="font-bold text-emerald-400 text-sm">2. Service</h4>
+            <p class="text-xs text-gray-400 mt-1">A background worker without UI. FocusBank's <code class="text-gray-200">AppMonitorService</code> is an Accessibility Service that runs continuously in background memory.</p>
+          </div>
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 border-l-4 border-l-amber-500">
+            <h4 class="font-bold text-amber-400 text-sm">3. BroadcastReceiver</h4>
+            <p class="text-xs text-gray-400 mt-1">A radio receiver for OS-wide broadcasts. Listens for phone reboots (<code class="text-gray-200">BOOT_COMPLETED</code>) or screen sleep (<code class="text-gray-200">SCREEN_OFF</code>).</p>
+          </div>
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 border-l-4 border-l-purple-500">
+            <h4 class="font-bold text-purple-400 text-sm">4. ContentProvider</h4>
+            <p class="text-xs text-gray-400 mt-1">Securely shares structured data between apps or provides underlying storage abstraction (FocusBank relies on Room SQLite directly).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: COMPOSE UI -->
+    <section id="tab-compose" class="tab-pane hidden space-y-6">
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800">
+        <h2 class="text-xl font-bold text-white mb-2">Modern Declarative UI: Jetpack Compose</h2>
+        <p class="text-sm text-gray-400 mb-6">
+          In older Android development, developers wrote rigid XML layout files and manually found views with <code class="text-blue-300">findViewById()</code>. In <strong>Jetpack Compose</strong>, UI is defined as pure Kotlin functions that automatically redraw ("recompose") whenever underlying state variables change.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- State Explanation -->
+          <div class="space-y-4">
+            <h3 class="text-base font-semibold text-blue-400">The Secret: State & Recomposition</h3>
+            <p class="text-sm text-gray-300">
+              Compose UI is a function of State: <code class="text-blue-300">UI = f(State)</code>.
+            </p>
+            <ul class="text-sm text-gray-400 space-y-2 list-disc list-inside">
+              <li><code class="text-gray-200 font-mono">remember { mutableStateOf(120L) }</code> creates an observable state variable.</li>
+              <li>When the background ticker decrements <code class="text-gray-200 font-mono">balance</code> from 120s to 119s, Compose recalculates <em>only</em> the text element displaying the seconds.</li>
+              <li>No manual <code class="text-gray-200 font-mono">textView.setText()</code> calls required!</li>
+            </ul>
+
+            <div class="p-4 rounded-lg bg-gray-950 border border-gray-800">
+              <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">FocusBank Screen Anatomy</h4>
+              <div class="space-y-2 text-xs">
+                <div class="flex justify-between border-b border-gray-800 py-1"><span class="text-gray-300">VaultScreen</span><span class="text-gray-500">Hero counter, usage chart, quick stats</span></div>
+                <div class="flex justify-between border-b border-gray-800 py-1"><span class="text-gray-300">TaskScreen</span><span class="text-gray-500">Eisenhower sort, date &amp; reminder pickers</span></div>
+                <div class="flex justify-between border-b border-gray-800 py-1"><span class="text-gray-300">ScheduleScreen</span><span class="text-gray-500">7-day x 8-window matrix</span></div>
+                <div class="flex justify-between py-1"><span class="text-gray-300">AppsScreen</span><span class="text-gray-500">Per-app quotas, category filter, toggles</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Code Snippet -->
+          <div class="code-block p-4 text-xs text-gray-300 overflow-x-auto space-y-1">
+            <div class="text-gray-500">// Real code from MainActivity.kt (VaultScreen + formatAllowance)</div>
+            <div><span class="text-blue-400">var</span> balance <span class="text-blue-400">by</span> remember { mutableStateOf(store.balanceSeconds()) }</div>
+            <div><span class="text-purple-400">LaunchedEffect</span>(store) {</div>
+            <div class="pl-4"><span class="text-blue-400">while</span> (<span class="text-blue-400">true</span>) { balance = store.balanceSeconds(); delay(<span class="text-amber-300">1_000L</span>) }</div>
+            <div>}</div>
+            <div class="text-gray-500 pt-2">// ...inside VaultScreen</div>
+            <div><span class="text-purple-400">Card</span>(colors = CardDefaults.cardColors(containerColor = colorScheme.primary)) {</div>
+            <div class="pl-4"><span class="text-purple-400">Text</span>(formatAllowance(balance), style = typography.displayMedium)</div>
+            <div>}</div>
+            <div class="text-gray-500 pt-2">// 3725 seconds -&gt; "01:02:05"</div>
+            <div><span class="text-blue-400">private fun</span> <span class="text-yellow-300">formatAllowance</span>(totalSeconds: <span class="text-emerald-400">Long</span>): <span class="text-emerald-400">String</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ROOM DB & STORAGE -->
+    <section id="tab-storage" class="tab-pane hidden space-y-6">
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800">
+        <h2 class="text-xl font-bold text-white mb-2">Long-Term Memory: Storage & Caching</h2>
+        <p class="text-sm text-gray-400 mb-6">
+          An app must remember data across device reboots and battery deaths. FocusBank uses a hybrid storage architecture: <strong>Room (SQLite)</strong> for structured entities and <strong>SharedPreferences</strong> for instant key-value lookups.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Room DB Explanation -->
+          <div class="p-5 rounded-xl bg-gray-950 border border-gray-800 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-emerald-400">Room SQLite Database</h3>
+              <span class="badge bg-emerald-950 text-emerald-300 border border-emerald-800">ACID Compliant</span>
+            </div>
+            <p class="text-xs text-gray-400">
+              Used for relational and query-heavy data: <strong>Tasks</strong> (titles, deadlines, priorities) and <strong>Daily Usage Records</strong> (how many seconds you spent in each app per day).
+            </p>
+            <div class="p-3 bg-gray-900 rounded text-xs space-y-1 text-gray-300 font-mono">
+              <div>@Entity(tableName = "tasks")</div>
+              <div>data class TaskEntity(</div>
+              <div class="pl-4">@PrimaryKey val id: String,</div>
+              <div class="pl-4">val title: String,</div>
+              <div class="pl-4">val priority: String,</div>
+              <div class="pl-4">val rewardMinutes: Int,</div>
+              <div class="pl-4">val completed: Boolean,</div>
+              <div class="pl-4">val deadlineMillis: Long,</div>
+              <div class="pl-4 text-gray-500">// + penaltyMinutes, penaltyProcessed,</div>
+              <div class="pl-4 text-gray-500">//   reminderMillis, completedAt</div>
+              <div>)</div>
+              <div class="text-gray-500 pt-1">// FocusTask is the plain model the UI uses; the store maps between them.</div>
+            </div>
+          </div>
+
+          <!-- SharedPreferences Explanation -->
+          <div class="p-5 rounded-xl bg-gray-950 border border-gray-800 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-amber-400">SharedPreferences & Cache</h3>
+              <span class="badge bg-amber-950 text-amber-300 border border-amber-800">Microsecond Reads</span>
+            </div>
+            <p class="text-xs text-gray-400">
+              Used for high-frequency settings: <code class="text-amber-300">balance_seconds</code>, <code class="text-amber-300">blocked_apps</code>, and active penalty timers.
+            </p>
+            <div class="p-3 bg-gray-900 rounded text-xs text-gray-300">
+              <strong class="text-amber-400">The Problem:</strong> Every tick read today's usage row from SQLite before writing it back.
+              <br><br>
+              <strong class="text-emerald-400">The Fix (v1.2):</strong> An in-memory <code class="text-blue-300 font-mono">usageCache</code> keeps the running count so the per-second read is skipped. It lives in a <code class="text-blue-300 font-mono">companion object</code> because the service builds a new <code class="font-mono">FocusBankStore</code> every second; in 1.1 the cache belonged to each instance and was always empty.
+              <br><br>
+              <strong class="text-emerald-400">v1.3:</strong> <code class="font-mono">allowMainThreadQueries()</code> is gone. The UI reads Room on <code class="font-mono">Dispatchers.IO</code>, receivers use <code class="font-mono">goAsync()</code>, and the accessibility service works on its own <code class="font-mono">HandlerThread</code>. A lock keeps balance updates from racing between threads.
+            </div>
+          </div>
+        </div>
+        <div class="mt-6 p-4 rounded-lg bg-gray-950 border border-lime-900/60 text-xs text-gray-300 space-y-1">
+          <div class="font-bold text-lime-300">v1.6: the database grew a column</div>
+          <p>Plans added <code>isPlan</code> to the <code>tasks</code> table. Room is now at schema version 2, with a <code>MIGRATION_1_2</code> that runs <code>ALTER TABLE … ADD COLUMN isPlan INTEGER NOT NULL DEFAULT 0</code> once on existing installs. All reads run off the main thread. See tab 10, lessons 1 and 3.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- (storage) v1.6 migration note is in tab 10, lesson 3 -->
+    <!-- TAB 4: ACCESSIBILITY & BACKGROUND GUARDIAN -->
+    <section id="tab-guardian" class="tab-pane hidden space-y-6">
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800">
+        <h2 class="text-xl font-bold text-white mb-2">The Background Guardian: Accessibility Service</h2>
+        <p class="text-sm text-gray-400 mb-6">
+          How can FocusBank know when you opened Instagram or Chrome if FocusBank isn't on your screen? Modern Android does not allow background apps to spy on running apps—<strong>unless</strong> they run an authorized <code class="text-blue-300">AccessibilityService</code>.
+        </p>
+
+        <div class="mb-6 p-3 rounded-lg bg-lime-950/40 border border-lime-900/60 text-xs text-gray-300">
+          <strong class="text-lime-300">Since v1.4:</strong> the service only forwards events. Every decision (charge, block, penalty) lives in <code class="text-lime-300">EnforcementEngine</code>, driven by one 1-second <code>tick()</code> on a background thread. See tab 10, lessons 1 and 2.
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 space-y-2">
+            <span class="badge bg-blue-900 text-blue-300">1. OS Event Callback</span>
+            <h4 class="font-bold text-white text-sm">onAccessibilityEvent()</h4>
+            <p class="text-xs text-gray-400">
+              Whenever a window transitions (<code class="text-gray-300">typeWindowStateChanged</code>), Android sends the foreground package name (e.g. <code class="text-gray-300">com.android.chrome</code>) to FocusBank.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 space-y-2">
+            <span class="badge bg-purple-900 text-purple-300">2. Intelligent Filter</span>
+            <h4 class="font-bold text-white text-sm">isIgnoredPackage()</h4>
+            <p class="text-xs text-gray-400">
+              When you type, Gboard or Samsung Keyboard takes focus. FocusBank detects and ignores keyboard popups and System UI so it doesn't falsely reset your timer!
+            </p>
+          </div>
+
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 space-y-2">
+            <span class="badge bg-amber-900 text-amber-300">3. Power & Lock Guard</span>
+            <h4 class="font-bold text-white text-sm">Keyguard & Screen Off</h4>
+            <p class="text-xs text-gray-400">
+              If your phone screen goes to sleep (<code class="text-gray-300">SCREEN_OFF</code>) or the lockscreen is active, FocusBank freezes the ticker so you don't lose time in your pocket!
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-6 p-4 rounded-lg bg-gray-950 border border-gray-800 text-xs text-gray-300 space-y-2">
+          <div class="font-bold text-blue-400">Android 14 (API 34) Foreground Compliance:</div>
+          <p>
+            On Android 14, calling <code class="font-mono">startForeground()</code> without a declared Foreground Service Type throws <code class="font-mono">MissingForegroundServiceTypeException</code>. FocusBank declares <code class="text-emerald-300 font-mono">FOREGROUND_SERVICE_TYPE_SPECIAL_USE</code> and shows an ongoing low-priority notification. This makes the process much less likely to be killed, but it is not a guarantee: some OEM battery managers still stop it, which is why the UI checks a service heartbeat.
+          </p>
+        </div>
+
+        <!-- Real World Battle-Tested Case Study -->
+        <div class="mt-6 p-5 rounded-xl bg-gradient-to-r from-red-950/40 via-gray-950 to-blue-950/40 border border-blue-900/40 space-y-4">
+          <div class="flex items-center gap-2">
+            <span class="badge bg-red-900/80 text-red-300 border border-red-700">Real-World Case Study</span>
+            <span class="badge bg-blue-900/80 text-blue-300 border border-blue-700">Hardware Debugging</span>
+          </div>
+          <h3 class="text-lg font-extrabold text-white">The Mystery of the Missing Seconds (And How We Solved It)</h3>
+          <p class="text-xs md:text-sm text-gray-300 leading-relaxed">
+            During physical device testing on a Vivo phone running Android 14, an elusive bug appeared: users used WhatsApp and Chrome for over an hour, but the timer stopped counting after a few seconds! Here are the major loopholes discovered and fixed. The 4th was found in the v1.2 spec audit:
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-1">
+            <div class="p-3.5 rounded-lg bg-gray-950 border border-gray-800 space-y-2 text-xs">
+              <div class="font-bold text-red-400">1. The OEM Gesture Trap</div>
+              <p class="text-gray-400">
+                Swiping on Vivo phones fires events from <code class="text-gray-200">com.vivo.upslide</code>. FocusBank thought the user exited the app and killed the ticker!
+              </p>
+              <div class="text-emerald-400 font-semibold text-[11px]">Fix: Filter all OEM services in isIgnoredPackage().</div>
+            </div>
+            <div class="p-3.5 rounded-lg bg-gray-950 border border-gray-800 space-y-2 text-xs">
+              <div class="font-bold text-red-400">2. The Back-Button Bypass</div>
+              <p class="text-gray-400">
+                When balance hit 0, pressing the phone's Back button closed the overlay and let the user right back into Chrome with a dead timer!
+              </p>
+              <div class="text-emerald-400 font-semibold text-[11px]">Fix: Intercept Back button and force-route to CATEGORY_HOME.</div>
+            </div>
+            <div class="p-3.5 rounded-lg bg-gray-950 border border-gray-800 space-y-2 text-xs">
+              <div class="font-bold text-red-400">3. Dropped OS Events</div>
+              <p class="text-gray-400">
+                If the ticker died, no new window events fired while scrolling inside the same app, leaving the timer permanently frozen.
+              </p>
+              <div class="text-emerald-400 font-semibold text-[11px]">Fix: 1-second continuous background Watchdog pulse.</div>
+            </div>
+            <div class="p-3.5 rounded-lg bg-gray-950 border border-lime-900/60 space-y-2 text-xs">
+              <div class="font-bold text-red-400">4. The Silent Hand-off</div>
+              <p class="text-gray-400">
+                If the ticker itself noticed you jump from Chrome straight into WhatsApp, it called <code class="text-gray-200">startAllowanceTicker()</code>, which returned early because the ticker was "already running". Nothing rescheduled it, and the watchdog trusted the stale flag, so WhatsApp ran free.
+              </p>
+              <div class="text-emerald-400 font-semibold text-[11px]">Fix (v1.2): clear the flag and run the full handlePackageEvent() check.</div>
+            </div>
+          </div>
+          <div class="pt-2 text-xs text-blue-300 flex items-center gap-2">
+            <span>📄 Detailed documentation available in:</span>
+            <code class="px-2 py-1 bg-gray-900 rounded border border-gray-800 text-blue-200 font-mono">decisions.md</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: SIMULATOR & INTERACTIVE FLOW -->
+    <section id="tab-simulator" class="tab-pane hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Controls & State -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-4">
+            <h2 class="text-xl font-bold text-white">Interactive FocusBank Enforcement Simulator</h2>
+            <p class="text-sm text-gray-400">
+              Test the exact state machine that runs on your Vivo phone! Switch foreground apps, toggle the screen power state, and watch how the allowance burns down and triggers the block overlay.
+            </p>
+
+            <div class="space-y-4 pt-2">
+              <!-- App Selector -->
+              <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase mb-2">Simulate Active Foreground App:</label>
+                <div class="grid grid-cols-3 gap-2">
+                  <button onclick="setSimApp('launcher')" id="btn-launcher" class="sim-app-btn px-3 py-2 rounded-lg text-xs font-bold bg-blue-600 text-white border border-blue-500">Home Launcher</button>
+                  <button onclick="setSimApp('chrome')" id="btn-chrome" class="sim-app-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700">Google Chrome</button>
+                  <button onclick="setSimApp('whatsapp')" id="btn-whatsapp" class="sim-app-btn px-3 py-2 rounded-lg text-xs font-bold bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700">WhatsApp</button>
+                </div>
+              </div>
+
+              <!-- Hardware Toggles -->
+              <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase mb-2">Device Hardware Simulation:</label>
+                <div class="flex gap-3">
+                  <button onclick="toggleScreen()" id="btn-screen" class="px-4 py-2 rounded-lg text-xs font-medium bg-gray-800 text-gray-300 border border-gray-700 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    Screen: ON
+                  </button>
+                  <button onclick="toggleKeyguard()" id="btn-keyguard" class="px-4 py-2 rounded-lg text-xs font-medium bg-gray-800 text-gray-300 border border-gray-700 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    Keyguard: UNLOCKED
+                  </button>
+                  <button onclick="addBalance(30)" class="px-4 py-2 rounded-lg text-xs font-medium bg-gray-800 hover:bg-gray-700 text-blue-400 border border-gray-700">
+                    +30s Balance
+                  </button>
+                </div>
+              </div>
+
+              <!-- Deadline / Penalty Simulation -->
+              <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase mb-2">Task Deadline Simulation (v1.2 rules):</label>
+                <div class="flex flex-wrap gap-3">
+                  <button onclick="missDeadline()" class="px-4 py-2 rounded-lg text-xs font-medium bg-gray-800 hover:bg-gray-700 text-red-400 border border-gray-700">Miss a deadline</button>
+                  <button onclick="completeOverdueTask()" class="px-4 py-2 rounded-lg text-xs font-medium bg-gray-800 hover:bg-gray-700 text-emerald-400 border border-gray-700">Complete overdue task</button>
+                  <span id="sim-penalty-status" class="self-center text-xs text-gray-500 font-mono">No penalty</span>
+                </div>
+                <p class="text-[11px] text-gray-500 mt-2">A missed deadline locks a random protected app for 10s. The penalty counts down in real time while the Vault has more than 0 seconds, and pauses while it is empty. When it reaches zero, the task is rechecked, and if it is still open a new penalty is rolled.</p>
+              </div>
+
+              <!-- Flow Status Log -->
+              <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 font-mono text-xs space-y-1">
+                <div class="text-gray-500">// Enforcement State Logger</div>
+                <div id="log-line-1" class="text-blue-400">&gt; FocusBank: Accessibility enforcement connected</div>
+                <div id="log-line-2" class="text-gray-400">&gt; Active Package: com.android.launcher3 (Safe)</div>
+                <div id="log-line-3" class="text-gray-400">&gt; Ticker State: IDLE</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone Mockup -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class="phone-screen w-72 h-[480px] bg-gray-950 flex flex-col relative overflow-hidden text-center select-none">
+            <!-- Status Bar -->
+            <div class="h-6 bg-black flex justify-between items-center px-4 text-[10px] text-gray-400">
+              <span id="sim-clock">01:30</span>
+              <div class="flex gap-1.5 items-center">
+                <span>5G</span>
+                <span>88%</span>
+              </div>
+            </div>
+
+            <!-- Lockscreen Overlay -->
+            <div id="phone-lockscreen" class="absolute inset-0 bg-black/95 z-40 hidden flex flex-col items-center justify-center p-6 space-y-4">
+              <svg class="w-12 h-12 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+              <div class="text-white text-lg font-bold">Device Locked</div>
+              <p class="text-xs text-gray-400">Timer is safely paused to preserve balance.</p>
+              <button onclick="toggleKeyguard()" class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs">Tap to Unlock</button>
+            </div>
+
+            <!-- Block Overlay Activity (Shield) -->
+            <div id="phone-block-overlay" class="absolute inset-0 bg-red-950/95 z-30 hidden flex flex-col items-center justify-center p-6 space-y-3">
+              <div class="w-12 h-12 rounded-full bg-red-900 text-red-300 flex items-center justify-center text-xl font-bold">✕</div>
+              <div class="text-white font-extrabold text-lg" id="overlay-title">Vault Depleted!</div>
+              <p class="text-xs text-red-200" id="overlay-text">Allowance exhausted for this app. Complete tasks to earn more free time.</p>
+              <button onclick="setSimApp('launcher')" class="px-4 py-2 bg-red-700 hover:bg-red-600 text-white text-xs font-bold rounded-lg mt-2">
+                Exit to Home
+              </button>
+            </div>
+
+            <!-- Active App Content -->
+            <div id="phone-content" class="flex-1 flex flex-col justify-between p-4 bg-gray-900">
+              <!-- Top App Header -->
+              <div class="flex items-center justify-between pb-2 border-b border-gray-800">
+                <span id="phone-app-title" class="text-xs font-bold text-gray-300">Home Launcher</span>
+                <span id="phone-timer-badge" class="badge bg-gray-800 text-gray-400">Idle</span>
+              </div>
+
+              <!-- Main Visual Body -->
+              <div class="my-auto space-y-2">
+                <div class="text-3xl font-extrabold tracking-tight text-white font-mono" id="phone-vault-display">00:00:15</div>
+                <div class="text-[11px] text-gray-400" id="phone-vault-sub">Available Vault Balance</div>
+              </div>
+
+              <!-- Ongoing Notification Mockup -->
+              <div class="p-2.5 rounded-lg bg-gray-950 border border-gray-800 text-left text-[11px] space-y-0.5">
+                <div class="flex items-center justify-between text-blue-400 font-semibold text-[10px]">
+                  <span>FocusBank protection</span>
+                  <span>Now</span>
+                </div>
+                <div class="text-gray-300 truncate" id="phone-notif-text">Selected apps are being monitored.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: CODE TRANSLATOR -->
+    <section id="tab-code" class="tab-pane hidden space-y-6">
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800">
+        <h2 class="text-xl font-bold text-white mb-2">Code Explorer: Plain English Translator</h2>
+        <p class="text-sm text-gray-400 mb-6">
+          Compare the production Kotlin code against clear, beginner-friendly translations.
+        </p>
+
+        <div class="space-y-6">
+          <!-- Snippet 1 -->
+          <div class="border border-gray-800 rounded-xl overflow-hidden">
+            <div class="bg-gray-950 px-4 py-2 border-b border-gray-800 flex justify-between items-center text-xs">
+              <span class="font-mono text-blue-400">EnforcementEngine.kt &mdash; Keyboard &amp; System Filter (was AppMonitorService)</span>
+              <span class="text-gray-500">Simplified from isIgnored()</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2">
+              <div class="code-block p-4 text-xs text-gray-300 border-r border-gray-800">
+                <div><span class="text-blue-400">private fun</span> <span class="text-yellow-300">isIgnoredPackage</span>(pkg: <span class="text-emerald-400">String</span>): <span class="text-emerald-400">Boolean</span> {</div>
+                <div class="pl-4"><span class="text-blue-400">if</span> (pkg == packageName) <span class="text-blue-400">return true</span></div>
+                <div class="pl-4"><span class="text-blue-400">if</span> (pkg == <span class="text-emerald-300">"com.android.systemui"</span>) <span class="text-blue-400">return true</span></div>
+                <div class="pl-4"><span class="text-blue-400">if</span> (pkg.contains(<span class="text-emerald-300">"keyboard"</span>) || pkg.contains(<span class="text-emerald-300">"ime"</span>)) <span class="text-blue-400">return true</span></div>
+                <div class="pl-4"><span class="text-blue-400">val</span> imm = getSystemService(InputMethodManager::<span class="text-blue-400">class</span>.java)</div>
+                <div class="pl-4"><span class="text-blue-400">return</span> imm?.enabledInputMethodList?.any { it.packageName == pkg } == <span class="text-blue-400">true</span></div>
+                <div>}</div>
+              </div>
+              <div class="p-4 bg-gray-900/60 text-xs text-gray-300 space-y-2">
+                <span class="badge bg-blue-900 text-blue-300">Plain English Translation</span>
+                <p>
+                  "Before counting down or blocking, check which app is on top. If the app is Gboard, Samsung Keyboard, or Android's status bar, <strong>do nothing</strong>. Don't exit the monitored app, because the user is just typing a message!"
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Snippet 2 -->
+          <div class="border border-gray-800 rounded-xl overflow-hidden">
+            <div class="bg-gray-950 px-4 py-2 border-b border-gray-800 flex justify-between items-center text-xs">
+              <span class="font-mono text-emerald-400">EnforcementEngine.kt &mdash; One Second in a Protected App (v1.7)</span>
+              <span class="text-gray-500">chargeSecond()</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2">
+              <div class="code-block p-4 text-xs text-gray-300 border-r border-gray-800">
+                <div>store.chargeVaultSecond(pkg)   <span class="text-gray-500">// Vault -1 s, usage +1 s</span></div>
+                <div>store.consumeLimitSecond(pkg)  <span class="text-gray-500">// app's daily limit -1 s (if set)</span></div>
+                <div class="pt-1"><span class="text-blue-400">val</span> vault = store.balanceSeconds()</div>
+                <div><span class="text-blue-400">val</span> limitLeft = store.limitSecondsLeft(pkg) <span class="text-gray-500">// null = no limit</span></div>
+                <div><span class="text-blue-400">if</span> (!TaskRules.canUseApp(vault, limitLeft) { unlocked })</div>
+                <div class="pl-4">block(pkg, isPenalty = <span class="text-blue-400">false</span>)</div>
+              </div>
+              <div class="p-4 bg-gray-900/60 text-xs text-gray-300 space-y-2">
+                <span class="badge bg-emerald-900 text-emerald-300">Plain English Translation</span>
+                <p>
+                  "Every second in a protected app costs one Vault second and is logged once in today's usage. If the app also has a daily time limit, that limit loses the same second. The app stays open only while its limit has time left <em>and</em> the Vault has time (or the day is unlocked). Whichever runs out first blocks it."
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Snippet 3 -->
+          <div class="border border-gray-800 rounded-xl overflow-hidden">
+            <div class="bg-gray-950 px-4 py-2 border-b border-gray-800 flex justify-between items-center text-xs">
+              <span class="font-mono text-lime-400">Protected-to-Protected Hand-off (v1.2 fix; v1.4 moved it into EnforcementEngine.tick)</span>
+              <span class="text-gray-500">Historical</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2">
+              <div class="code-block p-4 text-xs text-gray-300 border-r border-gray-800">
+                <div><span class="text-blue-400">if</span> (winPkg <span class="text-blue-400">in</span> store.blockedApps()) {</div>
+                <div class="pl-4 text-red-400/80 line-through">activePackage = winPkg</div>
+                <div class="pl-4 text-red-400/80 line-through">startAllowanceTicker(winPkg) <span class="text-gray-500">// returned early!</span></div>
+                <div class="pl-4">tickerRunning = <span class="text-blue-400">false</span></div>
+                <div class="pl-4">handlePackageEvent(winPkg)</div>
+                <div class="pl-4"><span class="text-blue-400">return</span></div>
+                <div>}</div>
+              </div>
+              <div class="p-4 bg-gray-900/60 text-xs text-gray-300 space-y-2">
+                <span class="badge bg-lime-900 text-lime-300">Plain English Translation</span>
+                <p>
+                  "You just jumped from one protected app straight into another. Stop the current countdown, then run the whole front-door check for the new app: is it under a penalty? Does it have time left? Only then start counting again."
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 7: BUILD & DEPLOY -->
+    <section id="tab-deploy" class="tab-pane hidden space-y-6">
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800">
+        <h2 class="text-xl font-bold text-white mb-2">From Laptop to Pocket: The Build Pipeline</h2>
+        <p class="text-sm text-gray-400 mb-6">
+          How source code transforms into a runnable app on your physical Vivo phone.
+        </p>
+
+        <div class="space-y-4">
+          <div class="flex items-start gap-4 p-4 rounded-lg bg-gray-950 border border-gray-800">
+            <div class="w-8 h-8 rounded-full bg-blue-900 text-blue-300 flex items-center justify-center font-bold text-sm">1</div>
+            <div>
+              <h4 class="font-bold text-white text-sm">Kotlin Compilation & Desugaring</h4>
+              <p class="text-xs text-gray-400 mt-1">
+                Gradle invokes <code class="text-blue-300">kotlinc</code>. Modern Java 17 features are "desugared" so they run seamlessly even on older Android operating systems down to Android 8 (API 26).
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4 p-4 rounded-lg bg-gray-950 border border-gray-800">
+            <div class="w-8 h-8 rounded-full bg-emerald-900 text-emerald-300 flex items-center justify-center font-bold text-sm">2</div>
+            <div>
+              <h4 class="font-bold text-white text-sm">Dexing & Packaging (assembleDebug)</h4>
+              <p class="text-xs text-gray-400 mt-1">
+                The D8 compiler turns bytecode into Dalvik Executables (<code class="text-emerald-300">classes.dex</code>). Resources, icons, and compiled XML files are compressed into <code class="text-emerald-300">app-debug.apk</code>.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4 p-4 rounded-lg bg-gray-950 border border-gray-800">
+            <div class="w-8 h-8 rounded-full bg-purple-900 text-purple-300 flex items-center justify-center font-bold text-sm">3</div>
+            <div>
+              <h4 class="font-bold text-white text-sm">ADB Streamed Install</h4>
+              <p class="text-xs text-gray-400 mt-1">
+                The Android Debug Bridge streams APK bytes over USB directly into the phone's package manager daemon (<code class="text-purple-300">/system/bin/pm</code>), which verifies signatures and registers the app.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4 p-4 rounded-lg bg-gray-950 border border-gray-800">
+            <div class="w-8 h-8 rounded-full bg-amber-900 text-amber-300 flex items-center justify-center font-bold text-sm">4</div>
+            <div>
+              <h4 class="font-bold text-white text-sm">Next Step: Google Play Store Release (AAB)</h4>
+              <p class="text-xs text-gray-400 mt-1">
+                For Google Play, we run <code class="text-amber-300">./gradlew bundleRelease</code> to output an Android App Bundle (<code class="text-amber-300">.aab</code>) signed with your private cryptographic keystore. Google Play then dynamically generates optimized mini-APKs for each user's specific screen size and CPU.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-start gap-4 p-4 rounded-lg bg-gray-950 border border-lime-900/60">
+            <div class="w-8 h-8 rounded-full bg-lime-900 text-lime-300 flex items-center justify-center font-bold text-sm">5</div>
+            <div>
+              <h4 class="font-bold text-white text-sm">Today's toolchain and the release signing</h4>
+              <p class="text-xs text-gray-400 mt-1">
+                FocusBank builds with AGP 8.9.1, Gradle 8.11.1 and Kotlin 1.9, compiling against and targeting API 36. Release builds read your upload key from <code class="text-lime-300">keystore.properties</code>. Without it they come out unsigned, with a warning. Keystores and the full Play route are in tab 11.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 8: MASTER CERTIFICATION QUIZ -->
+    <section id="tab-quiz" class="tab-pane hidden space-y-6">
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-4">
+        
+        <!-- Scorecard Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-xl bg-gradient-to-r from-blue-950/70 via-gray-950 to-purple-950/70 border border-blue-900/50">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="badge bg-amber-900/70 text-amber-300 border border-amber-700">Architecture Mastery Exam</span>
+              <span class="badge bg-blue-900/70 text-blue-300 border border-blue-700" id="quiz-count-badge">12 Scenario Questions</span>
+            </div>
+            <h2 class="text-xl md:text-2xl font-black text-white">FocusBank & Android Systems Certification</h2>
+            <p class="text-xs md:text-sm text-gray-400 mt-1">Test your real-world understanding of Jetpack Compose, Room SQLite, Accessibility Daemons, and Android 14 Lifecycle.</p>
+          </div>
+          <div class="text-center md:text-right flex md:flex-col items-center md:items-end justify-between gap-2">
+            <div>
+              <div class="text-xs uppercase tracking-wider text-gray-400 font-semibold">Your Score</div>
+              <div class="text-2xl md:text-3xl font-extrabold text-blue-400 font-mono" id="quiz-score-display">0 / 18</div>
+            </div>
+            <button onclick="resetQuiz()" class="px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-xs font-semibold text-gray-300 border border-gray-700 transition">
+              Reset Exam
+            </button>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-950 rounded-full h-2.5 border border-gray-800 overflow-hidden">
+          <div id="quiz-progress-bar" class="bg-gradient-to-r from-blue-500 to-emerald-400 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+
+        <!-- Certificate / Badge Container (Shown when complete) -->
+        <div id="quiz-completion-banner" class="hidden p-6 rounded-xl bg-emerald-950/80 border border-emerald-700 text-center space-y-3">
+          <div class="w-16 h-16 mx-auto rounded-full bg-emerald-900 text-emerald-300 flex items-center justify-center text-3xl font-bold shadow-lg shadow-emerald-900/50">
+            🏆
+          </div>
+          <h3 class="text-2xl font-extrabold text-white" id="quiz-rank-title">Master Android Systems Architect</h3>
+          <p class="text-sm text-emerald-200 max-w-xl mx-auto" id="quiz-rank-desc">
+            Outstanding! You have thoroughly mastered how modern Android applications function under the hood—from Linux UID sandboxing and Dalvik bytecodes to Jetpack Compose reactivity and real-time accessibility interceptors.
+          </p>
+        </div>
+
+        <!-- Questions Container -->
+        <div id="quiz-questions-list" class="space-y-6 pt-2">
+          <!-- Dynamically populated via JS -->
+        </div>
+
+      </div>
+
+    </section>
+    <!-- TAB 9: SPEC AUDIT -->
+    <section id="tab-audit" class="tab-pane hidden space-y-6">
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-4">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="badge bg-lime-900/70 text-lime-300 border border-lime-700">SRS 1.2.0</span>
+          <span class="badge bg-gray-800 text-gray-300 border border-gray-700">Build verified on device</span>
+        </div>
+        <h2 class="text-xl font-bold text-white">Spec vs. Code Audit</h2>
+        <p class="text-sm text-gray-400">Each requirement in the SRS was checked against the Kotlin source. The table lists what was fixed in 1.2.0. The second list covers what is still open (SRS §9).</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead><tr class="text-gray-400 border-b border-gray-800"><th class="py-2 pr-3">Req.</th><th class="py-2 pr-3">Issue found</th><th class="py-2">Fix</th></tr></thead>
+            <tbody class="text-gray-300 divide-y divide-gray-800">
+              <tr><td class="py-2 pr-3 font-mono text-red-300">FR-2.2</td><td class="py-2 pr-3">Switching from one protected app directly to another could kill the ticker, so the second app ran with no countdown.</td><td class="py-2">Hand off to <code>handlePackageEvent()</code>.</td></tr>
+              <tr><td class="py-2 pr-3 font-mono text-red-300">FR-3.1C</td><td class="py-2 pr-3">A penalty that started while its app was open did not lock the app until the user left it.</td><td class="py-2">Ticker checks for a penalty every second.</td></tr>
+              <tr><td class="py-2 pr-3 font-mono text-red-300">FR-3.10</td><td class="py-2 pr-3">The recheck alarm fired after <em>wall-clock</em> minutes even when the penalty was paused, which could stack penalties. It was also lost on reboot.</td><td class="py-2">Recheck runs when the countdown reaches zero.</td></tr>
+              <tr><td class="py-2 pr-3 font-mono text-amber-300">FR-1.4</td><td class="py-2 pr-3">A reroll was spent even when no penalty could apply (no protected apps, or 0 minutes).</td><td class="py-2">A reroll is only spent when a lock would happen.</td></tr>
+              <tr><td class="py-2 pr-3 font-mono text-amber-300">§1.3</td><td class="py-2 pr-3">Late completions still paid the full reward.</td><td class="py-2">Reward only if completed on time.</td></tr>
+              <tr><td class="py-2 pr-3 font-mono text-amber-300">FR-6.3</td><td class="py-2 pr-3">Reset granted a fresh daily 30 minutes, an easy way to refill the Vault.</td><td class="py-2">Reset keeps today's grant markers.</td></tr>
+              <tr><td class="py-2 pr-3 font-mono text-amber-300">FR-5.5</td><td class="py-2 pr-3">The Vault screen did not scroll, so "Today", the metrics and Reset were unreachable.</td><td class="py-2">Made the Vault scrollable.</td></tr>
+              <tr><td class="py-2 pr-3 font-mono text-amber-300">FR-6.1/6.2</td><td class="py-2 pr-3">Export was share-sheet text, which import could not open. Import did not validate priority or ranges.</td><td class="py-2">Export saves a <code>.json</code> file; import validates fields.</td></tr>
+              <tr><td class="py-2 pr-3 font-mono text-amber-300">FR-1.1b</td><td class="py-2 pr-3">The reminder had no date and could fall after the deadline; a deadline could be in the past.</td><td class="py-2">Reminder date and time pickers plus validation.</td></tr>
+              <tr><td class="py-2 pr-3 font-mono text-blue-300">FR-1.1/1.2</td><td class="py-2 pr-3">No priority-based default reward, no 120-character limit, no sorting.</td><td class="py-2">Defaults (30/20/10), title limit, Due/Priority/Eisenhower sort.</td></tr>
+              <tr><td class="py-2 pr-3 font-mono text-blue-300">§7.1</td><td class="py-2 pr-3">The overlay showed a raw package name and no task spotlight.</td><td class="py-2">App label plus a "Next up" task card.</td></tr>
+              <tr><td class="py-2 pr-3 font-mono text-blue-300">UI</td><td class="py-2 pr-3"><code>onResume()</code> rebuilt the whole UI, which reset the tab and the task form.</td><td class="py-2">Removed; the 1-second state loop is enough.</td></tr>
+              <tr><td class="py-2 pr-3 font-mono text-blue-300">NFR-2</td><td class="py-2 pr-3">The usage cache was per-instance, so it never hit.</td><td class="py-2">Process-wide cache.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3 class="text-base font-bold text-white pt-2">Added in 1.6</h3>
+        <ul class="text-xs text-gray-300 space-y-1.5 list-disc list-inside">
+          <li><strong>Plans</strong>: schedule-only tasks with a reminder and no reward or penalty. They never hold back the daily unlock. The database moved to v2 with a tested migration.</li>
+          <li>The daily unlock now counts only commitments due <strong>today or overdue</strong>.</li>
+          <li>Fixes: deadlines can't be edited into the past, a penalized app's protection can't be switched off, per-app allowances are capped, and the database's WAL files are excluded from backup.</li>
+          <li>A <strong>UPI payment</strong> note explains turning blocking off in Settings while paying. There's deliberately no in-app off switch.</li>
+        </ul>
+        <h3 class="text-base font-bold text-white pt-2">Play readiness in 1.5</h3>
+        <ul class="text-xs text-gray-300 space-y-1.5 list-disc list-inside">
+          <li>Targets and compiles against <strong>API 36</strong>, with edge-to-edge screens and system-bar icons that follow the app theme.</li>
+          <li>An in-app <strong>Accessibility disclosure</strong> with "Agree and continue" appears before Settings opens, as Play policy requires.</li>
+          <li><code>QUERY_ALL_PACKAGES</code> is replaced by <code>&lt;queries&gt;</code> for launcher and home apps.</li>
+          <li>Verse card removed. Android 10–13 no longer pass the Android 14-only foreground-service type.</li>
+        </ul>
+        <h3 class="text-base font-bold text-white pt-2">Changed in 1.4</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          <div class="p-3.5 rounded-lg bg-gray-950 border border-red-900/60 space-y-1.5">
+            <div class="font-bold text-red-300">Penalties need Vault time (FR-3.5)</div>
+            <p class="text-gray-400">A penalty counts down in real time while the Vault has more than 0 seconds and pauses at 0. Serving it costs no Vault time, and the locked app stays locked until it's done.</p>
+          </div>
+          <div class="p-3.5 rounded-lg bg-gray-950 border border-gray-800 space-y-1.5">
+            <div class="font-bold text-emerald-300">EnforcementEngine and 69 tests</div>
+            <p class="text-gray-400">The blocking rules left the service for a plain class with one 1-second tick. Robolectric tests cover the store, the engine (through a fake phone) and penalty rechecks.</p>
+          </div>
+        </div>
+        <h3 class="text-base font-bold text-white pt-2">Added in 1.3</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+          <div class="p-3.5 rounded-lg bg-gray-950 border border-lime-900/60 space-y-1.5">
+            <div class="font-bold text-lime-300">Screen-free goal (FR-5.6)</div>
+            <p class="text-gray-400">Set daily minutes with the screen off. The "all tasks done" unlock waits until you reach it. Time counts from your first unlock of the day, so sleep doesn't count.</p>
+          </div>
+          <div class="p-3.5 rounded-lg bg-gray-950 border border-gray-800 space-y-1.5">
+            <div class="font-bold text-blue-300">Threading (NFR-4)</div>
+            <p class="text-gray-400">No Room on the main thread. The service runs on one <code>HandlerThread</code>, and a lock guards balance updates.</p>
+          </div>
+          <div class="p-3.5 rounded-lg bg-gray-950 border border-gray-800 space-y-1.5">
+            <div class="font-bold text-emerald-300">Tests and permissions</div>
+            <p class="text-gray-400">19 JVM unit tests for <code>TaskRules</code>. Removed the unused <code>SYSTEM_ALERT_WINDOW</code> and <code>PACKAGE_USAGE_STATS</code>.</p>
+          </div>
+        </div>
+        <h3 class="text-base font-bold text-white pt-2">Still open</h3>
+        <ul class="text-xs text-gray-300 space-y-1.5 list-disc list-inside">
+          <li><strong class="text-amber-300">FR-3.8 loophole:</strong> closed while a screen-free goal is set. With the default goal of 0, one trivial task still unlocks the day.</li>
+          <li>Rewards are self-assigned, rerolls can be farmed with far-off deadlines, and deadlines can be pushed back indefinitely.</li>
+          <li>Restore and reset can escape penalties. FR-3.2 anti-circumvention is not built.</li>
+          <li>Alarms are inexact. The Android shell (<code>AppMonitorService</code>) is only tested on a device, not in unit tests.</li>
+        </ul>
+        <p class="text-xs text-gray-500">Full list: <code>focusbank_software_requirements_specification.md</code> §9 · Decisions: <code>decisions.md</code> ADR-004 to ADR-016.</p>
+      </div>
+    </section>
+
+    <!-- TAB 10: ENGINEERING LESSONS -->
+    <section id="tab-lessons" class="tab-pane hidden space-y-6">
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-2">
+        <span class="badge bg-lime-900/70 text-lime-300 border border-lime-700">Study guide · v1.2 → v1.6</span>
+        <h2 class="text-xl font-bold text-white">Engineering Lessons from Building FocusBank</h2>
+        <p class="text-sm text-gray-400">Eight lessons, each tied to a real bug or decision in this codebase. Read them in order: each builds on the one before.</p>
+      </div>
+
+      <!-- Lesson 1: Threads -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-4">
+        <h3 class="text-lg font-bold text-white">1. One main thread, and nothing slow on it</h3>
+        <p class="text-sm text-gray-300">Android draws the screen and handles taps on a single <strong>main thread</strong>. Anything slow there, like a database query, freezes the UI, and after about 5 seconds Android shows "App isn't responding". Room enforces this by <em>throwing</em> if you query on the main thread, unless you call <code class="text-amber-300">allowMainThreadQueries()</code>. FocusBank 1.2 did exactly that, and 1.3 removed it.</p>
+        <svg viewBox="0 0 760 270" class="w-full max-w-3xl mx-auto" role="img" aria-label="FocusBank threading model">
+          <defs><marker id="ar1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#9ca3af"/></marker></defs>
+          <g font-family="ui-sans-serif,system-ui" font-size="13">
+            <rect x="10" y="20" width="200" height="56" rx="8" fill="#172554" stroke="#3b82f6"/>
+            <text x="110" y="44" text-anchor="middle" fill="#bfdbfe" font-weight="700">Main thread</text>
+            <text x="110" y="63" text-anchor="middle" fill="#93c5fd" font-size="11">Compose screens, taps</text>
+            <rect x="10" y="106" width="200" height="56" rx="8" fill="#172554" stroke="#3b82f6"/>
+            <text x="110" y="130" text-anchor="middle" fill="#bfdbfe" font-weight="700">BroadcastReceivers</text>
+            <text x="110" y="149" text-anchor="middle" fill="#93c5fd" font-size="11">alarms, boot (start on main)</text>
+            <rect x="10" y="192" width="200" height="56" rx="8" fill="#14532d" stroke="#22c55e"/>
+            <text x="110" y="216" text-anchor="middle" fill="#bbf7d0" font-weight="700">AccessibilityService</text>
+            <text x="110" y="235" text-anchor="middle" fill="#86efac" font-size="11">window + screen events</text>
+
+            <rect x="290" y="20" width="200" height="56" rx="8" fill="#1f2937" stroke="#6b7280"/>
+            <text x="390" y="44" text-anchor="middle" fill="#e5e7eb" font-weight="700">Dispatchers.IO</text>
+            <text x="390" y="63" text-anchor="middle" fill="#9ca3af" font-size="11">coroutine thread pool</text>
+            <rect x="290" y="106" width="200" height="56" rx="8" fill="#1f2937" stroke="#6b7280"/>
+            <text x="390" y="130" text-anchor="middle" fill="#e5e7eb" font-weight="700">goAsync() + Thread</text>
+            <text x="390" y="149" text-anchor="middle" fill="#9ca3af" font-size="11">runAsync { … }</text>
+            <rect x="290" y="192" width="200" height="56" rx="8" fill="#1f2937" stroke="#6b7280"/>
+            <text x="390" y="216" text-anchor="middle" fill="#e5e7eb" font-weight="700">HandlerThread</text>
+            <text x="390" y="235" text-anchor="middle" fill="#9ca3af" font-size="11">own thread · 1 s tick</text>
+
+            <rect x="570" y="78" width="180" height="114" rx="10" fill="#422006" stroke="#f59e0b"/>
+            <text x="660" y="108" text-anchor="middle" fill="#fde68a" font-weight="700">FocusBankStore</text>
+            <text x="660" y="128" text-anchor="middle" fill="#fcd34d" font-size="11">Room (tasks, usage)</text>
+            <text x="660" y="145" text-anchor="middle" fill="#fcd34d" font-size="11">SharedPreferences</text>
+            <text x="660" y="170" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="700">LOCK on balance writes</text>
+
+            <path d="M210,48 H286" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#ar1)"/>
+            <path d="M210,134 H286" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#ar1)"/>
+            <path d="M210,220 H286" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#ar1)"/>
+            <path d="M490,48 C530,48 530,110 566,110" fill="none" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#ar1)"/>
+            <path d="M490,134 H566" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#ar1)"/>
+            <path d="M490,220 C530,220 530,160 566,160" fill="none" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#ar1)"/>
+          </g>
+        </svg>
+        <p class="text-xs text-gray-400 text-center">Each entry point hands database work to its own background route; the store is shared.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 space-y-2">
+            <div class="font-bold text-amber-300">The new problem: two threads, one balance</div>
+            <p class="text-gray-400">Once the service ticked on its own thread, two writers could collide. The UI reads the balance (100), adds a 20-minute reward and writes 1300. Meanwhile the service reads 100, subtracts 1 second and writes 99. The reward is lost. This is a <strong>read-modify-write race</strong>.</p>
+            <p class="text-gray-400">The fix: every balance, reroll and penalty update runs inside <code class="text-amber-300">synchronized(LOCK) { … }</code>, so only one thread can be in the middle of an update.</p>
+          </div>
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 space-y-2">
+            <div class="font-bold text-blue-300">Rule of thumb</div>
+            <ul class="list-disc list-inside text-gray-400 space-y-1">
+              <li>UI → <code>scope.launch { withContext(Dispatchers.IO) { … } }</code></li>
+              <li>Receivers → <code>goAsync()</code> keeps the process alive while a thread works</li>
+              <li>Long-lived services → a <code>HandlerThread</code> that owns all their state</li>
+              <li>Shared mutable data → one lock, or one owning thread</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lesson 2: Testability -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-4">
+        <h3 class="text-lg font-bold text-white">2. Make the rules testable by pushing Android to the edge</h3>
+        <p class="text-sm text-gray-300">The blocking rules used to live inside <code>AppMonitorService</code>, mixed with calls only a real phone can make. You can't unit-test that. Version 1.4 moved every decision into <code class="text-lime-300">EnforcementEngine</code>, which talks to the phone only through a small interface, <code class="text-lime-300">EnforcementHost</code>. The real service implements it on the phone, and a <strong>FakePhone</strong> implements it in tests.</p>
+        <svg viewBox="0 0 760 230" class="w-full max-w-3xl mx-auto" role="img" aria-label="Engine and host architecture">
+          <defs><marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#9ca3af"/></marker></defs>
+          <g font-family="ui-sans-serif,system-ui" font-size="13">
+            <rect x="20" y="20" width="210" height="60" rx="8" fill="#14532d" stroke="#22c55e"/>
+            <text x="125" y="45" text-anchor="middle" fill="#bbf7d0" font-weight="700">AppMonitorService</text>
+            <text x="125" y="65" text-anchor="middle" fill="#86efac" font-size="11">real phone (Android APIs)</text>
+            <rect x="20" y="150" width="210" height="60" rx="8" fill="#3b0764" stroke="#a855f7"/>
+            <text x="125" y="175" text-anchor="middle" fill="#e9d5ff" font-weight="700">FakePhone</text>
+            <text x="125" y="195" text-anchor="middle" fill="#d8b4fe" font-size="11">tests: scripted screen + clock</text>
+            <rect x="290" y="85" width="180" height="60" rx="8" fill="#1f2937" stroke="#9ca3af" stroke-dasharray="5 4"/>
+            <text x="380" y="110" text-anchor="middle" fill="#e5e7eb" font-weight="700">EnforcementHost</text>
+            <text x="380" y="130" text-anchor="middle" fill="#9ca3af" font-size="11">interface</text>
+            <rect x="530" y="20" width="210" height="60" rx="8" fill="#365314" stroke="#a3e635"/>
+            <text x="635" y="45" text-anchor="middle" fill="#ecfccb" font-weight="700">EnforcementEngine</text>
+            <text x="635" y="65" text-anchor="middle" fill="#d9f99d" font-size="11">all blocking decisions</text>
+            <rect x="530" y="150" width="210" height="60" rx="8" fill="#422006" stroke="#f59e0b"/>
+            <text x="635" y="175" text-anchor="middle" fill="#fde68a" font-weight="700">FocusBankStore</text>
+            <text x="635" y="195" text-anchor="middle" fill="#fcd34d" font-size="11">data + TaskRules (pure rules)</text>
+            <path d="M230,50 C260,50 260,100 286,105" fill="none" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#ar2)"/>
+            <path d="M230,180 C260,180 260,130 286,125" fill="none" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#ar2)"/>
+            <path d="M530,55 C500,60 490,90 474,100" fill="none" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#ar2)"/>
+            <path d="M635,80 V146" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#ar2)"/>
+            <text x="300" y="78" fill="#9ca3af" font-size="11">implemented by both</text>
+            <text x="482" y="62" fill="#9ca3af" font-size="11" text-anchor="end">calls</text>
+            <text x="643" y="118" fill="#9ca3af" font-size="11">reads / writes</text>
+          </g>
+        </svg>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 space-y-1">
+            <div class="font-bold text-lime-300">Pure rules → plain JUnit</div>
+            <p class="text-gray-400"><code>TaskRules</code> has no Android code, so <code>rewardSeconds()</code>, <code>dailyUnlock()</code> and the others test in milliseconds on your laptop.</p>
+          </div>
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 space-y-1">
+            <div class="font-bold text-purple-300">Android pieces → Robolectric</div>
+            <p class="text-gray-400">Robolectric simulates SharedPreferences, Room (in memory), alarms and notifications on the JVM, so the store and receivers run without a phone.</p>
+          </div>
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 space-y-1">
+            <div class="font-bold text-red-300">Test your tests (mutation)</div>
+            <p class="text-gray-400">Break a rule on purpose and check that a test fails. Breaking the old Chrome → WhatsApp hand-off made a test fail, so that bug can't come back unnoticed.</p>
+          </div>
+        </div>
+        <p class="text-xs text-gray-400"><strong class="text-amber-300">The 11 pm lesson:</strong> one test said "a task due in 1 hour blocks today's unlock". It passed all day and failed at 11:12 pm, because 1 hour later was tomorrow. Tests that read the real clock must pick times that hold at any hour, or take the clock as a parameter.</p>
+      </div>
+
+      <!-- Lesson 3: Migrations -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">3. Changing a database that already has your data</h3>
+        <p class="text-sm text-gray-300">Plans needed a new <code>isPlan</code> column, but your phone already had a version 1 database with real tasks. Room stores a schema version. When the code says version 2, Room runs your <strong>migration</strong> once and then checks that the result matches the new entity exactly. Without a migration, the app crashes, or it wipes the data if you allowed destructive migration.</p>
+        <div class="code-block p-4 text-xs text-gray-300 overflow-x-auto">
+          <div class="text-gray-500">// FocusBankDatabase.kt</div>
+          <div>@ColumnInfo(defaultValue = <span class="text-emerald-300">"0"</span>) <span class="text-blue-400">val</span> isPlan: Boolean = <span class="text-blue-400">false</span></div>
+          <div class="pt-1"><span class="text-blue-400">val</span> MIGRATION_1_2 = <span class="text-blue-400">object</span> : Migration(1, 2) {</div>
+          <div class="pl-4"><span class="text-blue-400">override fun</span> migrate(db: SupportSQLiteDatabase) {</div>
+          <div class="pl-8">db.execSQL(<span class="text-emerald-300">"ALTER TABLE tasks ADD COLUMN isPlan INTEGER NOT NULL DEFAULT 0"</span>)</div>
+          <div class="pl-4">}</div>
+          <div>}</div>
+        </div>
+        <ul class="text-xs text-gray-400 list-disc list-inside space-y-1">
+          <li>The SQL <code>DEFAULT 0</code> and the entity's <code>defaultValue = "0"</code> must agree, or Room's schema check fails at startup.</li>
+          <li>The test builds a database with the <em>exact</em> v1 SQL Room generated (copied from <code>FocusBankDatabase_Impl</code>), runs the migration and reads the old task back.</li>
+          <li>On your phone: <code>PRAGMA user_version</code> went from 1 to 2, and your task survived as a commitment.</li>
+          <li>Never edit a migration that has shipped. Add a new one (2 → 3) instead.</li>
+        </ul>
+      </div>
+
+      <!-- Lesson 4: Modern Android rules -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">4. Rules that change with each Android version</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead><tr class="text-gray-400 border-b border-gray-800"><th class="py-2 pr-3">Rule</th><th class="py-2 pr-3">From</th><th class="py-2">What FocusBank does</th></tr></thead>
+            <tbody class="text-gray-300 divide-y divide-gray-800">
+              <tr><td class="py-2 pr-3">Apps draw edge to edge, behind the status and navigation bars</td><td class="py-2 pr-3">targetSdk 35</td><td class="py-2"><code>enableEdgeToEdge()</code>, Scaffold insets, <code>safeDrawingPadding()</code>; bar icons follow the app's theme</td></tr>
+              <tr><td class="py-2 pr-3">Package visibility: you only see apps you declare</td><td class="py-2 pr-3">Android 11</td><td class="py-2"><code>&lt;queries&gt;</code> for launcher and home intents instead of <code>QUERY_ALL_PACKAGES</code></td></tr>
+              <tr><td class="py-2 pr-3">Foreground services must declare a type</td><td class="py-2 pr-3">Android 14</td><td class="py-2"><code>specialUse</code> on 14+ only. Passing that type on Android 10–13 was a real bug found by lint.</td></tr>
+              <tr><td class="py-2 pr-3">Notifications need runtime permission</td><td class="py-2 pr-3">Android 13</td><td class="py-2">Asks for <code>POST_NOTIFICATIONS</code> on launch</td></tr>
+              <tr><td class="py-2 pr-3">Small notification icons are single-colour (alpha only)</td><td class="py-2 pr-3">Android 5</td><td class="py-2">A white vault-and-check mark; the colour logo goes in the large icon</td></tr>
+              <tr><td class="py-2 pr-3">Play requires a recent targetSdk each August</td><td class="py-2 pr-3">yearly</td><td class="py-2">Now 36; plan to raise it once a year</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-xs text-gray-400">Tip: run <code class="text-blue-300">./gradlew lintDebug</code> after raising targetSdk. Lint flags API-level mistakes like the foreground-type bug before they reach a phone.</p>
+      </div>
+
+      <!-- Lesson 5: Accessibility & security -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">5. Accessibility is powerful, so everyone distrusts it</h3>
+        <p class="text-sm text-gray-300">An Accessibility service can see which app is open, and with <code>canRetrieveWindowContent</code> it can read what's on screen. Banking malware abuses exactly this, so the rest of the system defends against it:</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 space-y-1"><div class="font-bold text-blue-300">Google Play</div><p class="text-gray-400">Apps that aren't assistive tools need a prominent in-app disclosure plus explicit consent before the user enables the service, and a declaration in the Play Console.</p></div>
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 space-y-1"><div class="font-bold text-red-300">UPI and banking apps</div><p class="text-gray-400">Many refuse payments while an untrusted service is on. Each app's rule is secret. Some check what the service can see, others whether any service is on at all.</p></div>
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 space-y-1"><div class="font-bold text-amber-300">Android itself</div><p class="text-gray-400">A service may switch itself <em>off</em> (<code>disableSelf()</code>) but never back on. Turning it on always needs the user in Settings.</p></div>
+        </div>
+        <p class="text-xs text-gray-400"><strong class="text-lime-300">The FocusBank decision:</strong> an in-app off switch would make dodging the blocker one tap away. So the Vault <em>explains</em> the Settings route for UPI payments instead, and "Enable blocking" deep-links back. The friction is the feature.</p>
+      </div>
+
+      <!-- Lesson 6: Product rules -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">6. Designing rules people can't easily game</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 space-y-2">
+            <div class="font-bold text-white">Commitments vs plans</div>
+            <table class="w-full text-left">
+              <thead><tr class="text-gray-500"><th class="pr-2">Effect</th><th class="pr-2">Commitment</th><th>Plan</th></tr></thead>
+              <tbody class="text-gray-300">
+                <tr><td class="pr-2">Reward on time</td><td class="pr-2">Yes</td><td>No</td></tr>
+                <tr><td class="pr-2">Penalty if missed</td><td class="pr-2">Yes</td><td>No</td></tr>
+                <tr><td class="pr-2">Reroll if 24 h early</td><td class="pr-2">Yes</td><td>No</td></tr>
+                <tr><td class="pr-2">Blocks today's unlock</td><td class="pr-2">If due today/overdue</td><td>Never</td></tr>
+                <tr><td class="pr-2">Counts as today's work</td><td class="pr-2">Yes</td><td>No</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 space-y-2">
+            <div class="font-bold text-white">Ask: "how would I cheat this?"</div>
+            <ul class="list-disc list-inside text-gray-400 space-y-1">
+              <li>Plans pay nothing, or they would become a minute printer.</li>
+              <li>A task's type is fixed at creation, so a missed commitment can't become a plan.</li>
+              <li>A penalized app's protection can't be switched off.</li>
+              <li>A reset can't mint a second daily allowance.</li>
+              <li>Still open: one trivial commitment unlocks the day unless a screen-free goal is set.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lesson 7: Requirements -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">7. Pin down a requirement with an example before you build it</h3>
+        <p class="text-sm text-gray-300">"The penalty should only be consumed when there is time in the vault" was first built as <em>"counts down only while you spend Vault time in another app"</em>. The intended rule was simpler: <em>"counts down in real time while the Vault is above 0"</em>. Both readings were plausible. A concrete example would have caught the mismatch before any code was written:</p>
+        <div class="p-3 rounded bg-gray-950 border border-gray-800 text-xs text-gray-300">"Vault 60 min, 20 min penalty on Instagram, phone idle for 20 min. Is Instagram free again?" <span class="text-lime-300">Intended: yes.</span> <span class="text-red-300">First build: no.</span></div>
+        <p class="text-xs text-gray-400">The cost was one extra version (1.4 → the fix) and the tests rewritten twice. Worked examples in the spec are cheaper than rework.</p>
+      </div>
+
+      <!-- Lesson 8: Git -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">8. Git as a safety net</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <ul class="list-disc list-inside text-gray-400 space-y-1 p-4 rounded-lg bg-gray-950 border border-gray-800">
+            <li><strong class="text-gray-200">Commit = checkpoint.</strong> Every version (1.2 → 1.6) is one commit you can return to.</li>
+            <li><strong class="text-gray-200">Branch for work in progress</strong>, then merge into <code>main</code>. A fast-forward merge keeps history a straight line.</li>
+            <li><strong class="text-gray-200"><code>.gitignore</code> secrets first:</strong> <code>*.jks</code>, <code>keystore.properties</code>, <code>local.properties</code>.</li>
+          </ul>
+          <div class="code-block p-4 text-gray-300 space-y-0.5">
+            <div class="text-gray-500"># useful read-only commands</div>
+            <div>git log --oneline</div>
+            <div>git diff            <span class="text-gray-500"># what changed, uncommitted</span></div>
+            <div>git show 9c39fc9    <span class="text-gray-500"># one version's changes</span></div>
+            <div>git status --short</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 11: KEYSTORES & PUBLISHING -->
+    <section id="tab-publish" class="tab-pane hidden space-y-6">
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-2">
+        <span class="badge bg-amber-900/70 text-amber-300 border border-amber-700">Study guide · signing &amp; release</span>
+        <h2 class="text-xl font-bold text-white">Keystores and Publishing to Google Play</h2>
+        <p class="text-sm text-gray-400">Part A explains app signing from scratch. Part B walks the Play Store route step by step, with what it costs and how long it takes. Play's rules change, so <strong class="text-amber-300">confirm numbers in the Play Console before you rely on them</strong> (written October 2026).</p>
+      </div>
+
+      <!-- Part A -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-4">
+        <h3 class="text-lg font-bold text-white">Part A · What a keystore is</h3>
+        <p class="text-sm text-gray-300">Every APK is <strong>signed</strong> with a private key. Android installs an <em>update</em> only if it carries the same signature as the installed app, which is how your phone knows the update came from the same developer. A <strong>keystore</strong> is the password-protected file (<code>.jks</code>) holding that private key and its certificate.</p>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="font-bold text-amber-300">Keystore file</div><p class="text-gray-400 mt-1">The <code>.jks</code> container, protected by the <em>store password</em>.</p></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="font-bold text-amber-300">Alias</div><p class="text-gray-400 mt-1">The name of one key inside it, e.g. <code>focusbank-upload</code>.</p></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="font-bold text-amber-300">Key password</div><p class="text-gray-400 mt-1">Protects that key; usually the same as the store password.</p></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="font-bold text-amber-300">Certificate</div><p class="text-gray-400 mt-1">The public half: your name, organisation and country, plus validity (10000 days ≈ 27 years).</p></div>
+        </div>
+
+        <h4 class="font-bold text-white text-sm pt-2">Debug key vs release key</h4>
+        <p class="text-xs text-gray-400">Android Studio and Gradle sign debug builds automatically with <code>~/.android/debug.keystore</code> (password <code>android</code>), which is the same on every developer's laptop. That's fine for testing and never accepted by Play. <strong class="text-red-300">Practical consequence for you:</strong> FocusBank on your phone is debug-signed, so a Play or release-signed version can't install over it. You'd have to uninstall first, which deletes its data. <em>Export a backup before switching.</em></p>
+
+        <h4 class="font-bold text-white text-sm pt-2">Play App Signing: two keys, not one</h4>
+        <svg viewBox="0 0 760 200" class="w-full max-w-3xl mx-auto" role="img" aria-label="Play App Signing flow">
+          <defs><marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#9ca3af"/></marker></defs>
+          <g font-family="ui-sans-serif,system-ui" font-size="13">
+            <rect x="10" y="40" width="160" height="70" rx="8" fill="#422006" stroke="#f59e0b"/>
+            <text x="90" y="66" text-anchor="middle" fill="#fde68a" font-weight="700">You</text>
+            <text x="90" y="86" text-anchor="middle" fill="#fcd34d" font-size="11">sign .aab with</text>
+            <text x="90" y="101" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="700">UPLOAD key</text>
+            <rect x="215" y="40" width="160" height="70" rx="8" fill="#1f2937" stroke="#6b7280"/>
+            <text x="295" y="70" text-anchor="middle" fill="#e5e7eb" font-weight="700">Play Console</text>
+            <text x="295" y="90" text-anchor="middle" fill="#9ca3af" font-size="11">checks upload signature</text>
+            <rect x="420" y="40" width="160" height="70" rx="8" fill="#172554" stroke="#3b82f6"/>
+            <text x="500" y="66" text-anchor="middle" fill="#bfdbfe" font-weight="700">Google</text>
+            <text x="500" y="86" text-anchor="middle" fill="#93c5fd" font-size="11">re-signs APKs with</text>
+            <text x="500" y="101" text-anchor="middle" fill="#60a5fa" font-size="11" font-weight="700">APP SIGNING key</text>
+            <rect x="625" y="40" width="125" height="70" rx="8" fill="#14532d" stroke="#22c55e"/>
+            <text x="687" y="70" text-anchor="middle" fill="#bbf7d0" font-weight="700">Phones</text>
+            <text x="687" y="90" text-anchor="middle" fill="#86efac" font-size="11">verify on update</text>
+            <path d="M170,75 H211" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#ar3)"/>
+            <path d="M375,75 H416" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#ar3)"/>
+            <path d="M580,75 H621" stroke="#9ca3af" stroke-width="1.6" marker-end="url(#ar3)"/>
+            <text x="90" y="140" text-anchor="middle" fill="#fca5a5" font-size="11">Lost? Play support can</text>
+            <text x="90" y="156" text-anchor="middle" fill="#fca5a5" font-size="11">reset the upload key</text>
+            <text x="500" y="140" text-anchor="middle" fill="#93c5fd" font-size="11">Never leaves Google:</text>
+            <text x="500" y="156" text-anchor="middle" fill="#93c5fd" font-size="11">you can't lose it</text>
+          </g>
+        </svg>
+        <p class="text-xs text-gray-400">New apps on Play must use App Bundles and Play App Signing, so your keystore is the <em>upload</em> key. Losing it is painful but recoverable. Without Play App Signing, for example if you only ever share APKs yourself, losing the key means <strong class="text-red-300">no one can ever update the app</strong>. Back it up.</p>
+
+        <h4 class="font-bold text-white text-sm pt-2">Signature schemes</h4>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead><tr class="text-gray-400 border-b border-gray-800"><th class="py-2 pr-3">Scheme</th><th class="py-2 pr-3">Needed from</th><th class="py-2">Notes</th></tr></thead>
+            <tbody class="text-gray-300 divide-y divide-gray-800">
+              <tr><td class="py-2 pr-3">v1 (JAR)</td><td class="py-2 pr-3">all versions</td><td class="py-2">Only matters below Android 7. FocusBank's minSdk is 26, so Gradle skips it.</td></tr>
+              <tr><td class="py-2 pr-3">v2</td><td class="py-2 pr-3">Android 7 (API 24)</td><td class="py-2">Signs the whole APK; what FocusBank's release APK uses</td></tr>
+              <tr><td class="py-2 pr-3">v3 / v3.1</td><td class="py-2 pr-3">Android 9 / 13</td><td class="py-2">Adds key rotation (move to a new key later)</td></tr>
+              <tr><td class="py-2 pr-3">v4</td><td class="py-2 pr-3">Android 11</td><td class="py-2">Separate file for fast incremental installs; extra, never on its own</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4 class="font-bold text-white text-sm pt-2">Doing it for FocusBank</h4>
+        <ol class="text-xs text-gray-300 space-y-2 list-decimal list-inside">
+          <li>Create the key (once):
+            <div class="code-block p-3 mt-1 text-gray-300 overflow-x-auto">mkdir -p ~/keys<br>keytool -genkeypair -v -keystore ~/keys/focusbank-upload.jks -alias focusbank-upload -keyalg RSA -keysize 4096 -validity 10000</div></li>
+          <li>Inspect it any time: <code class="text-amber-300">keytool -list -v -keystore ~/keys/focusbank-upload.jks</code> shows the alias, validity and SHA-256 fingerprint.</li>
+          <li>Copy <code>keystore.properties.example</code> → <code>keystore.properties</code> and fill in the path and passwords. The file is git-ignored.</li>
+          <li><code class="text-amber-300">./gradlew bundleRelease</code> → <code>app/build/outputs/bundle/release/app-release.aab</code>. No "UNSIGNED" warning means it's signed.</li>
+          <li>Back up the <code>.jks</code> file and passwords outside this laptop, in a password manager or on an encrypted drive.</li>
+        </ol>
+      </div>
+
+      <!-- Part B: shipping today -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-lime-800/60 space-y-4">
+        <h3 class="text-lg font-bold text-white">Part B · How FocusBank ships today</h3>
+        <p class="text-sm text-gray-300">Since 27 October 2026, FocusBank is distributed without Google Play: a release APK signed with your own key, attached to a GitHub Release, and downloaded from the website at <a class="text-lime-300 underline" href="https://dasa108.github.io/focusbank/">dasa108.github.io/focusbank</a>.</p>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs">
+          <div class="p-3 rounded-lg bg-gray-950 border border-amber-800/60"><div class="text-amber-300 font-bold">1 · Key</div><div class="text-gray-400">keytool, once</div></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="text-blue-300 font-bold">2 · Wire it</div><div class="text-gray-400">keystore.properties</div></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="text-blue-300 font-bold">3 · Build</div><div class="text-gray-400">assembleRelease</div></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="text-blue-300 font-bold">4 · Verify</div><div class="text-gray-400">apksigner, sha256sum</div></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="text-blue-300 font-bold">5 · Release</div><div class="text-gray-400">gh release + FocusBank.apk</div></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-emerald-800/60"><div class="text-emerald-300 font-bold">6 · Website</div><div class="text-gray-400">GitHub Pages</div></div>
+        </div>
+
+        <h4 class="font-bold text-white text-sm pt-2">The facts of your setup</h4>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <tbody class="text-gray-300 divide-y divide-gray-800 align-top">
+              <tr><td class="py-1.5 pr-3 text-gray-400">Key file</td><td class="py-1.5 font-mono">~/keys/focusbank-upload.jks (PKCS12 keystore)</td></tr>
+              <tr><td class="py-1.5 pr-3 text-gray-400">Alias · algorithm</td><td class="py-1.5 font-mono">focusbank-upload · RSA 4096-bit</td></tr>
+              <tr><td class="py-1.5 pr-3 text-gray-400">Valid for</td><td class="py-1.5">10,000 days (about 27 years, until roughly 2054)</td></tr>
+              <tr><td class="py-1.5 pr-3 text-gray-400">How Gradle finds it</td><td class="py-1.5"><code>focusbank_android/keystore.properties</code> (git-ignored), or <code>FOCUSBANK_*</code> environment variables</td></tr>
+              <tr><td class="py-1.5 pr-3 text-gray-400">Certificate SHA-256</td><td class="py-1.5 font-mono break-all">7772747c813161cf8ce3d88800cafb279fc114537b13e1403be300017a3355f0</td></tr>
+              <tr><td class="py-1.5 pr-3 text-gray-400">Signature scheme</td><td class="py-1.5">APK Signature Scheme v2 (covers Android 7+, and FocusBank needs 8+)</td></tr>
+              <tr><td class="py-1.5 pr-3 text-gray-400">v1.7.0 APK SHA-256</td><td class="py-1.5 font-mono break-all">d856214756ffd6d40653b80c80268d6d2974415df7cd17dc8f50639f0611fc07</td></tr>
+              <tr><td class="py-1.5 pr-3 text-gray-400">Download link</td><td class="py-1.5 font-mono break-all">github.com/Dasa108/focusbank/releases/latest/download/FocusBank.apk</td></tr>
+              <tr><td class="py-1.5 pr-3 text-gray-400">Public in every APK</td><td class="py-1.5">The certificate's name, organisation and location fields: anyone can read them with <code>apksigner verify --print-certs</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-xs text-gray-400">The <em>certificate</em> fingerprint identifies your key and stays the same for every release. The <em>APK</em> checksum changes with every build; the website shows it so people can check their download wasn't corrupted or swapped.</p>
+
+        <h4 class="font-bold text-white text-sm pt-2">How updates work: Android's three rules</h4>
+        <p class="text-xs text-gray-300">Android installs a new APK <strong>over</strong> an existing one, keeping its data, only when all three hold:</p>
+        <ol class="text-xs text-gray-300 space-y-1 list-decimal list-inside">
+          <li><strong>Same package name:</strong> <code>com.focusbank.app</code>. Never change it.</li>
+          <li><strong>Same signing key:</strong> the certificate must match the installed app's.</li>
+          <li><strong>Higher <code>versionCode</code>:</strong> an integer in <code>app/build.gradle.kts</code> (now 10). <code>versionName</code> ("1.7.0") is only a label people see.</li>
+        </ol>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead><tr class="text-gray-400 border-b border-gray-800"><th class="py-2 pr-3">Installed</th><th class="py-2 pr-3">Installing</th><th class="py-2 pr-3">Result</th><th class="py-2">What to do</th></tr></thead>
+            <tbody class="text-gray-300 divide-y divide-gray-800 align-top">
+              <tr><td class="py-2 pr-3">Release 1.7.0 (code 10)</td><td class="py-2 pr-3">Release 1.8.0 (code 11), same key</td><td class="py-2 pr-3 text-emerald-300">Updates, data kept</td><td class="py-2">Nothing, this is the normal path</td></tr>
+              <tr><td class="py-2 pr-3">Debug build (your phone)</td><td class="py-2 pr-3">Release from the website</td><td class="py-2 pr-3 text-red-300">"App not installed": key differs</td><td class="py-2">Export backup → uninstall → install → import backup</td></tr>
+              <tr><td class="py-2 pr-3">Release, code 10</td><td class="py-2 pr-3">Release, code 10 or lower</td><td class="py-2 pr-3 text-red-300">Refused: not newer</td><td class="py-2">Always raise versionCode</td></tr>
+              <tr><td class="py-2 pr-3">Release signed with your key</td><td class="py-2 pr-3">Anything signed with another key</td><td class="py-2 pr-3 text-red-300">Refused</td><td class="py-2">Only ever sign with focusbank-upload</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-xs text-gray-400">A website can't push updates. People only get a new version when they download it again. An in-app "new version available" check would need the INTERNET permission, which would break the "no internet access" privacy promise. That's a real trade-off to weigh, not a free feature.</p>
+
+        <h4 class="font-bold text-white text-sm pt-2">Shipping an update, step by step</h4>
+        <ol class="text-xs text-gray-300 space-y-2 list-decimal list-inside">
+          <li>In <code>focusbank_android/app/build.gradle.kts</code>, raise <code>versionCode</code> by 1 and set the new <code>versionName</code>.</li>
+          <li>Run the tests, then build: <span class="code-block inline-block px-2 py-0.5 mt-1">./gradlew testDebugUnitTest assembleRelease</span></li>
+          <li>Check it's signed with <em>your</em> key; the certificate SHA-256 must be <code>7772747c…3355f0</code>: <span class="code-block inline-block px-2 py-0.5 mt-1 break-all">~/Android/Sdk/build-tools/36.0.0/apksigner verify --print-certs app/build/outputs/apk/release/app-release.apk</span></li>
+          <li>Copy it as <code>FocusBank.apk</code> (that name keeps the website's download link working) and note its checksum: <span class="code-block inline-block px-2 py-0.5 mt-1">sha256sum FocusBank.apk</span></li>
+          <li>Publish the release from the website folder: <span class="code-block inline-block px-2 py-0.5 mt-1 break-all">gh release create v1.8.0 FocusBank.apk --title "FocusBank 1.8.0" --notes "What changed…"</span></li>
+          <li>In <code>~/Desktop/AIDS/focusbank-site/index.html</code>, update the version, size, date and SHA-256, then <code>git commit</code> and <code>git push</code>. Pages redeploys in about a minute.</li>
+          <li>Open the site on your phone, download, and confirm it installs <em>over</em> the previous release.</li>
+        </ol>
+
+        <h4 class="font-bold text-white text-sm pt-2">When FocusBank moves to Google Play</h4>
+        <p class="text-xs text-gray-300">Play App Signing asks which key it should sign users' downloads with. That choice decides whether people who installed from the website can update from Play:</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          <div class="p-4 rounded-lg bg-gray-950 border border-emerald-800/60 space-y-1"><div class="font-bold text-emerald-300">Give Play your existing key (recommended once you have users)</div><p class="text-gray-400">Upload <code>focusbank-upload</code> as the <em>app signing key</em> using the export tool the Console provides, then create a new, separate upload key. Play versions then install over website versions, and nobody loses data.</p></div>
+          <div class="p-4 rounded-lg bg-gray-950 border border-amber-800/60 space-y-1"><div class="font-bold text-amber-300">Let Google generate a new key</div><p class="text-gray-400">Simpler, but Play and website builds are then signed differently. Website users must back up, uninstall and reinstall from Play.</p></div>
+        </div>
+        <p class="text-xs text-gray-400">The Console's exact wording changes over time; look for the app-signing key option during setup.</p>
+
+        <h4 class="font-bold text-white text-sm pt-2">If something goes wrong with the key</h4>
+        <ul class="text-xs text-gray-300 space-y-1 list-disc list-inside">
+          <li><strong>Lost, website only:</strong> no update can ever install over the existing app again. Everyone would have to uninstall and reinstall a newly signed app. Keep two backups of the <code>.jks</code> and the password.</li>
+          <li><strong>Lost, Play with Play App Signing:</strong> Google holds the signing key, so Play support can reset your upload key.</li>
+          <li><strong>Leaked:</strong> rotate to a new key with APK Signature Scheme v3 (<code>apksigner rotate</code>). Android 9+ devices accept updates signed with the new key, but rotating needs the <em>old</em> key, which is one more reason never to lose it.</li>
+          <li><strong>Never commit it:</strong> <code>*.jks</code> and <code>keystore.properties</code> are in <code>.gitignore</code>, and the public website repository contains only the website.</li>
+        </ul>
+      </div>
+
+      <!-- Part B -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-4">
+        <h3 class="text-lg font-bold text-white">Part C · The Play Store route (later)</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2 text-xs">
+          <div class="p-3 rounded-lg bg-gray-950 border border-amber-800/60"><div class="text-amber-300 font-bold">1 · Account</div><div class="text-gray-400">US$25 once · ID check takes days</div></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="text-blue-300 font-bold">2 · Create app</div><div class="text-gray-400">name, free/paid, policies</div></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="text-blue-300 font-bold">3 · Listing</div><div class="text-gray-400">text, icon, graphic, screenshots</div></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="text-blue-300 font-bold">4 · App content</div><div class="text-gray-400">privacy, data safety, declarations</div></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-red-800/60"><div class="text-red-300 font-bold">5 · Closed test</div><div class="text-gray-400">12 testers × 14 days</div></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-emerald-800/60"><div class="text-emerald-300 font-bold">6 · Production</div><div class="text-gray-400">review: days, maybe longer</div></div>
+        </div>
+        <p class="text-xs text-gray-400">The fee is the only required cost, and the 14-day closed test is the longest wait. Start the account early, because identity verification runs alongside everything else.</p>
+
+        <div class="space-y-3 text-xs">
+          <details class="p-4 rounded-lg bg-gray-950 border border-gray-800" open>
+            <summary class="font-bold text-white cursor-pointer">1. Developer account</summary>
+            <ul class="list-disc list-inside text-gray-400 mt-2 space-y-1">
+              <li>Sign up at play.google.com/console with a Google account. One-time fee of US$25, no yearly charge.</li>
+              <li><strong>Personal</strong> account: your legal name and ID are verified. <strong>Organisation</strong> account: needs a D-U-N-S number and is exempt from the closed-test rule below.</li>
+              <li>Your developer name and contact email appear on the store page.</li>
+            </ul>
+          </details>
+          <details class="p-4 rounded-lg bg-gray-950 border border-gray-800">
+            <summary class="font-bold text-white cursor-pointer">2–3. Create the app and its store listing</summary>
+            <div class="overflow-x-auto mt-2">
+              <table class="w-full text-left">
+                <thead><tr class="text-gray-500 border-b border-gray-800"><th class="py-1 pr-3">Asset</th><th class="py-1">Limit</th></tr></thead>
+                <tbody class="text-gray-300 divide-y divide-gray-800">
+                  <tr><td class="py-1 pr-3">App name</td><td class="py-1">≤ 30 characters</td></tr>
+                  <tr><td class="py-1 pr-3">Short description</td><td class="py-1">≤ 80 characters</td></tr>
+                  <tr><td class="py-1 pr-3">Full description</td><td class="py-1">≤ 4,000 characters</td></tr>
+                  <tr><td class="py-1 pr-3">App icon</td><td class="py-1">512 × 512 PNG, ≤ 1 MB</td></tr>
+                  <tr><td class="py-1 pr-3">Feature graphic</td><td class="py-1">1024 × 500 PNG or JPEG</td></tr>
+                  <tr><td class="py-1 pr-3">Phone screenshots</td><td class="py-1">2–8, each side 320–3840 px</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+          <details class="p-4 rounded-lg bg-gray-950 border border-gray-800">
+            <summary class="font-bold text-white cursor-pointer">4. App content forms (FocusBank's answers)</summary>
+            <ul class="list-disc list-inside text-gray-400 mt-2 space-y-1">
+              <li><strong>Privacy policy:</strong> a public URL. The draft exists; host it free on GitHub Pages or Google Sites.</li>
+              <li><strong>Data safety:</strong> required even when nothing is collected. FocusBank: no data collected or shared.</li>
+              <li><strong>Ads:</strong> no ads. <strong>App access:</strong> no login needed.</li>
+              <li><strong>Content rating:</strong> the IARC questionnaire (a few minutes).</li>
+              <li><strong>Target audience:</strong> adults only, which keeps FocusBank out of the stricter Families policy.</li>
+              <li><strong>Accessibility API declaration:</strong> explain the non-assistive use and link a short video showing the consent dialog, then an app being blocked.</li>
+              <li><strong>Foreground service declaration:</strong> justify the <code>specialUse</code> protection notice, usually with a video too.</li>
+            </ul>
+          </details>
+          <details class="p-4 rounded-lg bg-gray-950 border border-gray-800">
+            <summary class="font-bold text-white cursor-pointer">5. Testing tracks and the 12 × 14 rule</summary>
+            <div class="overflow-x-auto mt-2">
+              <table class="w-full text-left">
+                <thead><tr class="text-gray-500 border-b border-gray-800"><th class="py-1 pr-3">Track</th><th class="py-1 pr-3">Who</th><th class="py-1">Use it for</th></tr></thead>
+                <tbody class="text-gray-300 divide-y divide-gray-800">
+                  <tr><td class="py-1 pr-3">Internal testing</td><td class="py-1 pr-3">up to 100 invited people</td><td class="py-1">quick checks; available within minutes</td></tr>
+                  <tr><td class="py-1 pr-3">Closed testing</td><td class="py-1 pr-3">invited emails or a Google Group</td><td class="py-1">the mandatory test for new personal accounts</td></tr>
+                  <tr><td class="py-1 pr-3">Open testing</td><td class="py-1 pr-3">anyone can join</td><td class="py-1">public beta</td></tr>
+                  <tr><td class="py-1 pr-3">Production</td><td class="py-1 pr-3">everyone</td><td class="py-1">the real release; staged rollout optional</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="text-gray-400 mt-2">New personal accounts must run a closed test with <strong class="text-gray-200">at least 12 testers opted in for 14 days in a row</strong> before applying for production. Google then asks what you tested and what you changed. Pick testers on different phone brands.</p>
+          </details>
+          <details class="p-4 rounded-lg bg-gray-950 border border-gray-800">
+            <summary class="font-bold text-white cursor-pointer">6. Production, review and every update after</summary>
+            <ul class="list-disc list-inside text-gray-400 mt-2 space-y-1">
+              <li>Promote the tested build to Production. Review usually takes a few days, often longer for a first app or one using Accessibility.</li>
+              <li><strong>Staged rollout:</strong> release to 10–20% of users first and raise it if nothing breaks.</li>
+              <li>Every upload needs a <strong>higher <code>versionCode</code></strong> (FocusBank is at 8). <code>versionName</code> is just the label users see.</li>
+              <li>Every August Play raises the minimum <code>targetSdk</code>. Plan a yearly update.</li>
+            </ul>
+          </details>
+          <details class="p-4 rounded-lg bg-gray-950 border border-gray-800">
+            <summary class="font-bold text-white cursor-pointer">No budget yet? Ways to share the app for free</summary>
+            <ul class="list-disc list-inside text-gray-400 mt-2 space-y-1">
+              <li><strong>Signed APK by hand:</strong> <code>./gradlew assembleRelease</code> with your keystore, then share the file (users enable "install unknown apps"). Updates must use the same key.</li>
+              <li><strong>GitHub Releases:</strong> attach the APK to a release so friends always get the latest version.</li>
+              <li><strong>F-Droid:</strong> free, but requires the app to be open source, and F-Droid builds and signs it.</li>
+              <li><strong>Coming change:</strong> Google announced that, from 2026 to 2027 and country by country, apps installed on certified Android phones (even outside Play) must come from a verified developer. A free tier for hobbyists was promised. Check the current status before relying on sideloading.</li>
+            </ul>
+          </details>
+        </div>
+      </div>
+
+      <!-- Checklist -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">Your FocusBank release checklist</h3>
+        <p class="text-xs text-gray-400">Ticks are saved in this browser only.</p>
+        <div id="publish-checklist" class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-300"></div>
+      </div>
+    </section>
+
+
+    <!-- TAB 12: INTERVIEW PREP -->
+    <section id="tab-interview" class="tab-pane hidden space-y-6">
+      <div class="p-6 rounded-xl bg-gray-900 border border-lime-800/70 space-y-2">
+        <span class="badge bg-lime-900/70 text-lime-300 border border-lime-700">Interview prep · v1.7.0</span>
+        <h2 class="text-xl font-bold text-white">FocusBank: everything you need to talk about this project</h2>
+        <p class="text-sm text-gray-400">Read top to bottom once, then practise the pitch aloud and quiz yourself with the questions at the end (tap a question to reveal a model answer). Every number on this page matches the code as of version 1.7.0.</p>
+      </div>
+
+      <!-- A. Pitch -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">A. The pitch</h3>
+        <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 text-sm text-gray-200 space-y-1">
+          <div class="text-xs font-bold text-lime-300 uppercase">30 seconds</div>
+          <p>"FocusBank is an Android app that makes screen time something you earn. Distracting apps are locked by default; finishing tasks on time adds minutes to a Vault, and using a protected app spends them. Miss a deadline and a random protected app gets locked as a penalty. It's built in Kotlin with Jetpack Compose and Room, and enforces the rules with an Accessibility service. It's fully offline, targets Android 16, and has 89 automated tests."</p>
+        </div>
+        <div class="p-4 rounded-lg bg-gray-950 border border-gray-800 text-sm text-gray-300 space-y-2">
+          <div class="text-xs font-bold text-lime-300 uppercase">2 minutes: problem → solution → hard parts → result</div>
+          <p><strong class="text-white">Problem.</strong> Screen-time limits are easy to dismiss because they're a fixed allowance you never earned. I wanted the incentive reversed: time is a reward for finished work.</p>
+          <p><strong class="text-white">Solution.</strong> Tasks carry a reward and a penalty. A Vault balance grows when you finish on time (plus 30 free minutes a day) and shrinks second by second while a protected app is open. An Accessibility service watches which app is in front and shows a full-screen block when the Vault is empty, a penalty is active, or the app's own daily limit is used up.</p>
+          <p><strong class="text-white">Hard parts.</strong> Reliable foreground detection on a Vivo phone that drops events and fires OEM gesture events. Keeping the database off the main thread once enforcement moved to its own thread, which created a race on the balance that I fixed with a lock. Making the blocking rules unit-testable by extracting them from the Android service. Migrating the database without losing users' tasks. Meeting Play policy for Accessibility use.</p>
+          <p><strong class="text-white">Result.</strong> Version 1.7.0: 13 Kotlin source files (about 2,900 lines), 89 tests across 5 test classes, 17 documented design decisions, running on a real device. It's distributed as a signed APK from its own website (dasa108.github.io/focusbank) while the Play Store release waits.</p>
+        </div>
+      </div>
+
+      <!-- B. At a glance -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">B. Numbers to remember</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="text-2xl font-extrabold text-lime-300">89</div><div class="text-xs text-gray-400">automated tests, 5 classes</div></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="text-2xl font-extrabold text-lime-300">~2,900</div><div class="text-xs text-gray-400">lines of Kotlin in 13 files</div></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="text-2xl font-extrabold text-lime-300">17</div><div class="text-xs text-gray-400">decision records (ADRs)</div></div>
+          <div class="p-3 rounded-lg bg-gray-950 border border-gray-800"><div class="text-2xl font-extrabold text-lime-300">26 → 36</div><div class="text-xs text-gray-400">min SDK (Android 8) → target (Android 16)</div></div>
+        </div>
+        <p class="text-xs text-gray-400">Tests: TaskRulesTest 29 · EnforcementEngineTest 29 · FocusBankStoreTest 22 · PenaltyRecheckTest 8 · DatabaseMigrationTest 1 (about 1,000 lines). Versions 1.1 → 1.7, with every step committed to git.</p>
+      </div>
+
+      <!-- C. Tech stack -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">C. Tech stack, and why each piece</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead><tr class="text-gray-400 border-b border-gray-800"><th class="py-2 pr-3">Layer</th><th class="py-2 pr-3">Used</th><th class="py-2 pr-3">Why</th><th class="py-2">Alternative considered</th></tr></thead>
+            <tbody class="text-gray-300 divide-y divide-gray-800 align-top">
+              <tr><td class="py-2 pr-3 font-semibold">Language</td><td class="py-2 pr-3">Kotlin 1.9.24</td><td class="py-2 pr-3">Android's main language; null safety, data classes, coroutines</td><td class="py-2">Java (more verbose)</td></tr>
+              <tr><td class="py-2 pr-3 font-semibold">UI</td><td class="py-2 pr-3">Jetpack Compose + Material 3 (BOM 2024.06)</td><td class="py-2 pr-3">Declarative UI = f(state); less code than XML views</td><td class="py-2">XML layouts + ViewBinding</td></tr>
+              <tr><td class="py-2 pr-3 font-semibold">Structured data</td><td class="py-2 pr-3">Room 2.6.1 (SQLite), schema v2</td><td class="py-2 pr-3">Typed queries, compile-time SQL checks, migrations, transactions</td><td class="py-2">Raw SQLite; a cloud DB (rejected: offline-only)</td></tr>
+              <tr><td class="py-2 pr-3 font-semibold">Small values</td><td class="py-2 pr-3">SharedPreferences</td><td class="py-2 pr-3">Balance, penalties and settings change every second and are simple key-values</td><td class="py-2">DataStore (async, safer; planned refactor)</td></tr>
+              <tr><td class="py-2 pr-3 font-semibold">Detecting the open app</td><td class="py-2 pr-3">AccessibilityService</td><td class="py-2 pr-3">Real-time window events, and it's allowed to launch the block screen from the background</td><td class="py-2">UsageStatsManager: needs polling, is delayed, and can't block</td></tr>
+              <tr><td class="py-2 pr-3 font-semibold">Timed events</td><td class="py-2 pr-3">AlarmManager (<code>setAndAllowWhileIdle</code>)</td><td class="py-2 pr-3">Deadlines, reminders and the extra allowance at a clock time, even in Doze</td><td class="py-2">WorkManager (no exact clock times); exact alarms (restricted permission on Android 14+)</td></tr>
+              <tr><td class="py-2 pr-3 font-semibold">Background threads</td><td class="py-2 pr-3">Coroutines (<code>Dispatchers.IO</code>), <code>goAsync()</code>, HandlerThread</td><td class="py-2 pr-3">Room forbids main-thread queries; each entry point gets the right tool</td><td class="py-2">One global executor</td></tr>
+              <tr><td class="py-2 pr-3 font-semibold">Visible protection</td><td class="py-2 pr-3">Foreground service, type <code>specialUse</code></td><td class="py-2 pr-3">Ongoing notification; required to declare a type since Android 14</td><td class="py-2">No notification (more likely to be killed)</td></tr>
+              <tr><td class="py-2 pr-3 font-semibold">Build</td><td class="py-2 pr-3">Gradle 8.11.1, AGP 8.9.1, kapt</td><td class="py-2 pr-3">Needed to compile against API 36</td><td class="py-2">KSP instead of kapt (faster; lint suggests it, not done yet)</td></tr>
+              <tr><td class="py-2 pr-3 font-semibold">Tests</td><td class="py-2 pr-3">JUnit 4, Robolectric 4.13, androidx.test</td><td class="py-2 pr-3">JVM tests for rules; Robolectric runs SharedPreferences, Room, alarms and notifications without a phone</td><td class="py-2">Instrumented tests on a device (slower, not added yet)</td></tr>
+              <tr><td class="py-2 pr-3 font-semibold">Tooling</td><td class="py-2 pr-3">git, adb, Android lint, Claude Code (AI pair programmer)</td><td class="py-2 pr-3">Versioned checkpoints; device install, logs and DB inspection; static checks</td><td class="py-2">n/a</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- D. Components -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">D. What each source file does</h3>
+        <p class="text-xs text-gray-400">The threading and engine/host diagrams are in tab 10. Be able to name each file and its single job:</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <tbody class="text-gray-300 divide-y divide-gray-800">
+              <tr><td class="py-1.5 pr-3 font-mono text-lime-300">MainActivity.kt</td><td class="py-1.5">All Compose screens (Vault, Tasks, Schedule, Apps), dialogs, the ⋮ menu, terms, backup import/export</td></tr>
+              <tr><td class="py-1.5 pr-3 font-mono text-lime-300">EnforcementEngine.kt</td><td class="py-1.5">Every blocking decision: charge, block, penalties, ignore keyboards and OEM helpers. Plain Kotlin behind the <code>EnforcementHost</code> interface.</td></tr>
+              <tr><td class="py-1.5 pr-3 font-mono text-lime-300">AppMonitorService.kt</td><td class="py-1.5">The Accessibility service: forwards events, runs the 1-second tick on a HandlerThread, implements the host</td></tr>
+              <tr><td class="py-1.5 pr-3 font-mono text-lime-300">TaskRules.kt</td><td class="py-1.5">Pure rules: reward, reroll, penalty tick, daily unlock, screen-free credit, time-limit cap, sorting</td></tr>
+              <tr><td class="py-1.5 pr-3 font-mono text-lime-300">FocusBankStore.kt</td><td class="py-1.5">All persistence: Room tasks and usage, SharedPreferences values, the lock, backup/restore, reset</td></tr>
+              <tr><td class="py-1.5 pr-3 font-mono text-lime-300">FocusBankDatabase.kt</td><td class="py-1.5">Room entities, DAO, the version 1 → 2 migration</td></tr>
+              <tr><td class="py-1.5 pr-3 font-mono text-lime-300">TaskDeadlineReceiver.kt</td><td class="py-1.5">Deadline and reminder alarms, applying penalties, the recheck when a penalty is served</td></tr>
+              <tr><td class="py-1.5 pr-3 font-mono text-lime-300">ExtraAllowanceReceiver.kt · FocusBankBootReceiver.kt</td><td class="py-1.5">The scheduled extra 30 minutes; rescheduling alarms after a reboot or update</td></tr>
+              <tr><td class="py-1.5 pr-3 font-mono text-lime-300">BlockOverlayActivity.kt</td><td class="py-1.5">The full-screen block: reason, countdown, task spotlight</td></tr>
+              <tr><td class="py-1.5 pr-3 font-mono text-lime-300">FocusBankTheme.kt · NotificationBranding.kt · LegalText.kt</td><td class="py-1.5">Colours and system-bar icons; notification icon and colour; terms text</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- E. Rules cheat sheet -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">E. The rules, exactly</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-gray-300">
+          <ul class="list-disc list-inside space-y-1.5 p-4 rounded-lg bg-gray-950 border border-gray-800">
+            <li><strong class="text-white">Vault:</strong> a balance in seconds. +30 min once a day, plus an optional extra 30 min at a time you choose.</li>
+            <li><strong class="text-white">Spending:</strong> 1 second per second while a protected app is in front. Pauses when the screen is off or locked.</li>
+            <li><strong class="text-white">Commitment:</strong> reward only if finished by the deadline; 24 h early also earns a reroll. Missing it locks a random protected app for its penalty minutes, unless a reroll absorbs it.</li>
+            <li><strong class="text-white">Penalty:</strong> counts down in real time while the Vault is above 0 and pauses at 0. It never costs Vault time. When it ends, the task is rechecked, and if still open a new penalty is rolled.</li>
+          </ul>
+          <ul class="list-disc list-inside space-y-1.5 p-4 rounded-lg bg-gray-950 border border-gray-800">
+            <li><strong class="text-white">Plan:</strong> reminder only. No reward, penalty or reroll, and it never affects the unlock.</li>
+            <li><strong class="text-white">Daily unlock:</strong> every commitment due today or overdue is done, at least one was finished today, and the screen-free goal (if set) is met. Protected apps then open even with an empty Vault.</li>
+            <li><strong class="text-white">Per-app time limit:</strong> a cap on top of the Vault. Each second costs Vault time <em>and</em> limit time; whichever runs out first blocks the app. It holds on unlock days and refills at midnight.</li>
+            <li><strong class="text-white">Screen-free goal:</strong> minutes with the screen off, counted only after the day's first screen-on.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- F. Decisions -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">F. Key decisions and their trade-offs</h3>
+        <p class="text-xs text-gray-400">Interviewers care more about <em>why</em> and <em>what you gave up</em> than about <em>what</em>. The full records are in <code>decisions.md</code>.</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left">
+            <thead><tr class="text-gray-400 border-b border-gray-800"><th class="py-2 pr-3">#</th><th class="py-2 pr-3">Decision</th><th class="py-2 pr-3">Why</th><th class="py-2">Trade-off</th></tr></thead>
+            <tbody class="text-gray-300 divide-y divide-gray-800 align-top">
+              <tr><td class="py-2 pr-3">001–003</td><td class="py-2 pr-3">Ignore OEM helper packages; Back on the overlay goes Home; 1-second watchdog</td><td class="py-2 pr-3">Vivo gesture events and dropped events broke tracking</td><td class="py-2">A polling element alongside events, so slightly more battery</td></tr>
+              <tr><td class="py-2 pr-3">004</td><td class="py-2 pr-3">Protected-to-protected switches go through the full check</td><td class="py-2 pr-3">A stale "already running" flag left the second app uncharged</td><td class="py-2">None; a pure bug fix</td></tr>
+              <tr><td class="py-2 pr-3">005</td><td class="py-2 pr-3">Recheck a penalty when its countdown ends, not on a timer</td><td class="py-2 pr-3">Paused penalties made wall-clock alarms fire early and stack</td><td class="py-2">Needs the service running</td></tr>
+              <tr><td class="py-2 pr-3">006–007</td><td class="py-2 pr-3">No reward for late work; reset doesn't re-grant the daily 30</td><td class="py-2 pr-3">Spec said "in time"; reset was a refill loophole</td><td class="py-2">A late finisher gets nothing, by design</td></tr>
+              <tr><td class="py-2 pr-3">008–009</td><td class="py-2 pr-3">Process-wide usage cache; no Room on the main thread</td><td class="py-2 pr-3">Per-instance cache never hit; main-thread DB risks freezes</td><td class="py-2">Introduced cross-thread races, fixed with a lock</td></tr>
+              <tr><td class="py-2 pr-3">010</td><td class="py-2 pr-3">Screen-free goal gates the daily unlock</td><td class="py-2 pr-3">One trivial task unlocked the whole day</td><td class="py-2">Only counts while the service runs; off by default</td></tr>
+              <tr><td class="py-2 pr-3">011</td><td class="py-2 pr-3">Penalty counts down only while the Vault is above 0</td><td class="py-2 pr-3">The owner's rule, confirmed after a misunderstanding</td><td class="py-2">An empty Vault freezes a penalty indefinitely</td></tr>
+              <tr><td class="py-2 pr-3">012</td><td class="py-2 pr-3">Blocking rules in a testable engine behind an interface</td><td class="py-2 pr-3">Untestable code had already produced a real bug</td><td class="py-2">One more layer of abstraction</td></tr>
+              <tr><td class="py-2 pr-3">013</td><td class="py-2 pr-3">Target API 36, consent dialog, <code>&lt;queries&gt;</code>, no verses</td><td class="py-2 pr-3">Play policy and copyright</td><td class="py-2">Edge-to-edge UI rework; toolchain upgrade</td></tr>
+              <tr><td class="py-2 pr-3">014</td><td class="py-2 pr-3">Single-colour notification mark plus colour large icon</td><td class="py-2 pr-3">Android tints small icons to one colour</td><td class="py-2">The brand colours appear only in the expanded notification</td></tr>
+              <tr><td class="py-2 pr-3">015</td><td class="py-2 pr-3">Plans; only commitments due today gate the unlock</td><td class="py-2 pr-3">Scheduling ahead pushed users toward junk tasks</td><td class="py-2">Database migration v1 → v2</td></tr>
+              <tr><td class="py-2 pr-3">016</td><td class="py-2 pr-3">No in-app off switch for UPI apps; explain the Settings route</td><td class="py-2 pr-3">A switch makes dodging the blocker one tap away</td><td class="py-2">Paying needs a trip to Settings</td></tr>
+              <tr><td class="py-2 pr-3">017</td><td class="py-2 pr-3">A time limit caps use on top of the Vault</td><td class="py-2 pr-3">The old separate bucket gave limited apps free time</td><td class="py-2">Limited apps now cost Vault time too</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- G. Stories -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">G. Five debugging stories (Situation · Task · Action · Result)</h3>
+        <div class="space-y-3 text-xs text-gray-300">
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800"><div class="font-bold text-white mb-1">1. The missing seconds</div><strong>S:</strong> On a Vivo phone the timer stopped after a few seconds of WhatsApp. <strong>T:</strong> Find why tracking ended. <strong>A:</strong> Logged every window event and found swipe gestures arriving from <code>com.vivo.upslide</code>, which was treated as "user left the app". Ignored OEM helper packages and added a 1-second watchdog for dropped events. <strong>R:</strong> Continuous tracking on the device.</div>
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800"><div class="font-bold text-white mb-1">2. The silent hand-off</div><strong>S:</strong> Jumping from Chrome straight into WhatsApp left WhatsApp uncharged. <strong>T:</strong> Find the hole. <strong>A:</strong> Traced two Handler loops: an early-return guard saw "ticker already running", so the runnable never re-posted. Routed the switch through the full check, then rebuilt everything as one tick in a testable engine. <strong>R:</strong> A regression test that fails if the bug comes back, proven by deliberately reintroducing it.</div>
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800"><div class="font-bold text-white mb-1">3. The lost reward</div><strong>S:</strong> After moving enforcement to a background thread, rewards could vanish. <strong>T:</strong> Explain and fix. <strong>A:</strong> Identified a read-modify-write race between the UI adding a reward and the service subtracting a second. Wrapped every balance, reroll and penalty update in one lock. <strong>R:</strong> Correct totals under concurrency.</div>
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800"><div class="font-bold text-white mb-1">4. The 11 pm test failure</div><strong>S:</strong> A test passed all day and failed at 11:12 pm. <strong>T:</strong> Find the flakiness. <strong>A:</strong> It assumed "due in 1 hour" meant today; after 11 pm it's tomorrow, which the new unlock rule correctly ignores. Rewrote it with an already-due task and added an end-of-day helper with its own test. <strong>R:</strong> Time-independent tests.</div>
+          <div class="p-4 rounded-lg bg-gray-950 border border-gray-800"><div class="font-bold text-white mb-1">5. The misunderstood requirement</div><strong>S:</strong> "Penalty only consumed when there is time in the vault" was built as "only while spending Vault time elsewhere". <strong>T:</strong> Align with the owner. <strong>A:</strong> Asked with a concrete example, reverted to "counts down while the Vault is above 0", kept the new tests, and since then confirm edge cases with worked examples first (as for time limits on unlock days). <strong>R:</strong> One wasted version, and a lasting process change.</div>
+        </div>
+      </div>
+
+      <!-- H. Testing & quality -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-2">
+        <h3 class="text-lg font-bold text-white">H. How I know it works</h3>
+        <ul class="list-disc list-inside text-xs text-gray-300 space-y-1.5">
+          <li><strong class="text-white">Unit tests</strong> on pure rules (<code>TaskRules</code>) run in milliseconds.</li>
+          <li><strong class="text-white">Robolectric tests</strong> on the store (in-memory Room), receivers and alarms, and on the engine through a <strong>FakePhone</strong> with a scripted screen and clock.</li>
+          <li><strong class="text-white">A migration test</strong> builds a database with the exact version 1 schema Room generated and upgrades it.</li>
+          <li><strong class="text-white">Mutation checks:</strong> deliberately break a rule and confirm a test fails. Done for the hand-off, the penalty rule and the time-limit cap.</li>
+          <li><strong class="text-white">On the device</strong> without touching the UI: <code>adb logcat</code> for crashes, <code>run-as … sqlite3</code> for the schema version and data, <code>dumpsys</code> for notifications and the focused window, and a service heartbeat timestamp.</li>
+          <li><strong class="text-white">Android lint</strong> caught a real API-level bug (a foreground-service type passed on Android 10–13).</li>
+        </ul>
+      </div>
+
+      <!-- I. Limitations -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-2">
+        <h3 class="text-lg font-bold text-white">I. Honest limitations and what I'd do next</h3>
+        <p class="text-xs text-gray-400">Saying these first, before you're asked, reads as maturity, not weakness.</p>
+        <ul class="list-disc list-inside text-xs text-gray-300 space-y-1.5">
+          <li>It runs on an <strong>honour system</strong>: you set your own rewards and can turn Accessibility off in Settings. It's a self-control tool, not parental control.</li>
+          <li><strong>No ViewModel yet:</strong> screen state lives in composables and refreshes from a 1-second loop. Next step: ViewModel + StateFlow, and Room <code>Flow</code> queries for reactive updates (the ViewModel library is already a dependency).</li>
+          <li><strong>SharedPreferences + a lock</strong> for frequently changing values. DataStore or Room transactions would be sturdier.</li>
+          <li><strong>kapt → KSP</strong> and <strong>R8 shrinking</strong> are still to do. Alarms are inexact. Battery use hasn't been profiled.</li>
+          <li>The Android shell (<code>AppMonitorService</code>) is only tested on one physical device, so other brands need a closed test.</li>
+          <li>Not on Google Play yet. It ships as a signed APK from a GitHub Pages site, so there are no automatic updates: users download each new version themselves (tab 11, Part B).</li>
+        </ul>
+      </div>
+
+      <!-- J. Questions -->
+      <div class="p-6 rounded-xl bg-gray-900 border border-gray-800 space-y-3">
+        <h3 class="text-lg font-bold text-white">J. Practice questions</h3>
+        <p class="text-xs text-gray-400">Answer aloud first, then tap to compare.</p>
+        <div class="space-y-2 text-xs" id="interview-qa"></div>
+      </div>
+
+      <!-- K. Ownership -->
+      <div class="p-6 rounded-xl bg-amber-950/30 border border-amber-800/60 space-y-2">
+        <h3 class="text-lg font-bold text-amber-300">K. Talking about how it was built</h3>
+        <p class="text-xs text-gray-300">This project was built with an AI pair-programmer (Claude Code). Interviewers increasingly ask about this. The strongest answer is honest and specific: <em>you</em> owned the product, made the decisions (the penalty rule, plans, the time-limit cap, no in-app off switch), tested on your phone and reviewed the work. The AI helped write, debug and test code. Then show you understand it: walk through any rule, file or decision on this page without notes. If a question goes beyond what you know, say so and explain how you'd find out. That beats a guess.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JavaScript for Tabs & Simulator -->
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white');
+        btn.classList.add('bg-gray-800', 'text-gray-300');
+      });
+      const activePane = document.getElementById(tabId);
+      if (activePane) activePane.classList.remove('hidden');
+
+      const targetBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+      if (targetBtn) {
+        targetBtn.classList.add('bg-blue-600', 'text-white');
+        targetBtn.classList.remove('bg-gray-800', 'text-gray-300');
+      }
+    }
+
+    // Simulator State
+    let simActiveApp = 'launcher'; // launcher, chrome, whatsapp
+    let simScreenOn = true;
+    let simKeyguardLocked = false;
+    let simBalanceSeconds = 15;
+    let simInterval = null;
+    let simPenaltyApp = null;      // 'chrome' | 'whatsapp' | null
+    let simPenaltySeconds = 0;
+    let simTaskOpen = false;       // the overdue task behind the penalty
+    const simNames = { chrome: 'Chrome', whatsapp: 'WhatsApp' };
+
+    function rollPenalty(reason) {
+      simPenaltyApp = Math.random() < 0.5 ? 'chrome' : 'whatsapp';
+      simPenaltySeconds = 10;
+      addLog(`${reason} Dice rolled: ${simNames[simPenaltyApp]} locked for 10s.`, 'text-red-400');
+    }
+
+    function missDeadline() {
+      if (simPenaltyApp) { addLog('A penalty is already active.', 'text-gray-400'); return; }
+      simTaskOpen = true;
+      rollPenalty('Deadline missed.');
+      updateSimDisplay();
+    }
+
+    function completeOverdueTask() {
+      if (!simTaskOpen) { addLog('No overdue task to complete.', 'text-gray-400'); return; }
+      simTaskOpen = false;
+      addLog('Overdue task completed late: no reward, but no further penalties.', 'text-emerald-400');
+      updateSimDisplay();
+    }
+
+    function formatTime(sec) {
+      const h = Math.floor(sec / 3600).toString().padStart(2, '0');
+      const m = Math.floor((sec % 3600) / 60).toString().padStart(2, '0');
+      const s = (sec % 60).toString().padStart(2, '0');
+      return `${h}:${m}:${s}`;
+    }
+
+    function updateSimDisplay() {
+      const display = document.getElementById('phone-vault-display');
+      const sub = document.getElementById('phone-vault-sub');
+      const badge = document.getElementById('phone-timer-badge');
+      const appTitle = document.getElementById('phone-app-title');
+      const notif = document.getElementById('phone-notif-text');
+      const overlay = document.getElementById('phone-block-overlay');
+      const lockscreen = document.getElementById('phone-lockscreen');
+
+      display.innerText = formatTime(simBalanceSeconds);
+      lockscreen.classList.toggle('hidden', !simKeyguardLocked && simScreenOn);
+
+      const penaltyStatus = document.getElementById('sim-penalty-status');
+      if (simPenaltyApp) {
+        penaltyStatus.innerText = `${simNames[simPenaltyApp]} locked ${formatTime(simPenaltySeconds)}${simBalanceSeconds > 0 ? '' : ' (paused)'}`;
+        penaltyStatus.className = 'self-center text-xs text-red-400 font-mono';
+      } else {
+        penaltyStatus.innerText = simTaskOpen ? 'Task still open' : 'No penalty';
+        penaltyStatus.className = 'self-center text-xs text-gray-500 font-mono';
+      }
+      const overlayTitle = document.getElementById('overlay-title');
+      const overlayText = document.getElementById('overlay-text');
+
+      if (simActiveApp === 'launcher') {
+        appTitle.innerText = 'Home Launcher';
+        badge.innerText = 'Idle (Safe)';
+        badge.className = 'badge bg-gray-800 text-gray-400';
+        notif.innerText = 'Selected apps are being monitored.';
+        overlay.classList.add('hidden');
+      } else {
+        const appName = simActiveApp === 'chrome' ? 'Chrome' : 'WhatsApp';
+        appTitle.innerText = appName;
+
+        if (simPenaltyApp === simActiveApp) {
+          badge.innerText = 'Penalty';
+          badge.className = 'badge bg-red-900 text-red-300';
+          notif.innerText = `FocusBank: ${appName} under penalty lockout`;
+          overlayTitle.innerText = 'Penalty Lockout';
+          overlayText.innerText = `${formatTime(simPenaltySeconds)} left${simBalanceSeconds <= 0 ? ' (paused until the Vault has time)' : ''}. Completing tasks will not lift it.`;
+          overlay.classList.remove('hidden');
+        } else if (simBalanceSeconds <= 0) {
+          overlayTitle.innerText = 'Vault Depleted!';
+          overlayText.innerText = 'Allowance exhausted for this app. Complete tasks to earn more free time.';
+          badge.innerText = 'Blocked';
+          badge.className = 'badge bg-red-900 text-red-300';
+          notif.innerText = `FocusBank: ${appName} blocked (Allowance 0s)`;
+          overlay.classList.remove('hidden');
+        } else if (!simScreenOn || simKeyguardLocked) {
+          badge.innerText = 'Paused';
+          badge.className = 'badge bg-amber-900 text-amber-300';
+          notif.innerText = `Paused (${formatTime(simBalanceSeconds)} left)`;
+          overlay.classList.add('hidden');
+        } else {
+          badge.innerText = 'Tracking (-1s/s)';
+          badge.className = 'badge bg-emerald-900 text-emerald-300';
+          notif.innerText = `${Math.floor(simBalanceSeconds / 60)} min ${simBalanceSeconds % 60} sec remaining while using ${appName}`;
+          overlay.classList.add('hidden');
+        }
+      }
+    }
+
+    function addLog(msg, color = 'text-gray-400') {
+      const l1 = document.getElementById('log-line-1');
+      const l2 = document.getElementById('log-line-2');
+      const l3 = document.getElementById('log-line-3');
+      l1.innerHTML = l2.innerHTML;
+      l1.className = l2.className;
+      l2.innerHTML = l3.innerHTML;
+      l2.className = l3.className;
+      l3.innerHTML = `&gt; ${msg}`;
+      l3.className = color;
+    }
+
+    function setSimApp(app) {
+      simActiveApp = app;
+      document.querySelectorAll('.sim-app-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white', 'border-blue-500');
+        btn.classList.add('bg-gray-800', 'text-gray-300', 'border-gray-700');
+      });
+      const activeBtn = document.getElementById(`btn-${app}`);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-blue-600', 'text-white', 'border-blue-500');
+        activeBtn.classList.remove('bg-gray-800', 'text-gray-300', 'border-gray-700');
+      }
+
+      if (app === 'launcher') {
+        addLog('Window changed to Launcher. Allowance ticker stopped.', 'text-blue-400');
+      } else {
+        const pkg = app === 'chrome' ? 'com.android.chrome' : 'com.whatsapp';
+        addLog(`Window changed to ${pkg} (Protected App).`, 'text-emerald-400');
+      }
+      updateSimDisplay();
+    }
+
+    function toggleScreen() {
+      simScreenOn = !simScreenOn;
+      const btn = document.getElementById('btn-screen');
+      if (simScreenOn) {
+        btn.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span>Screen: ON';
+        addLog('ACTION_SCREEN_ON received. Resuming check.', 'text-emerald-400');
+      } else {
+        btn.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-400"></span>Screen: OFF';
+        addLog('ACTION_SCREEN_OFF received. Ticker safely paused.', 'text-amber-400');
+      }
+      updateSimDisplay();
+    }
+
+    function toggleKeyguard() {
+      simKeyguardLocked = !simKeyguardLocked;
+      const btn = document.getElementById('btn-keyguard');
+      if (simKeyguardLocked) {
+        btn.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-400"></span>Keyguard: LOCKED';
+        addLog('Keyguard locked. Burn-down paused.', 'text-amber-400');
+      } else {
+        btn.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span>Keyguard: UNLOCKED';
+        addLog('Keyguard dismissed. Tracking active.', 'text-emerald-400');
+      }
+      updateSimDisplay();
+    }
+
+    function addBalance(sec) {
+      simBalanceSeconds += sec;
+      addLog(`Added ${sec}s to Vault. Total: ${simBalanceSeconds}s`, 'text-blue-400');
+      updateSimDisplay();
+    }
+
+    // Ticker Loop (1000ms)
+    simInterval = setInterval(() => {
+      // One tick (EnforcementEngine): penalties count down while the Vault has time (FR-3.5),
+      // then the task is rechecked (FR-3.10)
+      if (simPenaltyApp && simBalanceSeconds > 0) {
+        simPenaltySeconds--;
+        if (simPenaltySeconds <= 0) {
+          simPenaltyApp = null;
+          if (simTaskOpen) rollPenalty('Penalty served; task still open.');
+          else addLog('Penalty served; task is complete. No new penalty.', 'text-emerald-400');
+        }
+      }
+      if (simPenaltyApp) updateSimDisplay();
+      if (simActiveApp !== 'launcher' && simActiveApp !== simPenaltyApp && simScreenOn && !simKeyguardLocked && simBalanceSeconds > 0) {
+        simBalanceSeconds--;
+        if (simBalanceSeconds === 0) {
+          addLog('Overdraft protection triggered! Launching BlockOverlayActivity.', 'text-red-400');
+        }
+        updateSimDisplay();
+      }
+    }, 1000);
+
+    // Initial render
+    updateSimDisplay();
+
+    // ==========================================
+    // COMPREHENSIVE CERTIFICATION EXAM DATA
+    // ==========================================
+    const quizQuestions = [
+      {
+        id: 1,
+        category: "Android Security & Sandboxing",
+        badgeColor: "bg-blue-900 text-blue-300",
+        question: "Why is a standard unprivileged Android app unable to read which other applications you are actively using?",
+        options: [
+          "Android limits background CPU frequency to prevent high battery usage.",
+          "Every Android app runs under an isolated Linux User ID (UID) sandbox, prohibiting cross-process memory inspection without an authorized OS bridge like AccessibilityService.",
+          "Google Play automatically deletes apps that attempt to inspect the Linux task manager.",
+          "Android OS deletes an app's cache storage whenever a new app is brought to foreground."
+        ],
+        correct: 1,
+        explanation: "Android is built directly on the Linux kernel. Every installed app is assigned a dedicated Linux User ID (UID, e.g. u0_a104). The kernel strictly prevents processes of one UID from reading or inspecting another UID's process space unless granted system-level permissions like BIND_ACCESSIBILITY_SERVICE."
+      },
+      {
+        id: 2,
+        category: "The Build Pipeline (Gradle)",
+        badgeColor: "bg-emerald-900 text-emerald-300",
+        question: "When running ./gradlew assembleDebug, what is the specific role of the D8 / R8 tool?",
+        options: [
+          "It encrypts the SharedPreferences XML file with AES-256.",
+          "It converts compiled Java/Kotlin bytecode (.class files) into Dalvik Executable (.dex) bytecode that the Android Runtime (ART) can execute.",
+          "It uploads the debug APK directly to your Google Play Console internal test track.",
+          "It rasterizes vector XML icons into static PNG images."
+        ],
+        correct: 1,
+        explanation: "Android devices do not run standard Java Virtual Machines; they run the Android Runtime (ART). Standard .class files must be 'dexed' by D8 into optimized .dex files (classes.dex) before being packaged into the final APK."
+      },
+      {
+        id: 3,
+        category: "Jetpack Compose & Reactivity",
+        badgeColor: "bg-purple-900 text-purple-300",
+        question: "In FocusBank's MainActivity.kt, how does the UI hero timer count down from 120s to 119s without ever calling findViewById() or textView.setText()?",
+        options: [
+          "A background thread destroys and recreates the MainActivity every second.",
+          "balance is declared as observable State (mutableStateOf), causing Compose to automatically trigger Recomposition only for the specific UI elements that observe it.",
+          "The Android system window manager forces a full display refresh on every clock tick.",
+          "Room SQLite database broadcasts an OS-wide intent that reloads the whole Compose tree."
+        ],
+        correct: 1,
+        explanation: "Jetpack Compose is a declarative UI toolkit governed by UI = f(State). When a mutableStateOf variable mutates, the Compose compiler intelligently skips all untouched UI and recomposes only the exact composables that read that specific state variable."
+      },
+      {
+        id: 4,
+        category: "Database Performance & Caching",
+        badgeColor: "bg-amber-900 text-amber-300",
+        question: "FocusBank records usage every second. Why does v1.2 keep its usageCache in a companion object instead of on each FocusBankStore?",
+        options: [
+          "SQLite tables cannot store more than 100 rows; the companion object truncates history.",
+          "The service creates a new FocusBankStore every tick, so a per-instance cache was always empty and every second paid for a Room read. A process-wide cache skips that read and only upserts the new count.",
+          "Room SQLite requires an active internet connection to commit local transactions.",
+          "The Android 14 kernel forcibly shuts down databases that execute updates more than once a minute."
+        ],
+        correct: 1,
+        explanation: "A cache only helps if it outlives the objects that use it. Because AppMonitorService built a fresh FocusBankStore every second, the 1.1 per-instance cache never hit. Moving it to the companion object makes it process-wide. In v1.3 the service also keeps one store and runs on its own background thread."
+      },
+      {
+        id: 5,
+        category: "Accessibility & Input Methods",
+        badgeColor: "bg-blue-900 text-blue-300",
+        question: "What would happen if FocusBank's AppMonitorService did NOT include the isIgnoredPackage() filter?",
+        options: [
+          "The user's keystrokes would be permanently encrypted.",
+          "Opening Gboard or Samsung Keyboard to type would register as 'exiting the monitored app', prematurely resetting or pausing the timer.",
+          "Android would flag FocusBank as a keylogger and uninstall it immediately.",
+          "The phone's virtual keyboard would freeze and fail to render."
+        ],
+        correct: 1,
+        explanation: "Virtual keyboards (IMEs) and notification popups are separate Android packages (e.g. com.google.android.inputmethod.latin, com.android.systemui). When they pop up, they take window focus. Without isIgnoredPackage(), FocusBank would falsely believe you left Chrome or WhatsApp and cancel tracking!"
+      },
+      {
+        id: 6,
+        category: "Power Management & Keyguard",
+        badgeColor: "bg-emerald-900 text-emerald-300",
+        question: "How does FocusBank ensure your Vault allowance isn't accidentally burned while your phone is locked or in your pocket?",
+        options: [
+          "It uses the front-facing camera to verify eye tracking.",
+          "It registers a BroadcastReceiver for ACTION_SCREEN_OFF and checks KeyguardManager.isKeyguardLocked, instantly pausing the allowance ticker until the device is actively unlocked.",
+          "It disables the phone's battery saver mode.",
+          "It requires the user to manually click 'Pause' before pressing the power button."
+        ],
+        correct: 1,
+        explanation: "FocusBank listens to OS broadcasts (ACTION_SCREEN_OFF, ACTION_USER_PRESENT) and checks KeyguardManager.isKeyguardLocked. If the screen turns black or keyguard is locked, the ticker immediately stops burning seconds."
+      },
+      {
+        id: 7,
+        category: "Android 14 API 34 Compliance",
+        badgeColor: "bg-purple-900 text-purple-300",
+        question: "Why did AppMonitorService upgrade startForeground() to ServiceCompat.startForeground declaring FOREGROUND_SERVICE_TYPE_SPECIAL_USE?",
+        options: [
+          "To enable 120Hz display refresh rates on AMOLED screens.",
+          "Android 14 (API 34) requires every foreground service to declare its type; calling startForeground() without one throws MissingForegroundServiceTypeException.",
+          "To allow FocusBank to record phone calls in the background.",
+          "It is an optional flag that improves CPU performance by 5%."
+        ],
+        correct: 1,
+        explanation: "Starting in Android 14 (API 34), Google cracked down on background battery drain. Every service calling startForeground() must declare a recognized type (like SPECIAL_USE for digital wellbeing monitoring) in both the AndroidManifest and runtime call, alongside a visible ongoing notification."
+      },
+      {
+        id: 8,
+        category: "Per-App Time Limits",
+        badgeColor: "bg-amber-900 text-amber-300",
+        question: "Since v1.7, Chrome is protected with a 15-minute daily time limit and you have 60 minutes in the Vault. What happens while Chrome is open?",
+        options: [
+          "Only Chrome's 15-minute limit counts down; the Vault is untouched.",
+          "Each second costs a Vault second and a limit second. Chrome is blocked after 15 minutes (limit reached), leaving 45 minutes in the Vault for other apps.",
+          "Chrome can be used for 75 minutes: the limit is added to the Vault.",
+          "The limit is ignored while the Vault has time."
+        ],
+        correct: 1,
+        explanation: "A time limit is a cap on top of the Vault, not a separate bucket. Chrome runs only while both have time, so it stops at whichever runs out first. The limit refills at midnight and holds even on an unlock day. (Before v1.7 a limit was a separate bucket that didn't touch the Vault; that was changed on purpose.)"
+      },
+      {
+        id: 9,
+        category: "Enforcement & Overlay Shields",
+        badgeColor: "bg-red-900 text-red-300",
+        question: "When a monitored app's allowance reaches exactly 0 seconds, how does FocusBank enforce the lockout within ≤250ms?",
+        options: [
+          "It powers off the phone immediately.",
+          "It sends the user home via CATEGORY_HOME and launches BlockOverlayActivity with FLAG_ACTIVITY_NEW_TASK as an un-dismissible shield.",
+          "It revokes all Wi-Fi and mobile data permissions for that app.",
+          "It plays a loud siren through the phone's speaker."
+        ],
+        correct: 1,
+        explanation: "When allowance is exhausted, FocusBank's accessibility ticker detects remainingSeconds <= 0, fires an intent to return to the Android home screen, and displays BlockOverlayActivity with the app's name, a live countdown, and a 'Next up' spotlight on your most important open task."
+      },
+      {
+        id: 10,
+        category: "Store Distribution & Packaging",
+        badgeColor: "bg-emerald-900 text-emerald-300",
+        question: "Why does the Google Play Console require an Android App Bundle (.aab) signed with a private keystore instead of a raw universal .apk?",
+        options: [
+          "APK files are completely unsupported on modern Android 14 phones.",
+          "The .aab format allows Google Play to dynamically generate split APKs containing only the CPU architecture (arm64-v8a) and display density needed by each specific user, cutting download size by up to 35%.",
+          "App Bundles bypass Google Play's automated security review policies.",
+          "AAB files do not require any cryptographic signing."
+        ],
+        correct: 1,
+        explanation: "An Android App Bundle (.aab) contains all code and resources for all architectures. Google Play's Dynamic Delivery uses the bundle to serve tailored, lightweight split APKs containing only the exact binaries and asset densities required for the downloading device."
+      },
+      {
+        id: 11,
+        category: "Handler Loops & State Flags",
+        badgeColor: "bg-lime-900 text-lime-300",
+        question: "In 1.1, the allowance ticker noticed a jump from Chrome straight into WhatsApp and called startAllowanceTicker('whatsapp'). Why did WhatsApp then run with no countdown?",
+        options: [
+          "WhatsApp is on Android's system allow-list and cannot be monitored.",
+          "startAllowanceTicker() returned early because tickerRunning was still true. The runnable returned without re-posting itself, and the watchdog trusted the stale flag, so nothing ever restarted the loop.",
+          "The keyboard filter ignored WhatsApp because its package name contains 'ime'.",
+          "Room locked the usage table while two apps were recorded at once."
+        ],
+        correct: 1,
+        explanation: "A self-rescheduling Handler loop only continues if each run posts the next one. The early-return guard was meant to avoid double loops, but here it meant zero loops. v1.2 clears tickerRunning and calls handlePackageEvent(), which also re-checks penalties and allowance for the new app."
+      },
+      {
+        id: 12,
+        category: "Penalty Lifecycle",
+        badgeColor: "bg-red-900 text-red-300",
+        question: "A penalty pauses whenever the Vault is empty (FR-3.5). Why is the task recheck triggered when the countdown reaches zero rather than by an alarm set for 'N minutes later'?",
+        options: [
+          "AlarmManager is deprecated on Android 14.",
+          "A paused penalty can take much longer than N minutes of real time, so a wall-clock alarm would fire while it is still running and stack a second penalty. It also disappears on reboot. Rechecking when the countdown ends follows the time actually served.",
+          "Countdown events use less battery than notifications.",
+          "The alarm always picked the same app."
+        ],
+        correct: 1,
+        explanation: "Paused time and wall-clock time drift apart. The engine serves a penalty second on every tick while the Vault has time, so the moment tickPenalties() reports the last second is the correct and reboot-proof point to recheck the task (TaskDeadlineReceiver.onPenaltyExpired)."
+      },
+      {
+        id: 13,
+        category: "Threads & Races",
+        badgeColor: "bg-blue-900 text-blue-300",
+        question: "After the enforcement service moved to its own HandlerThread, a completed task's reward sometimes vanished. What was happening, and what fixed it?",
+        options: [
+          "Room deleted rows written from two threads; the fix was a second database.",
+          "Both threads read the balance, changed it and wrote it back, so one write overwrote the other (a read-modify-write race). A shared lock around every balance update fixed it.",
+          "SharedPreferences cannot be used from background threads.",
+          "The HandlerThread ran too fast and skipped seconds."
+        ],
+        correct: 1,
+        explanation: "Two threads doing read → change → write on the same value can interleave so that one update is lost. FocusBankStore wraps balance, reroll and penalty updates in synchronized(LOCK), so they happen one at a time."
+      },
+      {
+        id: 14,
+        category: "Database Migrations",
+        badgeColor: "bg-amber-900 text-amber-300",
+        question: "FocusBank 1.6 added an isPlan column. What happens on a phone that already has the version 1 database?",
+        options: [
+          "Room silently adds the column the next time the table is read.",
+          "Room sees schema version 1, runs MIGRATION_1_2 once (ALTER TABLE … ADD COLUMN … DEFAULT 0), then checks the result matches the new entity. Old tasks become commitments.",
+          "The app must be uninstalled and reinstalled.",
+          "Room deletes all tasks and starts a fresh v2 database."
+        ],
+        correct: 1,
+        explanation: "Room tracks the schema in PRAGMA user_version. When the code's version is higher, it runs the registered migrations in order and validates the result. Without a migration it would crash, or wipe data if destructive migration was allowed."
+      },
+      {
+        id: 15,
+        category: "App Signing",
+        badgeColor: "bg-amber-900 text-amber-300",
+        question: "With Play App Signing, what happens if you lose your upload keystore?",
+        options: [
+          "The app can never be updated again.",
+          "Google still holds the app signing key, so Play support can register a new upload key for you. It's painful but recoverable.",
+          "Google automatically generates a new upload key for every release.",
+          "Nothing: Play does not check the upload signature."
+        ],
+        correct: 1,
+        explanation: "The upload key only proves to Play that an upload came from you; Google re-signs what users download with an app signing key it keeps. Without Play App Signing (e.g. APKs you share yourself), a lost key really does mean no more updates."
+      },
+      {
+        id: 16,
+        category: "Publishing",
+        badgeColor: "bg-emerald-900 text-emerald-300",
+        question: "You have a new personal Play developer account. What must happen before FocusBank can go to Production?",
+        options: [
+          "Nothing; you can publish to Production on the first day.",
+          "A closed test with at least 12 testers opted in for 14 days in a row, then an application for production access.",
+          "An open beta with 1,000 users.",
+          "A paid review by a Google partner agency."
+        ],
+        correct: 1,
+        explanation: "Personal accounts created since late 2023 must prove real testing first. The bar was lowered from 20 to 12 testers; check the Play Console dashboard for the current number."
+      },
+      {
+        id: 17,
+        category: "Notifications",
+        badgeColor: "bg-purple-900 text-purple-300",
+        question: "Why can't FocusBank show its colourful logo as the small status-bar notification icon?",
+        options: [
+          "Colour icons are a paid Play feature.",
+          "Android uses only the alpha channel of the small icon and tints it, so it must be a single-colour silhouette. The colour logo can go in the large icon.",
+          "Vector drawables are not allowed in notifications.",
+          "The status bar only shows the app's name."
+        ],
+        correct: 1,
+        explanation: "Since Android 5 the small icon is treated as a mask. That's why FocusBank uses a white vault-and-check mark there and adds the full-colour logo via setLargeIcon()."
+      },
+      {
+        id: 18,
+        category: "Updates & Signing",
+        badgeColor: "bg-lime-900 text-lime-300",
+        question: "You download FocusBank 1.8.0 from the website onto a phone that has the debug build from Android Studio. What happens?",
+        options: [
+          "It updates normally because the version is higher.",
+          "Android refuses ('App not installed') because the signing keys differ. You must back up, uninstall, install the release, then restore the backup.",
+          "It installs as a second copy next to the debug build.",
+          "It updates, but the data is wiped automatically."
+        ],
+        correct: 1,
+        explanation: "An update must match the installed app's package name AND signing key, and have a higher versionCode. Debug builds use the shared debug key, so a release signed with your own key can't replace one. That's why the public download is always the release build: future releases signed with the same key install over it and keep users' data."
+      }
+    ];
+
+    let userAnswers = {}; // { questionId: selectedOptionIndex }
+
+    function renderQuiz() {
+      const container = document.getElementById('quiz-questions-list');
+      if (!container) return;
+
+      container.innerHTML = quizQuestions.map((q, idx) => {
+        const userAnswer = userAnswers[q.id];
+        const isAnswered = userAnswer !== undefined;
+
+        const optionsHtml = q.options.map((opt, optIdx) => {
+          let btnClass = "w-full text-left p-3.5 rounded-lg text-xs md:text-sm font-medium border transition flex items-start gap-3 ";
+          
+          if (!isAnswered) {
+            btnClass += "bg-gray-950 hover:bg-gray-800 text-gray-300 border-gray-800 hover:border-blue-600";
+          } else {
+            if (optIdx === q.correct) {
+              btnClass += "bg-emerald-950/80 text-emerald-200 border-emerald-500 font-semibold";
+            } else if (userAnswer === optIdx) {
+              btnClass += "bg-red-950/80 text-red-200 border-red-500 line-through";
+            } else {
+              btnClass += "bg-gray-950 text-gray-500 border-gray-900 opacity-60";
+            }
+          }
+
+          const optLetter = String.fromCharCode(65 + optIdx);
+          const icon = isAnswered 
+            ? (optIdx === q.correct ? '<span class="text-emerald-400 font-bold">✓</span>' : (userAnswer === optIdx ? '<span class="text-red-400 font-bold">✕</span>' : `<span class="text-gray-500">${optLetter}.</span>`))
+            : `<span class="text-blue-400 font-bold">${optLetter}.</span>`;
+
+          return `
+            <button ${isAnswered ? 'disabled' : ''} onclick="handleAnswer(${q.id}, ${optIdx})" class="${btnClass}">
+              <span class="w-5 flex-shrink-0 text-xs">${icon}</span>
+              <span class="flex-1">${opt}</span>
+            </button>
+          `;
+        }).join('');
+
+        const explanationHtml = isAnswered ? `
+          <div class="mt-3 p-3.5 rounded-lg ${userAnswer === q.correct ? 'bg-emerald-950/50 border-emerald-800/80' : 'bg-blue-950/50 border-blue-800/80'} border text-xs text-gray-300 space-y-1">
+            <div class="font-bold ${userAnswer === q.correct ? 'text-emerald-400' : 'text-blue-400'} flex items-center gap-1.5">
+              <span>${userAnswer === q.correct ? '✓ Correct Answer!' : 'ℹ Insight & Explanation:'}</span>
+            </div>
+            <p class="leading-relaxed text-gray-300">${q.explanation}</p>
+          </div>
+        ` : '';
+
+        return `
+          <div class="p-5 rounded-xl bg-gray-950 border border-gray-800 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="badge ${q.badgeColor}">${q.category}</span>
+              <span class="text-xs font-mono text-gray-500">Question ${idx + 1} of ${quizQuestions.length}</span>
+            </div>
+            <h3 class="text-sm md:text-base font-bold text-white leading-snug">${q.question}</h3>
+            <div class="space-y-2 pt-1">
+              ${optionsHtml}
+            </div>
+            ${explanationHtml}
+          </div>
+        `;
+      }).join('');
+
+      updateScorecard();
+    }
+
+    function handleAnswer(questionId, selectedIdx) {
+      if (userAnswers[questionId] !== undefined) return;
+      userAnswers[questionId] = selectedIdx;
+      renderQuiz();
+    }
+
+    function updateScorecard() {
+      const answeredCount = Object.keys(userAnswers).length;
+      let correctCount = 0;
+      quizQuestions.forEach(q => {
+        if (userAnswers[q.id] === q.correct) correctCount++;
+      });
+
+      const scoreDisplay = document.getElementById('quiz-score-display');
+      const progressBar = document.getElementById('quiz-progress-bar');
+      const banner = document.getElementById('quiz-completion-banner');
+      const rankTitle = document.getElementById('quiz-rank-title');
+      const rankDesc = document.getElementById('quiz-rank-desc');
+
+      if (scoreDisplay) scoreDisplay.innerText = `${correctCount} / ${quizQuestions.length}`;
+      if (progressBar) {
+        const pct = (answeredCount / quizQuestions.length) * 100;
+        progressBar.style.width = `${pct}%`;
+      }
+
+      if (answeredCount === quizQuestions.length) {
+        banner.classList.remove('hidden');
+        const pct = Math.round((correctCount / quizQuestions.length) * 100);
+        if (pct >= 90) {
+          rankTitle.innerText = "🏆 Master Android Systems Architect (" + pct + "%)";
+          rankDesc.innerText = "Exceptional! You have completely mastered modern Android development, high-privilege accessibility engineering, Room SQLite caching, and the deployment pipeline.";
+        } else if (pct >= 70) {
+          rankTitle.innerText = "⭐ Senior Android Engineer (" + pct + "%)";
+          rankDesc.innerText = "Great job! You have a solid grasp of Android architecture, state management, background daemons, and system-level enforcement.";
+        } else {
+          rankTitle.innerText = "🚀 Android Systems Apprentice (" + pct + "%)";
+          rankDesc.innerText = "Good effort! Review the earlier modules (Compose UI, Background Guardians, Room Caching) to sharpen your understanding of Android internals.";
+        }
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
+    function resetQuiz() {
+      userAnswers = {};
+      renderQuiz();
+    }
+
+    const countBadge = document.getElementById('quiz-count-badge');
+    if (countBadge) countBadge.innerText = `${quizQuestions.length} Scenario Questions`;
+
+    // Release checklist (tab 11): ticks kept in this browser only
+    const publishSteps = [
+      'Create the upload keystore and back it up',
+      'Ship a signed APK through the website (done 27 Oct 2026)',
+      'Fill in keystore.properties and build a signed .aab',
+      'Export a FocusBank backup before switching from the debug build',
+      'Pay the US$25 fee and finish identity verification',
+      'Host the privacy policy at a public URL',
+      'Add a contact email to the in-app terms',
+      'Write store texts; make icon, feature graphic, screenshots',
+      'Data safety, content rating, target audience, ads, app access',
+      'Accessibility API and foreground-service declarations (with video)',
+      'Upload to Closed testing and invite at least 12 testers',
+      'Keep testers opted in for 14 days, then apply for production',
+      'Release to Production (staged rollout), then plan the yearly targetSdk update'
+    ];
+    function loadChecks() {
+      try { return JSON.parse(localStorage.getItem('focusbank-publish-checks') || '{}'); } catch (e) { return {}; }
+    }
+    function renderChecklist() {
+      const box = document.getElementById('publish-checklist');
+      if (!box) return;
+      const checks = loadChecks();
+      box.innerHTML = publishSteps.map((step, i) => `
+        <label class="flex items-start gap-2 p-2 rounded bg-gray-950 border border-gray-800 cursor-pointer">
+          <input type="checkbox" class="mt-1 accent-lime-500" data-step="${i}" ${checks[i] ? 'checked' : ''}>
+          <span class="${checks[i] ? 'line-through text-gray-500' : ''}">${i + 1}. ${step}</span>
+        </label>`).join('');
+      box.querySelectorAll('input[type=checkbox]').forEach(cb => cb.addEventListener('change', e => {
+        const next = loadChecks();
+        next[e.target.dataset.step] = e.target.checked;
+        try { localStorage.setItem('focusbank-publish-checks', JSON.stringify(next)); } catch (err) {}
+        renderChecklist();
+      }));
+    }
+    renderChecklist();
+
+    // Interview practice questions (tab 12)
+    const interviewQA = [{"kind": "Technical", "q": "Why an Accessibility service instead of UsageStatsManager?", "a": "UsageStatsManager only reports app usage after the fact, so I'd have to poll it every second or two, and it can't do anything about what it finds. An Accessibility service gets a callback the moment a window changes, and a bound Accessibility service is allowed to launch the block screen from the background. The cost is that it's a high-trust permission: Play needs an in-app disclosure and consent, and some UPI apps refuse to work while it's on."}, {"kind": "Technical", "q": "How do you know which app is in front, and what if events are missed?", "a": "Two sources. Window-change events from Accessibility give the package name immediately. A 1-second tick also re-reads the foreground (the active window's root, then focused application windows), skipping keyboards, System UI and OEM helpers like com.vivo.upslide. On my Vivo phone some events never arrived, so the tick is what makes tracking reliable."}, {"kind": "Technical", "q": "Walk me through one second while Instagram is open.", "a": "The tick on the enforcement thread: (1) ensure the daily allowance is granted if a new day started; (2) count down every active penalty if the Vault is above 0, reporting any that just ended so the task is rechecked; (3) skip the rest if the screen is off or locked; (4) re-read the foreground app; (5) for Instagram: if it has a penalty, block; otherwise charge one Vault second (usage recorded once) and, if it has a time limit, one limit second; (6) update the notification; (7) if the limit is used up, or the Vault is empty and the day isn't unlocked, block."}, {"kind": "Technical", "q": "How do you actually block an app?", "a": "The service starts the home screen, then BlockOverlayActivity with FLAG_ACTIVITY_NEW_TASK. The overlay shows the reason (penalty, Vault empty or daily limit reached), a live countdown and, when useful, the most important open task. Back sends you home, not back into the app. Launches are debounced by 1.2 seconds so the user can't make overlays stack by fighting them."}, {"kind": "Technical", "q": "How do you keep database work off the main thread?", "a": "I removed allowMainThreadQueries, so Room throws if anything slips through. The UI runs queries in coroutines on Dispatchers.IO. Broadcast receivers call goAsync() and do the work on a thread, which keeps the process alive until it finishes. The Accessibility service owns a HandlerThread, and all enforcement state lives on that one thread, so there are no races inside the engine."}, {"kind": "Technical", "q": "Describe a race condition you fixed.", "a": "Once enforcement had its own thread, the UI and the service could both read the balance, change it and write it back. If the UI added a 20-minute reward while the service subtracted a second, one write could overwrite the other and the reward vanished. I put every balance, reroll and penalty update inside one synchronized(LOCK) block in the store."}, {"kind": "Technical", "q": "Why two kinds of storage?", "a": "Room for structured, queryable data: tasks and per-day usage records, with transactions and migrations. SharedPreferences for small values that change every second (balance, penalty seconds, limits, settings), because they're simple key-values with cheap reads. The trade-off is no transactions across keys, which is why the lock exists. DataStore would be the next step."}, {"kind": "Technical", "q": "How did you add a column without losing users' data?", "a": "Plans needed an isPlan column. I raised the Room schema version from 1 to 2 and added a Migration that runs ALTER TABLE tasks ADD COLUMN isPlan INTEGER NOT NULL DEFAULT 0, with defaultValue = \"0\" on the entity so Room's schema check matches. The test builds a database from the exact v1 SQL Room generated, runs the migration and reads the old task back. On my phone, user_version went from 1 to 2 and my task survived."}, {"kind": "Technical", "q": "How do you test code that depends on Android?", "a": "By pushing Android to the edges. The rules are pure functions in TaskRules, tested with plain JUnit. The blocking engine talks to the phone only through an EnforcementHost interface, so tests use a FakePhone with a scripted foreground app and clock. Robolectric runs the real store, SharedPreferences, in-memory Room, alarms and notifications on the JVM."}, {"kind": "Technical", "q": "How do you know the tests actually test something?", "a": "Mutation checks: I deliberately broke a rule and confirmed tests failed. For example, ignoring the time limit made two engine tests fail, and reintroducing the old hand-off bug failed its regression test. I also check the test results files to confirm how many tests ran, after an output filter once hid failures from me."}, {"kind": "Technical", "q": "What survives a reboot, and how?", "a": "A receiver for BOOT_COMPLETED and MY_PACKAGE_REPLACED reschedules every open task's deadline and reminder alarms, plus the extra allowance. Balances and penalties live in SharedPreferences, so they persist anyway. Penalty rechecks don't depend on an alarm at all: they fire when the countdown ends, so a reboot can't lose them."}, {"kind": "Technical", "q": "How do you handle day boundaries?", "a": "Days are keyed as yyyy-MM-dd in the device's time zone. The engine's tick checks for a new day every second and grants the daily 30 minutes once; per-app limits refill the same way. 'Due today' means at or before the last millisecond of the day (TaskRules.endOfDay). Screen-free time counts only after the day's first screen-on, so sleep doesn't count. A known edge: Schedule's 3-hour windows don't handle daylight-saving days, which India doesn't use."}, {"kind": "Technical", "q": "What changed when you targeted Android 15/16?", "a": "Edge-to-edge became mandatory, so I added enableEdgeToEdge(), Scaffold insets and safe-drawing padding on the overlay, and set system-bar icon colours from the app's own theme. I upgraded AGP and Gradle to compile against API 36. Lint then caught a real bug: the specialUse foreground-service type was passed on Android 10–13, where it doesn't exist."}, {"kind": "Technical", "q": "How does the app meet Google Play's Accessibility policy?", "a": "Before sending anyone to Accessibility settings, an in-app dialog explains what's observed (package names and screen on/off), why, that nothing leaves the phone, and how to turn it off. The user must tap 'Agree and continue', and the consent time is stored. The service doesn't request view IDs it doesn't use, the app has no internet permission, and its data is excluded from cloud backup."}, {"kind": "Technical", "q": "Why AlarmManager rather than WorkManager?", "a": "Deadlines and reminders happen at a specific clock time. WorkManager is for deferrable work with no timing guarantee. I use setAndAllowWhileIdle, which still fires in Doze but can be a few minutes late. Exact alarms are possible, but since Android 14 they need a restricted permission that Play reserves for clock and calendar apps."}, {"kind": "Gotcha", "q": "Your build includes the ViewModel library, but you don't use ViewModels. Why?", "a": "Honest answer: screen state currently lives in the composables with remember, refreshed by a 1-second loop that reads the store on IO. It works, but a ViewModel with StateFlow, fed by Room Flow queries, would survive configuration changes and update reactively instead of polling. The dependency is there because that refactor is planned and not done yet."}, {"kind": "Product", "q": "How do you stop people cheating?", "a": "Each loophole got a targeted fix. Plans pay nothing, so they can't mint minutes. A task's type is fixed at creation, so a missed commitment can't become a plan. A penalized app's protection can't be switched off. Reset doesn't re-grant the daily 30. There's no in-app off switch. A time limit holds even on unlock days. But it's fundamentally an honour system: you can turn Accessibility off in Settings, and I say that openly."}, {"kind": "Product", "q": "Why no in-app switch to pause blocking for UPI payments?", "a": "UPI and banking apps refuse payments while an untrusted Accessibility service is on. An in-app switch (the service can disableSelf()) would have made dodging the blocker one tap away, so I decided against it. Instead the Vault and consent dialog explain the Settings route, and 'Enable blocking' deep-links back to FocusBank's page. Android never lets a service re-enable itself anyway."}, {"kind": "Technical", "q": "What's the battery impact?", "a": "Enforcement is one 1-second tick on a single background thread, plus event callbacks. Database writes go through a process-wide usage cache to avoid a read every second. The charging work stops while the screen is off or locked, but the tick itself keeps running for penalties and the day change. I haven't profiled it against a battery budget yet; that's an open item."}, {"kind": "Technical", "q": "How is the app signed and released?", "a": "Release builds read my keystore (RSA 4096, valid about 27 years) from a git-ignored keystore.properties; without it Gradle warns and produces an unsigned build. Today I build a signed APK, check the certificate fingerprint with apksigner, attach it to a GitHub Release as FocusBank.apk, and the GitHub Pages site links to the latest release. For Play later, I'd upload an App Bundle and choose Play App Signing with my existing key as the app signing key, so website users can update from Play without reinstalling."}, {"kind": "Design", "q": "How would you add cloud sync across devices?", "a": "Introduce a repository layer so screens and the engine don't care where data lives. Give tasks stable IDs (they're already UUIDs) and updated-at timestamps, and sync tasks through a backend with last-write-wins or per-field merges. Keep the Vault ledger local, or turn it into an append-only event log so concurrent spends and rewards merge correctly. The privacy policy and Data safety form would need updating."}, {"kind": "Behavioural", "q": "What was the hardest bug?", "a": "The 'silent hand-off'. Switching straight between two protected apps left the second one free. Two Handler loops each thought the other was in charge, and an early return meant the ticker never re-posted itself. Fixing it properly meant redesigning enforcement as a single tick inside a testable engine, and adding a regression test I proved by reintroducing the bug."}, {"kind": "Behavioural", "q": "Tell me about unclear requirements.", "a": "The penalty rule. I implemented one reasonable reading, the owner meant another, and it cost a version. Since then I confirm edge cases with a concrete example before building. For example, with time limits I asked: 'Instagram limit 30 minutes, Vault empty, day unlocked: is it blocked after 30?' That got answered before any code was written."}, {"kind": "Behavioural", "q": "What would you do with another month?", "a": "Move state into ViewModels with Room Flows; switch kapt to KSP and SharedPreferences to DataStore; add instrumented tests for the Accessibility service on two or three phone brands; profile battery use; turn on R8; then run the Play closed test with 12 testers and publish."}, {"kind": "Technical", "q": "How do updates reach users without the Play Store?", "a": "An APK installs over the existing app only if the package name matches, it's signed with the same key and its versionCode is higher. So every release raises versionCode and is signed with the same key, and the website's button always points to the latest GitHub Release. The catch is that nothing notifies users: they re-download from the site. An in-app update check would need the INTERNET permission, which conflicts with the app's no-internet privacy promise, so I've left it out for now."}, {"kind": "Technical", "q": "What happens if you lose the signing key?", "a": "For a website-only app, it's fatal for updates: nothing signed with a new key installs over the old app, so every user must uninstall and reinstall, losing data unless they exported a backup. That's why the key and password have two offline backups and are never committed. With Play App Signing Google holds the app signing key, so a lost upload key can be reset through support. A leaked key can be rotated with APK Signature Scheme v3, but rotating needs the old key."}];
+    function renderInterviewQA() {
+      const box = document.getElementById('interview-qa');
+      if (!box) return;
+      const esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      box.innerHTML = interviewQA.map((item, i) => `
+        <details class="p-3 rounded-lg bg-gray-950 border border-gray-800">
+          <summary class="cursor-pointer text-gray-200 font-semibold"><span class="badge bg-gray-800 text-gray-400 mr-2">${esc(item.kind)}</span>${i + 1}. ${esc(item.q)}</summary>
+          <p class="mt-2 text-gray-400 leading-relaxed">${esc(item.a)}</p>
+        </details>`).join('');
+    }
+    renderInterviewQA();
+
+    // Call renderQuiz once DOM is ready
+    setTimeout(renderQuiz, 100);
+
+  </script>
+</div>
+
+</body></html>

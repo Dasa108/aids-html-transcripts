@@ -1,0 +1,797 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+
+<title>Lecture Notes Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a chalkboard-green study notebook. Sticky section rail on wide screens, chip bar on phones; one reading column. */
+:root {
+  --bg: #F3F5F2;
+  --surface: #FFFFFF;
+  --sunk: #E8ECE7;
+  --ink: #18221F;
+  --muted: #56645E;
+  --line: #D3DAD4;
+  --accent: #1E6B57;
+  --accent-soft: #DCEDE6;
+  --amber: #A15F00;
+  --amber-soft: #F6E8D3;
+  --good: #2C7A3F;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: 1.6rem;
+  --step-3: 2.3rem;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111715; --surface: #18201D; --sunk: #0C110F; --ink: #E4EBE7; --muted: #9AA9A2; --line: #2A3531;
+    --accent: #63C7A8; --accent-soft: #1B3A31; --amber: #E8A84E; --amber-soft: #3A2C17; --good: #74C98A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111715; --surface: #18201D; --sunk: #0C110F; --ink: #E4EBE7; --muted: #9AA9A2; --line: #2A3531;
+  --accent: #63C7A8; --accent-soft: #1B3A31; --amber: #E8A84E; --amber-soft: #3A2C17; --good: #74C98A;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: var(--step-0); line-height: 1.6;
+  padding-inline: 16px; padding-block: 0 64px;
+}
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h2 { font-size: var(--step-3); font-weight: 800; letter-spacing: -0.01em; }
+h3 { font-size: var(--step-1); font-weight: 700; }
+p { margin: 0; }
+a { color: var(--accent); }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+code { background: var(--sunk); padding: 0.08em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.shell { max-width: 1120px; margin: 0 auto; display: grid; grid-template-columns: 196px minmax(0, 1fr); gap: 48px; }
+.rail { position: sticky; top: env(safe-area-inset-top, 0px); align-self: start; padding-top: 40px; display: grid; gap: 4px; }
+.rail .label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.rail a { text-decoration: none; color: var(--muted); padding: 6px 10px; border-radius: 6px; font-size: var(--step--1); display: flex; gap: 10px; }
+.rail a .ts { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); min-width: 3.2em; }
+.rail a:hover { background: var(--sunk); color: var(--ink); }
+main { min-width: 0; display: grid; gap: 88px; padding-top: 40px; }
+section { display: grid; gap: 24px; scroll-margin-top: 72px; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); letter-spacing: 0.04em; }
+.lede { font-size: var(--step-1); color: var(--muted); max-width: 62ch; }
+.prose { max-width: 68ch; display: grid; gap: 14px; }
+.muted { color: var(--muted); }
+
+.chipbar { display: none; }
+@media (max-width: 860px) {
+  .shell { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .rail { display: none; }
+  .chipbar {
+    display: flex; gap: 8px; overflow-x: auto; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+    background: var(--bg); padding-block: 10px; margin-inline: -16px; padding-inline: 16px; border-bottom: 1px solid var(--line);
+  }
+  .chipbar a { flex: none; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; font-size: var(--step--1); }
+  main { gap: 64px; padding-top: 24px; }
+  h2 { font-size: var(--step-2); }
+}
+
+/* Hero */
+.hero { display: grid; gap: 20px; }
+.hero h1 { font-size: clamp(2.4rem, 6vw, 4rem); font-weight: 800; letter-spacing: -0.02em; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.wave { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 14px 8px; }
+.wave canvas { width: 100%; height: 120px; display: block; }
+.wave figcaption { font-size: var(--step--1); color: var(--muted); padding-top: 6px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.facts div { background: var(--surface); padding: 14px 16px; display: grid; gap: 2px; }
+.facts b { font-family: var(--font-display); font-size: var(--step-2); font-variant-numeric: tabular-nums; }
+.facts span { font-size: var(--step--1); color: var(--muted); }
+.pitch { background: var(--accent-soft); border-radius: var(--radius); padding: 20px 22px; display: grid; gap: 10px; max-width: 74ch; }
+.pitch .eyebrow { color: var(--accent); }
+.pitch p { font-size: var(--step-1); line-height: 1.5; }
+.tip { border-left: 3px solid var(--amber); background: var(--amber-soft); padding: 12px 16px; border-radius: 0 var(--radius) var(--radius) 0; max-width: 74ch; font-size: var(--step--1); }
+.tip b { color: var(--amber); }
+
+/* Pipeline */
+.diagram { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; overflow-x: auto; }
+.steps { display: grid; gap: 0; counter-reset: step; border-top: 1px solid var(--line); }
+.step { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 16px; padding-block: 18px; border-bottom: 1px solid var(--line); }
+.step::before { counter-increment: step; content: counter(step, decimal-leading-zero); font-family: var(--font-mono); color: var(--accent); font-size: var(--step-1); padding-top: 2px; }
+.step > div { display: grid; gap: 6px; min-width: 0; }
+.files-inline { display: flex; flex-wrap: wrap; gap: 6px; }
+.files-inline code { font-size: 0.78rem; }
+
+/* Timeline */
+.timeline { display: grid; gap: 0; }
+.tl { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 20px; padding-block: 16px; border-top: 1px solid var(--line); }
+.tl .when { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); display: grid; gap: 2px; align-content: start; }
+.tl .when .hash { color: var(--accent); }
+.tl > div:last-child { display: grid; gap: 6px; min-width: 0; }
+.tl h3 { font-size: var(--step-0); }
+@media (max-width: 560px) { .tl { grid-template-columns: minmax(0, 1fr); gap: 4px; } .tl .when { grid-auto-flow: column; justify-content: start; gap: 12px; } }
+
+/* Decisions & bugs */
+.grid2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card dl { margin: 0; display: grid; gap: 8px; }
+.card dt { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.card dd { margin: 0; font-size: var(--step--1); }
+.card .rejected dd { color: var(--muted); }
+.bug { border-top: 3px solid var(--amber); }
+.bug .tag { font-family: var(--font-mono); font-size: 0.72rem; color: var(--amber); }
+
+/* File explorer */
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.search { flex: 1 1 260px; min-width: 0; font: inherit; font-size: var(--step--1); padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.btn { font: inherit; font-size: var(--step--1); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn[aria-pressed="true"] { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+.group { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+.group > summary { list-style: none; cursor: pointer; padding: 14px 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: baseline; }
+.group > summary::-webkit-details-marker { display: none; }
+.group > summary .path { font-family: var(--font-mono); font-weight: 600; font-size: 0.92rem; overflow-wrap: anywhere; }
+.group > summary .count { font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.group > summary .gdesc { grid-column: 1 / -1; font-size: var(--step--1); color: var(--muted); }
+.group[open] > summary { border-bottom: 1px solid var(--line); background: var(--sunk); }
+.file { border-bottom: 1px solid var(--line); }
+.file:last-child { border-bottom: 0; }
+.file > summary { list-style: none; cursor: pointer; padding: 12px 18px 12px 34px; display: grid; gap: 2px; position: relative; }
+.file > summary::-webkit-details-marker { display: none; }
+.file > summary::before { content: "+"; position: absolute; left: 16px; top: 11px; font-family: var(--font-mono); color: var(--accent); }
+.file[open] > summary::before { content: "−"; }
+.file .fname { font-family: var(--font-mono); font-size: 0.85rem; overflow-wrap: anywhere; }
+.file .fpurpose { font-size: var(--step--1); color: var(--muted); }
+.fbody { padding: 0 18px 16px 34px; display: grid; gap: 10px; font-size: var(--step--1); }
+.fbody .k { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 2px; }
+.fbody .qa { background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; display: grid; gap: 4px; }
+.fbody .qa b { color: var(--accent); }
+.groups { display: grid; gap: 12px; }
+.empty { color: var(--muted); font-size: var(--step--1); }
+
+/* Practice */
+.progress { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: var(--step--1); color: var(--muted); }
+.bar { flex: 1 1 200px; height: 8px; background: var(--sunk); border-radius: 99px; overflow: hidden; min-width: 0; }
+.bar i { display: block; height: 100%; background: var(--good); width: 0; transition: width 0.3s; }
+.qs { display: grid; gap: 12px; }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 10px; }
+.q[data-state="got"] { border-color: var(--good); }
+.q[data-state="review"] { border-color: var(--amber); }
+.q .meta { display: flex; justify-content: space-between; gap: 8px; font-size: 0.75rem; color: var(--muted); }
+.q .meta .cat { font-family: var(--font-mono); color: var(--accent); }
+.q .qt { font-weight: 700; }
+.q .ans { font-size: var(--step--1); border-top: 1px dashed var(--line); padding-top: 10px; display: grid; gap: 8px; }
+.q .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.q .actions .got[aria-pressed="true"] { background: var(--good); border-color: var(--good); color: var(--bg); }
+.q .actions .rev[aria-pressed="true"] { background: var(--amber); border-color: var(--amber); color: var(--bg); }
+
+/* Glossary */
+.gloss { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 0 32px; margin: 0; }
+.gloss div { padding-block: 12px; border-top: 1px solid var(--line); display: grid; gap: 4px; }
+.gloss dt { font-family: var(--font-mono); font-weight: 600; color: var(--accent); font-size: 0.9rem; }
+.gloss dd { margin: 0; font-size: var(--step--1); }
+footer { color: var(--muted); font-size: var(--step--1); border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<nav class="chipbar" aria-label="Sections">
+  <a href="#pitch">Pitch</a><a href="#pipeline">Pipeline</a><a href="#timeline">Timeline</a><a href="#decisions">Decisions</a><a href="#bugs">Bugs</a><a href="#files">Files</a><a href="#practice">Practice</a><a href="#glossary">Glossary</a>
+</nav>
+
+<div class="shell">
+  <nav class="rail" aria-label="Sections">
+    <span class="label">Contents</span>
+    <a href="#pitch"><span class="ts">00:00</span>The pitch</a>
+    <a href="#pipeline"><span class="ts">02:00</span>Pipeline</a>
+    <a href="#timeline"><span class="ts">04:00</span>Timeline</a>
+    <a href="#decisions"><span class="ts">06:00</span>Decisions</a>
+    <a href="#bugs"><span class="ts">08:00</span>Bug stories</a>
+    <a href="#files"><span class="ts">10:00</span>Every file</a>
+    <a href="#practice"><span class="ts">12:00</span>Interview practice</a>
+    <a href="#glossary"><span class="ts">14:00</span>Glossary</a>
+  </nav>
+
+  <main>
+    <!-- 1. Pitch -->
+    <section id="pitch" class="hero">
+      <span class="eyebrow">[00:00] Lecture Notes · Android · Kotlin + C++</span>
+      <h1>From a recorded lecture to <em>study notes</em>, mostly on the phone.</h1>
+      <p class="lede">This guide teaches you what was built, why each choice was made, what broke and how it was fixed, and what every file in the repository does. Read it top to bottom once, then use the practice section until you can answer each question out loud.</p>
+
+      <figure class="wave" style="margin:0">
+        <canvas id="wave" aria-label="A lecture's waveform split into two-minute chunks at quiet moments"></canvas>
+        <figcaption>How transcription sees a lecture: about two minutes per chunk, each cut placed at the quietest half-second near the target (<code>ChunkPlanner.kt</code>), so no word is split in half.</figcaption>
+      </figure>
+
+      <div class="facts">
+        <div><b>On-device</b><span>speech-to-text with whisper.cpp</span></div>
+        <div><b>6</b><span>AI providers for notes, user's own key</span></div>
+        <div><b>52</b><span>automated tests, all passing</span></div>
+        <div><b>28.5 MB</b><span>release APK (debug was 75 MB)</span></div>
+        <div><b>v9</b><span>database schema, 8 hand-written migrations</span></div>
+        <div><b>Live</b><span><a href="https://dasa108.github.io/lecture-notes/">website</a> with an APK download</span></div>
+      </div>
+
+      <div class="pitch">
+        <span class="eyebrow">Say this in 30 seconds</span>
+        <p>Lecture Notes is an Android app that turns a recorded lecture into study material. It transcribes the audio on the phone with Whisper, so the recording never leaves the device. It can label who is speaking, then sends only the text to an AI service the student chooses, such as free Groq, to write structured notes, flashcards and a quiz. Those feed a spaced-repetition study mode. It's built with Kotlin and Jetpack Compose, Room, WorkManager, and native C++ through JNI. It's open source, and anyone can install it from its website.</p>
+      </div>
+      <p class="tip"><b>If you're asked who wrote the code:</b> be straightforward. The app was built with an AI coding assistant working under your direction. You set the requirements, made the product decisions (free providers first, a concise-notes limit, speaker labels with a merge tool, dropping on-device notes), tested every feature on your own phone with a real 80-minute lecture, and reported the problems that got fixed. Interviewers respect that answer far more than a claim that falls apart under a follow-up question.</p>
+    </section>
+
+    <!-- 2. Pipeline -->
+    <section id="pipeline">
+      <span class="eyebrow">[02:00] How it works end to end</span>
+      <h2>The pipeline</h2>
+      <p class="lede">Every lecture follows the same path. Each heavy step runs in the background with WorkManager, saves its progress to the database, and can resume after the app is killed.</p>
+      <div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  A[Record in app<br/>RecorderService] --> W[16 kHz mono WAV]
+  B[Import audio or video<br/>Importer / AudioExtractor] --> D[Decode + resample<br/>AudioDecoder] --> W
+  W --> C[~2 min chunks<br/>cut at silence]
+  C --> X[whisper.cpp via JNI<br/>on-device]
+  X --> R[(Room database<br/>segments)]
+  R --> S[Speaker labels<br/>sherpa-onnx]
+  P[Slides / PDF<br/>PdfBox + ML Kit OCR] --> R
+  R --> N[AI notes<br/>Groq, Claude, ...]
+  N --> R
+  R --> T[Study: SM-2 cards + quiz]
+  R --> E[Export: PDF, Markdown, Anki]
+  R --> K[Backup zip]
+</pre>
+      </div>
+      <div class="steps">
+        <div class="step"><div><h3>Capture</h3><p>A foreground service records 16 kHz mono 16-bit PCM straight into a WAV file, which is exactly what Whisper expects, so no conversion is needed later. A foreground service (one with a visible notification) keeps a 3-hour lecture going with the screen off. Imports decode any format with Android's <code>MediaCodec</code> and resample to 16 kHz. For videos, only the audio track is copied out, without re-encoding.</p><div class="files-inline"><code>RecorderService.kt</code><code>Wav.kt</code><code>Importer.kt</code><code>AudioDecoder.kt</code><code>Resampler.kt</code><code>AudioExtractor.kt</code></div></div></div>
+        <div class="step"><div><h3>Transcribe on the phone</h3><p>The audio is split into ~2-minute chunks at quiet moments. Each chunk goes through whisper.cpp, a C++ port of OpenAI's Whisper, called from Kotlin through JNI. Segments (start time, end time, text) are saved after every chunk, which makes each chunk a checkpoint. The thread count matches the fast CPU cores the app is currently allowed to use. Heavy work pauses when the phone gets too hot and waits while the battery is low.</p><div class="files-inline"><code>ProcessWorker.kt</code><code>ChunkPlanner.kt</code><code>WhisperNative.kt</code><code>whisper_jni.cpp</code><code>Thermal.kt</code><code>HeavyWork.kt</code></div></div></div>
+        <div class="step"><div><h3>Pick the right model for the phone</h3><p>The first time Speech models is opened, the app scans the hardware (RAM, chip, fast cores, free storage) and runs a speed test by itself: Tiny transcribes a bundled 30-second clip, and each model's measured cost ratio turns that into minutes per lecture hour. It recommends the most accurate model that handles a 1-hour lecture in 20 minutes or less. Models too big for the phone's RAM or storage are blocked with the reason, based on measured peak memory. Models download with resume support and are checked against a SHA-256 hash.</p><div class="files-inline"><code>DeviceCheck.kt</code><code>DeviceInfo.kt</code><code>WhisperModels.kt</code><code>ModelDownloadWorker.kt</code><code>bench30.wav</code></div></div></div>
+        <div class="step"><div><h3>Label speakers (optional)</h3><p>sherpa-onnx finds speech turns and turns each voice into an embedding, a list of numbers that describes how the voice sounds. The lecture is processed in 10-minute pieces to save memory, and voices are linked across pieces by cosine similarity. Each transcript line gets the speaker it overlaps most. The user can listen to samples, rename speakers, and merge two speakers who are really the same person.</p><div class="files-inline"><code>Diarizer.kt</code><code>SpeakerLinker.kt</code><code>SpeakerWorker.kt</code><code>SpeakerEdits.kt</code></div></div></div>
+        <div class="step"><div><h3>Read slides and PDFs</h3><p>Attached PDFs, PowerPoints, photos and text files are turned into text on the phone: the PDF text layer through PdfBox, scanned pages and photos through ML Kit OCR, and PowerPoint slides by reading their XML. A lecture can even be made from slides alone, with no recording.</p><div class="files-inline"><code>TextExtractor.kt</code><code>AttachmentWorker.kt</code><code>DocumentImporter.kt</code><code>SlidePicker.kt</code></div></div></div>
+        <div class="step"><div><h3>Write notes with AI</h3><p>Only text is sent, with timestamps, plus the most relevant slides and speaker tags. If the whole lecture fits the model's limit it goes in one request. Otherwise it's split into parts and merged (map-reduce). The app learns each provider's real limits from its error messages, waits out rate limits, saves finished parts so a failed run can resume, repairs broken JSON, and enforces an optional word budget. The result is JSON with sections, explanations, key terms, class Q&amp;A, flashcards and a quiz.</p><div class="files-inline"><code>NotesWorker.kt</code><code>NotesGenerator.kt</code><code>Prompts.kt</code><code>NotesLength.kt</code><code>StudyNotes.kt</code><code>OpenAiCompatibleClient.kt</code><code>AnthropicClient.kt</code></div></div></div>
+        <div class="step"><div><h3>Study, export, back up</h3><p>Flashcards go into a review deck scheduled with SM-2, a spaced-repetition method: cards you know come back less and less often. The quiz records scores. Notes export as PDF, Markdown, or an Anki import file. A backup zip holds everything and restores onto a fresh install.</p><div class="files-inline"><code>Scheduler.kt</code><code>CardSync.kt</code><code>StudyScreen.kt</code><code>QuizScreen.kt</code><code>NotesExport.kt</code><code>Backup.kt</code></div></div></div>
+      </div>
+    </section>
+
+    <!-- 3. Timeline -->
+    <section id="timeline">
+      <span class="eyebrow">[04:00] What we did, in order</span>
+      <h2>Timeline</h2>
+      <p class="lede">Sixteen commits over two days, 5–6 October 2026, then device-check improvements on 26 October and a public release with its own website on 27 October. Each one was built, installed on a real phone (a vivo I2405 with a Snapdragon 8s Gen 4) and tried on a real lecture before moving on.</p>
+      <div class="timeline">
+        <div class="tl"><div class="when"><span class="hash">a1e6a0b</span><span>5 Oct</span></div><div><h3>Foundation: record, import, transcribe, notes</h3><p>Recording service, audio and video import, whisper.cpp through JNI, chunked background transcription, subjects to organise lectures, and the first AI notes through Groq with your own key. Per-subject prompts (template, extra instructions, or a fully custom prompt) came from your question about different prompts per category.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">21ea3e6</span><span>5 Oct</span></div><div><h3>Concise notes</h3><p>You said the notes were stretching out too long. The prompt was tightened ("comprehensive but not verbose"), the prompt size is now measured instead of guessed, and stray timestamps inside bullet text are removed.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">5609914</span><span>5 Oct</span></div><div><h3>Study mode</h3><p>A lecture picker (your request: choose which lectures to study), SM-2 flashcards, a quiz with saved scores, a cram mode for exam revision, and search inside notes.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">c47a03e</span><span>5 Oct</span></div><div><h3>Slides and PDFs</h3><p>On-device text extraction and OCR. Slides-only lectures need no recording. Notes cite "Slide N", and the most relevant slides are sent alongside each part of the transcript.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">1b9d55f</span><span>6 Oct</span></div><div><h3>Device check</h3><p>An on-phone speed test and a model recommendation based on measured speed rather than guesses from RAM alone.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">1af8942</span><span>6 Oct</span></div><div><h3>Speaker labels</h3><p>sherpa-onnx diarization in 10-minute pieces, speakers linked across pieces, and a Class Q&amp;A section in the notes.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">22a7558 · 55f2e38</span><span>6 Oct</span></div><div><h3>Speaker fixes</h3><p>The default threshold split the lecturer into 15 speakers. Raising it to 0.9 gave 8. A plain warning that labels can be wrong, plus listen, rename and merge tools, handle the rest. The speaker panel no longer closes while a voice sample plays.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">90fe481</span><span>6 Oct</span></div><div><h3>Polish (M8)</h3><p>Release build (arm64 only, R8, signed), pauses when the phone overheats, battery safeguards, AAC compression after transcription (~115 → ~14 MB per hour), PDF, Markdown and Anki exports, and search inside slides. The on-device notes milestone (M6) was dropped as impractical on a phone.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">a8b7bb2 · 113181c</span><span>6 Oct</span></div><div><h3>Length limit and counts</h3><p>A word budget stated in the prompt and enforced afterwards, with a "No limit" mode. You choose how many flashcards and quiz questions to get.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">0989d02</span><span>6 Oct</span></div><div><h3>Bad-JSON recovery</h3><p>Groq sometimes rejects the model's own reply as invalid JSON. The app now repairs it, retries with a reminder, and finally retries without JSON mode.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">ab2ac9d</span><span>6 Oct</span></div><div><h3>Transcript editing</h3><p>Find and replace across the transcript, used to fix "ASM" → "agent". The speaker merge combined the lecturer's split voice.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">591f404</span><span>6 Oct</span></div><div><h3>Anki and lecturer fixes</h3><p>Testing with Anki's own importer found that quote marks merged cards and a leading "#" dropped them. Fields are now quoted. The AI is now told who the lecturer is, whatever that speaker is named.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">c4919e1 · dcb9bff</span><span>26 Oct</span></div><div><h3>Ready for other phones</h3><p>Your question about installing the app on someone else's phone exposed gaps. The speed test now runs automatically on the first visit. A phone that can't run any model gets an explanation instead of a Tiny recommendation. Models too big for the phone are blocked, with RAM limits backed by measured peak memory (Tiny 104 MB to Medium 843 MB). Tested on your phone: the automatic test recommended Small at ≈ 14 min per lecture hour.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">6eb4e3b · 94c5394</span><span>6 Oct</span></div><div><h3>Backup &amp; restore, then the release switch</h3><p>A one-file backup with a safe restore, tested by restoring your real backup into a separate test copy of the app. That test found that restored notes were hidden until an API key was entered, which was then fixed. Your phone was then moved from the debug build to the release build with no data lost.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">019a4c2 · 57cbca7</span><span>27 Oct</span></div><div><h3>Public release and website</h3><p>The code went to a public GitHub repository (<a href="https://github.com/Dasa108/lecture-notes">Dasa108/lecture-notes</a>) after checking the whole history for keys. A one-page website in <code>docs/</code> is served by GitHub Pages at <a href="https://dasa108.github.io/lecture-notes/">dasa108.github.io/lecture-notes</a>, and the signed APK is attached to the v0.1.0 GitHub Release, which the site's Download button links to. The site was then redesigned and checked at desktop and phone widths.</p></div></div>
+        <div class="tl"><div class="when"><span class="hash">6b94165</span><span>27 Oct</span></div><div><h3>Release key safety</h3><p>With strangers now installing the app, you asked whether the release key was set up right. The published APK was confirmed to be signed with the release key (certificate SHA-256 <span class="mono">87509efe…037277</span>). Two gaps were found and closed: release builds silently fell back to the debug key when <code>keystore.properties</code> was missing, and the key existed only on this computer. The build now refuses, and the key is backed up encrypted with gpg.</p></div></div>
+      </div>
+    </section>
+
+    <!-- 4. Decisions -->
+    <section id="decisions">
+      <span class="eyebrow">[06:00] Why it's built this way</span>
+      <h2>Decisions and trade-offs</h2>
+      <p class="lede">Interviewers care most about why you chose something and what you gave up. Each card names the alternative that was rejected.</p>
+      <div class="grid2" id="decisionCards"></div>
+    </section>
+
+    <!-- 5. Bugs -->
+    <section id="bugs">
+      <span class="eyebrow">[08:00] Things that broke</span>
+      <h2>Bug stories</h2>
+      <p class="lede">Use these for "tell me about a hard bug" questions. Each follows the same shape: what happened, the cause, the fix, and how the fix was verified.</p>
+      <div class="grid2" id="bugCards"></div>
+    </section>
+
+    <!-- 6. Files -->
+    <section id="files">
+      <span class="eyebrow">[10:00] The repository</span>
+      <h2>Every file and folder</h2>
+      <p class="lede">The Kotlin code lives in <code>app/src/main/java/com/lecturenotes/</code>, split into packages by job. Open a folder, then a file, to see what it does, what it talks to, and a likely interview question.</p>
+      <div class="toolbar">
+        <label for="fileSearch" class="muted" style="font-size:var(--step--1)">Search</label>
+        <input id="fileSearch" class="search" type="search" placeholder="Try “JNI”, “rate limit”, “backup”, “SM-2”…">
+        <button class="btn" id="expandAll" type="button">Open all</button>
+        <button class="btn" id="collapseAll" type="button">Close all</button>
+      </div>
+      <div class="groups" id="fileGroups"></div>
+      <p class="empty" id="fileEmpty" hidden>No files match. Try a shorter word.</p>
+    </section>
+
+    <!-- 7. Practice -->
+    <section id="practice">
+      <span class="eyebrow">[12:00] Rehearse</span>
+      <h2>Interview practice</h2>
+      <p class="lede">Answer each question out loud before you reveal the model answer. Mark it “Got it” or “Review again”. Your marks are saved in this browser only.</p>
+      <div class="toolbar" id="catFilters" role="group" aria-label="Filter questions"></div>
+      <div class="progress"><span id="progText">0 of 0 marked “got it”</span><div class="bar"><i id="progBar"></i></div><button class="btn" id="resetProg" type="button">Clear marks</button></div>
+      <div class="qs" id="questions"></div>
+    </section>
+
+    <!-- 8. Glossary -->
+    <section id="glossary">
+      <span class="eyebrow">[14:00] Terms of art</span>
+      <h2>Glossary</h2>
+      <dl class="gloss" id="glossList"></dl>
+    </section>
+
+    <footer>Built from the repository at commit <span class="mono">6b94165</span>, its SPEC.md, and the conversation that built it. Measurements come from a vivo I2405 (Snapdragon 8s Gen 4, about 8 GB RAM).</footer>
+  </main>
+</div>
+
+<script>
+const DECISIONS = [
+  { t: "Transcribe on the phone, not in the cloud", why: "The audio never leaves the device, it costs nothing per hour, and it works offline once the model is downloaded. Lectures can be private, and students have no budget.", no: "A cloud speech API (faster and more accurate, but paid per minute and requires uploading the audio)." },
+  { t: "Write notes with a cloud AI, using the student's own key", why: "Good notes need a large language model. Free tiers such as Groq give strong results with no server to run. The key stays on the phone, encrypted, and only text is sent.", no: "On-device notes with llama.cpp (milestone M6). Dropped: a phone-sized model writes much weaker notes, and running it on top of Whisper would add heat and battery drain." },
+  { t: "~2-minute chunks cut at silence, with no carried-over prompt", why: "Each chunk becomes a checkpoint, so a killed app resumes where it stopped. Cutting at quiet moments means no word is split and no overlap needs de-duplicating. Feeding the previous chunk's text in as a prompt made Whisper skip repeated speech, so it was removed.", no: "Transcribing the whole file in one call (no progress, nothing to resume), or overlapping windows (needs de-duplication)." },
+  { t: "Thread count follows the fast cores the app is allowed to use", why: "Some phones, including vivo, restrict background apps to a few cores. Asking for 6 threads on 5 slow cores ran about 14× slower (408 s vs 30 s for 60 s of audio). The app reads its allowed CPUs (sched_getaffinity), uses the fast ones, and restarts a chunk if they shrink mid-run.", no: "A fixed thread count, which is fast on one phone and very slow on another." },
+  { t: "One heavy job at a time, paused when hot", why: "Transcription and speaker labelling both want every fast core. A shared lock (HeavyWork) runs them one after the other. The phone hit thermal status 4 (severe) during long runs, so work pauses there and resumes once it cools. It also waits while the battery is low.", no: "Running jobs in parallel, which is slower overall and overheats the phone." },
+  { t: "Map-reduce notes that learn the provider's limits", why: "Free tiers cap tokens per request and per minute. The app sends the whole lecture when it fits and otherwise splits it into parts, learning the real limit from errors like 413 \"Limit X, Requested Y\". It paces itself from the rate-limit headers and saves finished parts so a retry resumes.", no: "Always one request (fails on free tiers), or a fixed small chunk size (needlessly slow, loses coherence)." },
+  { t: "A word budget, stated and enforced", why: "The prompt gives each part its share of the budget (for example Standard = 20% of the transcript's words). If the model still overshoots by more than 25%, code trims extra explanations and the last bullets. Headings, timestamps, flashcards and the quiz are never cut. A \"No limit\" mode skips all of this.", no: "Only asking the model to be brief. Models often ignore length instructions." },
+  { t: "Speaker labels with a human in the loop", why: "Automatic labels split one person into several when they move or face the board. The clustering threshold was raised from 0.5 to 0.9 (15 speakers down to 8), and the app says plainly that labels can be wrong. You can listen to voice samples and merge speakers by ear.", no: "Trusting the automatic labels, or dropping the feature altogether." },
+  { t: "SM-2 spaced repetition", why: "A proven, simple algorithm (the one Anki is built on). Each card has an ease factor and an interval that grows when you get it right. Regenerating notes keeps the schedule of questions that didn't change.", no: "Showing cards at random, which doesn't help long-term memory." },
+  { t: "Compress audio after transcription", why: "WAV is about 115 MB per hour. Once transcribed, it's re-encoded to AAC at 32 kbps (~14 MB per hour) and checked for the right duration before the WAV is deleted. Re-transcribing or labelling speakers expands it again temporarily.", no: "Keeping WAV forever (fills the phone), or recording compressed audio (Whisper needs PCM, so every job would have to decode first)." },
+  { t: "Release build: arm64 only, R8, signed, tested side by side", why: "Modern phones are arm64, so dropping x86_64 and shrinking with R8 cut the APK from 75 MB to 28.5 MB. A releaseTest variant uses the same R8 code under a different app ID, so it can be tested next to the real app without touching real data.", no: "Shipping the debug build, which is bigger and slower and carries debug signing." },
+  { t: "Backup by staging, swap and rollback", why: "Restore unpacks to a side folder and checks it first: the format, the database version, the database's integrity, and that no file tries to escape the folder. Only then does it swap folders by rename, which is instant, and it moves the old data back if anything fails. API keys are left out on purpose.", no: "Overwriting files in place, where a failure halfway through leaves the data corrupt." },
+  { t: "Block models by measured memory, not just warn", why: "A model too big for the phone gets the app killed mid-transcription, which looks like a crash. Each model's peak memory was measured (Tiny 104 MB to Medium 843 MB, plus ~80 MB for the app, confirmed at 181 MB on the phone), and the RAM minimums leave at least 6× headroom. Slower models that fit stay allowed, because that's a speed-versus-accuracy choice, not a crash risk.", no: "Only labelling big models in red and letting people download them anyway." },
+  { t: "Ship the APK through GitHub Releases, the site through Pages", why: "A Release keeps the 28.5 MB APK out of git history, and its /releases/latest/download/LectureNotes.apk link always points to the newest version, so the website never needs editing for an update. Pages serves the site straight from the docs/ folder on main with no build step or server. Free Pages needs a public repository, so the full history was checked for keys before publishing.", no: "Committing the APK into the repo (bloats every clone forever) or the Play Store (a paid developer account, review and a store listing for a v0.1)." },
+  { t: "Fail release builds without the release key", why: "Once people install the app from the website, every update must carry the same certificate or Android rejects it, and the only way out is uninstalling, which deletes their lectures. A taskGraph.whenReady check stops packageRelease and signReleaseBundle when the key is missing, while debug and releaseTest builds, which use the debug key on purpose, keep working anywhere.", no: "The silent fallback to the debug key, which made building on a new computer 'just work' but could publish an update nobody could install." },
+  { t: "Encrypted key backup with gpg", why: "Losing the key ends updates forever; leaking it lets someone sign fake updates. The keystore and its password file are tarred and encrypted with gpg --symmetric (AES-256) under a passphrase only you know, with a README for restoring, and one copy is kept off the computer.", no: "Committing the key to the repo (public, so anyone could sign as you) or keeping the only copy on one laptop." },
+  { t: "Leave silence skipping off", why: "whisper.cpp has built-in voice activity detection that skips silence. Measured on 10 minutes of the real lecture, it was only 10% faster (461 s to 417 s) because the lecturer barely pauses, and it dropped a quiet student's question. Not worth the risk for lectures.", no: "Turning it on by default for speed." },
+];
+
+const BUGS = [
+  { t: "Whisper skipped speech between chunks", tag: "transcription", s: "Some sentences were missing or appeared in the wrong place in the transcript.", c: "Each chunk was given the previous chunk's text as a prompt. Whisper treated speech that repeated those words as already handled.", f: "The carried-over prompt was removed.", v: "Re-ran the same audio with whisper-cli on the computer and compared the transcripts." },
+  { t: "Transcription 14× slower in the background", tag: "performance", s: "60 s of audio took 408 s instead of 30 s.", c: "vivo confines background apps to a few cores, so 6 threads were fighting over 5 slow cores.", f: "Threads = fast cores among the CPUs the app is allowed to use, re-checked every chunk. A native abort callback detects when the allowed CPUs shrink, stops within 0.5 s, and retries with fewer threads.", v: "Timed on the phone in the foreground and background." },
+  { t: "Transcription never started in the release build", tag: "android", s: "In the optimised test build, recordings stayed queued forever.", c: "The job was marked expedited and also had a battery-not-low constraint. WorkManager doesn't allow that combination.", f: "Removed expedited. The battery constraint stays.", v: "Caught by the releaseTest smoke test on the phone before shipping." },
+  { t: "Release build was bigger than expected", tag: "build", s: "The release APK still contained x86_64 native libraries, and R8 failed on a missing class.", c: "Gradle merges ABI filters from defaultConfig into each build type. PdfBox refers to an optional JPEG-2000 decoder that isn't included.", f: "ABI filters are set per build type. Added a -dontwarn rule for com.gemalto.jp2.", v: "Inspected the APK contents: 28.5 MB, arm64 only." },
+  { t: "Speed-test estimates were 2× too optimistic", tag: "measurement", s: "The app predicted far faster transcription than real lectures achieved.", c: "Decoding the short bundled clip is unrealistically cheap (57 ms), unlike a real lecture.", f: "Decode time is now estimated from encode ratios measured with whisper-cli.", v: "Small: predicted ≈ 15 min per hour, measured ≈ 17." },
+  { t: "The lecturer became 15 speakers", tag: "speakers", s: "An 80-minute lecture came out with 15 speakers, 8 of them in the first 10 minutes.", c: "sherpa-onnx's default clustering threshold (0.5) is too strict for a lecturer who moves around and faces the board.", f: "Threshold 0.9, a plain warning in the app, and listen/rename/merge tools.", v: "Re-labelled the real lecture: 8 speakers. After merging by ear, the lecturer has 99% of talk time." },
+  { t: "Speaker panel closed while playing a sample", tag: "compose", s: "Tapping \"Play voice sample\" closed the dialog.", c: "The dialog lived inside a LazyColumn item. Playback auto-scrolled the list, the item scrolled off screen and was disposed, and the dialog went with it.", f: "Moved (hoisted) the dialog state out of the list, and turned off auto-scroll while sampling.", v: "Tested on the phone." },
+  { t: "Notes run ended on a JSON error", tag: "ai", s: "Groq returned 400 \"Failed to validate JSON\" and the whole run failed.", c: "In JSON mode, Groq checks the model's reply and rejects it if it's broken.", f: "A new BadJson error type: repair the failed text Groq sends back, then retry with a \"JSON only\" reminder, then retry without JSON mode.", v: "Unit tests with a fake provider. A real lecture run then completed." },
+  { t: "Anki import lost cards", tag: "export", s: "A card with a quote mark swallowed the next card, and a card starting with \"#\" vanished.", c: "Anki reads its text import as CSV, where \" starts a quoted field and # starts a comment.", f: "Every field is quoted, with inner quotes doubled.", v: "Imported real and awkward cards with Anki 26.09.3's own importer: 28 of 28 matched exactly." },
+  { t: "Q&A credited to a student who was the lecturer", tag: "ai", s: "Notes credited a question's answer to \"Speaker 1\".", c: "The AI only saw speaker names, and the lecturer's merged speaker was named \"Speaker 1\".", f: "The lecturer is always tagged \"Lecturer\" (or \"Name, lecturer\") in the transcript sent to the AI.", v: "A unit test for the tagging rule." },
+  { t: "Restored notes looked lost", tag: "backup", s: "After restoring onto a fresh install, the Notes tab showed \"Set up Notes AI\" instead of the notes.", c: "That screen hid existing notes whenever no API key was set, and keys aren't part of backups.", f: "Existing notes always show. Only \"Make new notes\" asks for setup.", v: "Restored a real 133 MB backup into a separate test copy on the phone and checked every screen." },
+  { t: "A release build could quietly use the debug key", tag: "release", s: "Without keystore.properties (another computer, or a moved file), assembleRelease still succeeded and produced a perfectly normal-looking APK.", c: "The release build type used signingConfigs.findByName(\"release\") ?: debug, so a missing key meant debug signing with no warning. Published as an update, it would fail to install for every existing user.", f: "A Gradle check at task-graph time throws a clear error for packageRelease and signReleaseBundle when the release key's file doesn't exist.", v: "Hid keystore.properties temporarily: assembleRelease and bundleRelease failed with the message; assembleDebug and assembleReleaseTest still built. Restored it: assembleRelease worked and apksigner showed the release certificate. All unit tests passed." },
+  { t: "Misheard technical term", tag: "product", s: "Notes invented \"ASM (Autonomous Sub-Model)\".", c: "Whisper heard \"agent\" as \"ASM\", and the AI expanded the made-up acronym.", f: "Find and replace for transcripts (whole word, match case, match count), plus a hint that lines can be edited.", v: "Regenerated notes: no \"ASM\"; they now say \"each LLM call acts as an agent\"." },
+  { t: "Recommended a model the phone couldn't run", tag: "device check", s: "On a phone with too little RAM or storage for any model, the app still recommended Tiny, and any model could be downloaded.", c: "The recommendation fell back to the first model without checking it fit, and limits were shown as labels, not enforced. Most people also never tapped the optional speed test.", f: "No recommendation and a clear reason when nothing fits; models that don't fit are blocked; the speed test runs on the first visit. Storage stopped counting against already-downloaded models.", v: "Unit tests with simulated 1.2 GB, 3 GB and nearly full phones, and the automatic test on the real phone." },
+];
+
+const ROOT = "app/src/main/java/com/lecturenotes/";
+const FILES = [
+  { g: "Project root", d: "Build setup, the spec, and the third-party speech engine.", items: [
+    { p: "SPEC.md", u: "The living specification: every decision, measurement and milestone.", m: "Updated after each milestone. Some early sections still describe plans that changed (on-device notes was dropped), and later sections record what was actually built.", t: "Everything. It's the first file to read.", q: "Where would a new developer start?", a: "SPEC.md: it explains the user flow, the pipeline, the model table with measured speeds, the notes strategy and the data model, and it records why things were done." },
+    { p: "settings.gradle.kts · build.gradle.kts · gradle.properties", u: "Project-level Gradle setup: plugin versions and the list of modules.", m: "Declares the single :app module and the Android Gradle Plugin (8.5.2), Kotlin (1.9.24) and KSP (Kotlin Symbol Processing, used by Room) plugins.", t: "app/build.gradle.kts", q: "Why is there a build file at the root and another in app/?", a: "The root one configures the whole project (plugins, repositories). The module one configures the app itself: SDK levels, dependencies, build types." },
+    { p: "gradlew · gradlew.bat · gradle/wrapper/", u: "The Gradle wrapper: builds with a pinned Gradle version without installing Gradle.", m: "Run ./gradlew assembleDebug or testDebugUnitTest.", t: "Every build", q: "Why commit the wrapper?", a: "Anyone (or a CI server) gets the exact same Gradle version, so builds are reproducible." },
+    { p: ".gitignore", u: "Keeps build output and secrets out of git.", m: "Ignores build/ folders, local.properties, keystore.properties and *.jks key files.", t: "Release signing", q: "What must never be committed?", a: "The release keystore and its password file. Anyone with them could sign apps as you." },
+    { p: ".gitmodules · third_party/whisper.cpp", u: "whisper.cpp v1.8.7 as a git submodule, compiled from source.", m: "A submodule is another git repository pinned at an exact commit. CMake builds it into a native library for the app.", t: "app/src/main/cpp/CMakeLists.txt", q: "Why a submodule instead of a prebuilt library?", a: "The app builds whisper.cpp itself with the right flags for Android (runtime CPU-variant selection), and the exact version is pinned and easy to upgrade." },
+    { p: "docs/index.html · docs/.nojekyll", u: "The project website, served by GitHub Pages at dasa108.github.io/lecture-notes.", m: "One self-contained HTML page (CSS and a little JavaScript inline, fonts from Google Fonts): what the app does, the model table, privacy, install steps, FAQ and a Download button. .nojekyll tells Pages to serve the folder as-is instead of running the Jekyll site builder.", t: "The v0.1.0 GitHub Release (the APK it links to)", q: "How do people get your app?", a: "From the website: the Download button links to github.com/…/releases/latest/download/LectureNotes.apk, so it always serves the newest release. To ship an update, build with assembleRelease, sign with the same key, and create a new release with the same file name." },
+    { p: "keystore.properties (not in git) · ~/.android/lecturenotes-release.jks", u: "The release signing key and its password file, kept outside the repository.", m: "app/build.gradle.kts reads them to sign release builds. If they're missing, release builds stop with an error (debug and releaseTest builds still work). The key is RSA 4096, certificate CN=Lecture Notes, SHA-256 87509efe…037277, APK Signature Scheme v2. An encrypted copy (gpg, AES-256) lives in ~/LectureNotes-backups/ with a README, and one copy belongs off the computer.", t: "Release build, the backup README", q: "What happens if the key is lost?", a: "No update can ever install over the app people already have. Each of them would have to uninstall, losing their lectures unless they made a backup, and install a build signed with a new key. That's why the key is backed up, encrypted, off the computer." },
+  ]},
+  { g: "app/ (module configuration)", d: "How the Android app module is built and shrunk.", items: [
+    { p: "app/build.gradle.kts", u: "The app's build recipe: SDK levels, native build, build types and dependencies.", m: "minSdk 26, targetSdk 34. CMake builds the JNI code. Debug builds include arm64-v8a and x86_64; release is arm64-v8a only. Release uses R8 and the release key. A releaseTest type is a release copy with a separate app ID. A check at the end stops release packaging when the release key is missing. useLegacyPackaging keeps native libraries as files so whisper.cpp can load CPU variants at runtime. Room exports schema JSON. Robolectric is used for tests.", t: "CMakeLists.txt, proguard-rules.pro, schemas/", q: "Why does releaseTest exist?", a: "It runs the same R8-optimised code as the release build but installs next to the real app with its own data, so it's safe to test, including a full restore." },
+    { p: "app/proguard-rules.pro", u: "Rules telling R8 what not to rename or remove.", m: "Keeps WhisperNative and NativeSegment, and the sherpa-onnx classes, because native code finds them by name. Suppresses a warning about PdfBox's optional JPEG-2000 decoder.", t: "WhisperNative.kt, com/k2fsa/sherpa/onnx", q: "Why do JNI classes need keep rules?", a: "R8 renames classes and fields to shorten them, but C++ looks them up by their original names, so it would crash at runtime." },
+    { p: "app/schemas/com.lecturenotes.data.AppDatabase/1.json … 9.json", u: "Room's exported description of every database version.", m: "Each migration was checked against these files using copies of the real phone database.", t: "AppDatabase.kt", q: "How do you know a migration is correct?", a: "Compare the migrated database with the exported schema for the new version, and run it on a copy of real user data before shipping." },
+  ]},
+  { g: "app/src/main (manifest, native code, resources)", d: "What Android needs to know about the app, plus the C++ bridge.", items: [
+    { p: "AndroidManifest.xml", u: "Declares the app to Android: permissions, screens, services and sharing.", m: "Microphone, foreground-service-microphone, notifications and internet permissions. The Application class, MainActivity with share intent filters for audio, video and documents, RecorderService, a FileProvider for camera videos, backup rules and the network security config.", t: "LectureNotesApp, MainActivity, RecorderService, res/xml", q: "How can other apps share a file into yours?", a: "An intent filter for ACTION_SEND with audio, video and document MIME types. MainActivity reads the shared file's URI and imports it." },
+    { p: "assets/bench30.wav", u: "A 30-second clip of dense speech used by the speed test.", m: "The JFK sample repeated, so every phone is measured on the same audio.", t: "DeviceCheck.kt", q: "Why bundle a test clip?", a: "A fixed input makes speed measurements comparable and repeatable." },
+    { p: "cpp/CMakeLists.txt", u: "Builds whisper.cpp and the JNI bridge into native libraries.", m: "Uses GGML_BACKEND_DL and GGML_CPU_ALL_VARIANTS, so several CPU-optimised versions are built and the best one for the phone is loaded at runtime.", t: "third_party/whisper.cpp, whisper_jni.cpp", q: "Why build every CPU variant?", a: "Phones differ in which CPU instructions they support. Loading the best variant at runtime gives the speed of optimised code without crashing on older chips." },
+    { p: "cpp/whisper_jni.cpp", u: "The C++ bridge between Kotlin and whisper.cpp.", m: "Loads backends, creates and frees a model, transcribes a buffer of samples (greedy decoding, English, non-speech tokens suppressed) and returns segments. Also reports the allowed CPUs (sched_getaffinity) and timings, and supports abort. The abort callback checks every 500 ms whether the allowed CPUs shrank.", t: "WhisperNative.kt", q: "What is JNI?", a: "The Java Native Interface: it lets Kotlin call C or C++ functions in a native library, and the native code call back into Kotlin objects." },
+    { p: "java/com/k2fsa/sherpa/onnx/*.kt", u: "Kotlin wrapper classes copied from the sherpa-onnx project.", m: "OfflineSpeakerDiarization, Speaker (embedding extractor), FeatureConfig and others. The native library expects these exact package and field names, so they stay in that package and have an R8 keep rule.", t: "Diarizer.kt, jniLibs", q: "Why is there code in a package that isn't yours?", a: "sherpa-onnx's JNI library looks up classes by that package name. Its upstream Kotlin API is vendored (copied in) unchanged." },
+    { p: "jniLibs/arm64-v8a · x86_64 (libsherpa-onnx-jni.so, libonnxruntime.so)", u: "Prebuilt native libraries for speaker labelling.", m: "sherpa-onnx v1.13.8 and ONNX Runtime, which runs the neural network models. x86_64 is only for emulators and is left out of release builds.", t: "com/k2fsa/sherpa/onnx", q: "What is ONNX Runtime?", a: "A library that runs neural networks saved in the ONNX format, here the voice segmentation and embedding models." },
+    { p: "res/values · drawable · mipmap", u: "App name, colours, theme, launcher icon and the notification microphone icon.", m: "Most UI colour comes from Compose (ui/theme), so these are minimal.", t: "Manifest, notifications", q: "Why have XML themes if the UI is Compose?", a: "Android uses them for the window and launch screen before Compose draws anything." },
+    { p: "res/xml/backup_rules.xml · data_extraction_rules.xml", u: "What Android's automatic cloud backup may copy.", m: "Excludes the models, audio and the API key file. The app's own Backup & restore covers user data.", t: "SecretStore.kt", q: "Why exclude API keys from backup?", a: "They're encrypted with a key in the phone's Keystore that can't leave the device, so a restored copy couldn't be decrypted, and keys shouldn't travel anyway." },
+    { p: "res/xml/file_paths.xml", u: "Where the FileProvider may share files from.", m: "A cache folder where camera-recorded videos are written. They're deleted once their audio is extracted.", t: "HomeScreen (record video)", q: "Why a FileProvider?", a: "To give the camera app a secure content:// URI to write into, instead of exposing a raw file path." },
+    { p: "res/xml/network_security_config.xml", u: "Allows plain HTTP so Ollama on your own PC works over Wi-Fi.", m: "Built-in cloud providers all use HTTPS.", t: "OpenAiCompatibleClient.kt", q: "Isn't allowing HTTP a risk?", a: "It's limited in practice to a local server the user sets up. A stricter version would allow HTTP only for private LAN addresses." },
+  ]},
+  { g: ROOT + " (app entry)", d: "Where the app starts.", items: [
+    { p: "LectureNotesApp.kt", u: "The Application class: creates shared objects once, when the process starts.", m: "Opens the Room database and creates the model repository, AI settings and app settings. Creates notification channels. Recovers recordings interrupted by a crash. Shows the result of a restore after the restart. Holds appScope, a coroutine scope that outlives screens.", t: "Every package (through context.app)", q: "Why recover recordings at startup?", a: "If the process died mid-recording, the WAV header is incomplete. The app repairs the header, keeps the audio, and queues it for transcription." },
+    { p: "MainActivity.kt", u: "The single activity: shows the Compose UI and receives shared files.", m: "Sets content to AppNav and handles ACTION_SEND intents to import shared audio, video and documents.", t: "AppNav.kt, Importer.kt", q: "Why only one activity?", a: "With Compose, screens are composables switched by a navigation graph, which is simpler than many activities." },
+    { p: "AppSettings.kt", u: "Small app-wide preferences exposed as live values.", m: "Auto speaker labelling, audio compression, the notes length limit, and flashcard and quiz counts, stored in SharedPreferences and exposed as StateFlows so the UI updates instantly.", t: "SettingsScreens, NotesPane, ProcessWorker", q: "What's a StateFlow?", a: "A Kotlin coroutine stream that always holds a current value. Compose collects it and redraws when it changes." },
+  ]},
+  { g: ROOT + "audio/", d: "Getting sound in, in Whisper's format, and keeping it small.", items: [
+    { p: "RecorderService.kt", u: "Records lectures in a foreground service.", m: "AudioRecord at 16 kHz mono 16-bit, written straight to WAV, with pause and resume, periodic flushes, and a notification. Keeps going with the screen off.", t: "Wav.kt, RecordScreen, Jobs", q: "Why a foreground service?", a: "Android may kill or throttle background work. A foreground service with a visible notification is allowed to keep the microphone running for hours." },
+    { p: "Wav.kt", u: "Helpers for the app's single audio format, 16 kHz mono PCM16 WAV.", m: "Writes and repairs headers, counts samples, and converts between samples and milliseconds.", t: "Recorder, decoder, compressor", q: "Why standardise on one format?", a: "Whisper needs 16 kHz mono samples. Converting everything once, up front, keeps every later step simple." },
+    { p: "Resampler.kt", u: "Converts 44.1/48 kHz audio down to 16 kHz without distortion.", m: "A streaming windowed-sinc low-pass filter, so high frequencies don't fold back into the speech band (aliasing).", t: "AudioDecoder.kt", q: "What is aliasing?", a: "When you lower the sample rate without filtering, sounds above the new limit reappear as false lower tones. A low-pass filter removes them first." },
+    { p: "AudioDecoder.kt", u: "Decodes any audio Android can read into the app's WAV.", m: "MediaExtractor and MediaCodec, then downmix and resample. Also probes duration.", t: "ProcessWorker, Importer", q: "How do you decode mp3 or m4a on Android?", a: "MediaExtractor reads the compressed frames and MediaCodec, the hardware or software decoder, turns them into PCM." },
+    { p: "AudioExtractor.kt", u: "Copies the audio track out of a video without re-encoding.", m: "MediaExtractor into MediaMuxer: AAC into .m4a, Opus into .webm. A 7-minute video's audio takes seconds, and the video isn't kept.", t: "Importer.kt", q: "Why not keep the video?", a: "Only the audio is transcribed. Keeping just the track saves gigabytes and time." },
+    { p: "Importer.kt", u: "Turns a shared or picked file into a new lecture.", m: "Creates the recording row, stores the source, and queues processing.", t: "Jobs, ProcessWorker", q: "What happens when you share a video to the app?", a: "Importer creates a lecture, AudioExtractor pulls out the audio, then ProcessWorker decodes and transcribes it while you watch progress." },
+    { p: "AudioCompressor.kt", u: "Re-encodes transcribed audio to small AAC files.", m: "32 kbps .m4a (~14 MB per hour versus ~115 MB as WAV). Verifies the duration before the caller may delete the WAV.", t: "AudioStorage.kt", q: "How do you avoid losing audio during compression?", a: "Check that the new file's duration matches the original within 2 s before deleting the WAV. Otherwise delete the new file instead." },
+    { p: "AudioStorage.kt", u: "Keeps lecture audio small, and expands it again when needed.", m: "Compresses after transcription, lists uncompressed recordings for \"Free up space\", and decodes back to a temporary WAV for re-transcribing or speaker labelling.", t: "CompressWorker, SpeakerWorker", q: "What if a job needs the WAV after compression?", a: "withWav decodes the .m4a to a temporary WAV in the cache, runs the job, and deletes it afterwards." },
+  ]},
+  { g: ROOT + "data/", d: "The Room database, plus actions that touch several tables or files.", items: [
+    { p: "Entities.kt", u: "The database tables as Kotlin classes, plus status enums.", m: "Recording, Segment, Subject, Notes, ReviewCard, QuizAttempt, Attachment, AttachmentPage, Speaker. Status enums for recordings, notes, attachments and speakers.", t: "Daos.kt, AppDatabase.kt", q: "What does one transcript line look like?", a: "A Segment: id, recordingId, startMs, endMs, text, and an optional speakerId." },
+    { p: "Daos.kt", u: "All database queries.", m: "Data Access Objects: SQL queries, Flows that update the UI live, transactions such as updateTexts for find and replace, speaker moves for merging, and search across titles, transcripts, notes and slides.", t: "Every screen and worker", q: "Why return Flows from DAOs?", a: "Room re-runs the query when the table changes, so a transcript appears line by line as Whisper writes it, with no manual refresh." },
+    { p: "AppDatabase.kt", u: "The Room database definition and its migrations.", m: "Version 9. Eight migrations written by hand (1→2 … 8→9), each adding tables or columns without losing data.", t: "schemas/, Entities.kt", q: "What is a migration?", a: "SQL that upgrades an existing user's database to the new schema, for example ALTER TABLE notes ADD COLUMN quizCount. Without one, Room would refuse to open the old database." },
+    { p: "Library.kt", u: "Actions that span tables and files.", m: "Delete lectures together with their audio and attachments, move lectures between subjects, create and delete subjects.", t: "HomeScreen, SubjectScreen", q: "Why not delete files in the DAO?", a: "DAOs only touch the database. Deleting the files on disk too belongs in a separate layer." },
+    { p: "Backup.kt", u: "One-file backup and safe restore.", m: "Writes a zip with a manifest, the checkpointed database, audio, attachments and typed settings. Restore stages and validates the file, rewrites stored paths for the new install, swaps by rename, and rolls back on failure. Refuses while any job is running.", t: "BackupCard.kt, BackupTest", q: "Why rewrite paths on restore?", a: "Paths are stored in full (/data/user/0/<app id>/files/...). A different install, such as releaseTest, has a different folder." },
+  ]},
+  { g: ROOT + "transcribe/", d: "Background jobs and the transcription loop.", items: [
+    { p: "Jobs.kt", u: "One place that schedules every background job.", m: "WorkManager requests for transcription, model download, speaker labelling, notes, attachment extraction and compression, with unique names so a job isn't queued twice. Transcription isn't expedited because it has a battery constraint.", t: "Every worker", q: "Why WorkManager?", a: "It survives the app being killed and the phone restarting, respects constraints like battery level, and retries failed work." },
+    { p: "ProcessWorker.kt", u: "Decodes and transcribes a lecture chunk by chunk.", m: "Decoding and transcription overlap: the first chunk starts once ~2¾ minutes are decoded. Resumes from transcribedMs, handles CPU shrink and thermal pauses, compresses when done, and can start speaker labelling.", t: "ChunkPlanner, WhisperNative, AudioStorage", q: "How does it resume after being killed?", a: "Each finished chunk's segments and the transcribedMs checkpoint are saved together. The next run starts from that point." },
+    { p: "ChunkPlanner.kt", u: "Decides where to cut the audio into ~2-minute chunks.", m: "Looks near each 2-minute mark for the quietest half-second and cuts there.", t: "ProcessWorker", q: "Why cut at silence?", a: "So words aren't chopped in half. That way no overlap or de-duplication is needed." },
+    { p: "HeavyWork.kt", u: "A lock so only one CPU-heavy job runs at a time.", m: "A Kotlin Mutex shared by transcription and speaker labelling.", t: "ProcessWorker, SpeakerWorker", q: "What is a mutex?", a: "A mutual-exclusion lock: only one coroutine can hold it at a time, and others wait their turn." },
+    { p: "Thermal.kt", u: "Pauses heavy work when the phone is too hot.", m: "Waits at THERMAL_STATUS_SEVERE and resumes at LIGHT, showing \"letting the phone cool down\".", t: "ProcessWorker, SpeakerWorker", q: "Why pause instead of continuing?", a: "Android throttles a hot CPU anyway, so continuing is slow, drains the battery and can get the app killed." },
+    { p: "ModelDownloadWorker.kt", u: "Downloads Whisper models reliably.", m: "Resumes with HTTP Range requests and verifies the SHA-256 hash before use.", t: "ModelRepository, ModelsScreen", q: "Why verify a hash?", a: "A cut-off or corrupted download would crash or produce garbage. The hash proves the file is exactly the expected one." },
+    { p: "TranscriptReplace.kt", u: "Find and replace logic for transcripts.", m: "Builds a safe pattern with optional whole-word and match-case options, counts matches, and returns only the lines that change.", t: "RecordingScreen, TranscriptReplaceTest", q: "How do you stop \"ASM\" from matching inside \"plasma\"?", a: "Whole-word mode checks that no letter or digit comes before or after the match (lookarounds), and the search text is escaped so dots aren't wildcards." },
+  ]},
+  { g: ROOT + "whisper/", d: "The speech models: loading, choosing and measuring.", items: [
+    { p: "WhisperNative.kt", u: "The Kotlin side of the JNI bridge.", m: "Declares the external native functions, wraps a loaded model in a Closeable WhisperContext, and maps native segments to Kotlin.", t: "whisper_jni.cpp, ProcessWorker", q: "Why Closeable?", a: "The model lives in native memory that Kotlin's garbage collector can't see. close() frees it deterministically." },
+    { p: "WhisperModels.kt", u: "The model table and the rules for what a phone can run.", m: "Tiny, Base, Small and Medium English quantized models with size, minimum RAM, download URL, hash, and measured encode and decode cost relative to Tiny. fitsMemory / fitsStorage / whyNot decide whether a model can be downloaded or used and explain why not. recommend picks the most accurate fitting model that does an hour of lecture in 20 minutes or less, and returns nothing when no model fits. The RAM minimums (2/3/4/6 GB) leave at least 6× the measured peak memory as headroom.", t: "DeviceCheck, ModelRepository, ModelsScreen, RecommendTest", q: "How do you decide a model would crash a phone?", a: "Measure its peak memory while transcribing (Tiny 104 MB up to Medium 843 MB, plus ~80 MB for the app), then require total RAM with at least 6× that headroom, because Android kills large apps long before RAM is full. Models below the line can't be downloaded or used." },
+    { p: "ModelRepository.kt", u: "Which models are downloaded, which one is used, and the saved speed test.", m: "Stores the model folder, the chosen model, the speed-test result and whether the automatic first-visit test has run. activeModel only returns a model that is downloaded and fits the phone's memory, so transcription can never use one that's too big.", t: "ModelsScreen, ProcessWorker, ModelDownloadWorker", q: "What if a too-big model is already on the phone?", a: "It can't be selected, and activeModel skips it, so ProcessWorker falls back to a model that fits." },
+    { p: "DeviceInfo.kt", u: "The hardware scan.", m: "Total RAM (ActivityManager), chip name (Build.SOC_MODEL on Android 12+, else Build.HARDWARE), core count, fast cores (from each core's cpuinfo_max_freq), and free storage (StatFs). Also works out threads for the current thread from the allowed CPUs.", t: "DeviceCheck, WhisperModels, ProcessWorker", q: "How do you find the fast cores?", a: "Read each core's maximum frequency from /sys and count the cores faster than the slowest group, intersected with the CPUs this thread may run on." },
+    { p: "DeviceCheck.kt", u: "The speed test.", m: "Downloads Tiny if needed, transcribes the bundled clip twice (warm-up, then timed), and saves Tiny's encode time. Minutes per lecture hour for each model = Tiny encode × (encode ratio + decode ratio) × 120. It runs automatically the first time Speech models is opened, and on demand after that.", t: "ModelsScreen, WhisperModels, RecommendTest", q: "Why run the speed test automatically?", a: "A memory-only guess can be far off: a slow 4 GB phone would be told to use Small and wait over an hour per lecture. Measuring on first visit makes the recommendation fit the actual phone." },
+  ]},
+  { g: ROOT + "speakers/", d: "Who is speaking.", items: [
+    { p: "Diarizer.kt", u: "Runs sherpa-onnx speaker diarization in 10-minute pieces.", m: "pyannote segmentation finds speech turns, and CAM++ embeddings describe each voice. Clustering threshold 0.9. Pieces keep memory small (80 minutes of float audio is ~300 MB).", t: "SpeakerLinker, SpeakerWorker", q: "What is diarization?", a: "Working out \"who spoke when\": splitting audio into turns and grouping turns by voice, without knowing who the people are." },
+    { p: "SpeakerLinker.kt", u: "Connects the speakers found in each piece into one list.", m: "Cosine similarity of voice embeddings to running-average centroids links pieces. Then assigns each transcript line the speaker with most overlap, totals talk time, and merges adjacent turns.", t: "Diarizer, SpeakerLinkerTest", q: "What is cosine similarity?", a: "A score from −1 to 1 for how closely two vectors point the same way. Two embeddings of the same voice score high." },
+    { p: "SpeakerModels.kt", u: "Downloads the two speaker models on first use (~31 MB).", m: "Segmentation (1.5 MB int8) and embedding (30 MB), size-checked.", t: "SpeakerWorker", q: "Why download on first use?", a: "Most users never label speakers. Downloading lazily keeps the app small." },
+    { p: "SpeakerWorker.kt", u: "The background job that labels speakers.", m: "Takes the heavy-work lock, expands compressed audio, reports progress, pauses when hot, and saves speakers and segment labels.", t: "Diarizer, AudioStorage, Jobs", q: "How long does it take?", a: "About 13 minutes for an 80-minute lecture with the app open on the test phone." },
+    { p: "SpeakerEdits.kt", u: "User corrections: merging two speakers.", m: "Moves lines, combines talk time, keeps the lecturer flag, and renumbers default names, all in one transaction.", t: "SpeakersRow, RecordingScreen", q: "Why a transaction?", a: "Moving lines and deleting the old speaker must both happen or neither, otherwise lines would point to a deleted speaker." },
+  ]},
+  { g: ROOT + "notes/", d: "Turning a transcript into study notes with an AI provider.", items: [
+    { p: "LlmClient.kt", u: "The common interface for every AI provider, plus its error types.", m: "One method to send a system and user prompt. Errors: TooLarge, RateLimited, Auth, BadJson and others, so the generator can react to each.", t: "OpenAiCompatibleClient, AnthropicClient, NotesGenerator", q: "Why an interface?", a: "The notes logic works with any provider. Adding one means writing one small client." },
+    { p: "OpenAiCompatibleClient.kt", u: "Talks to Groq, OpenRouter, Cerebras, Ollama, or any /v1/chat/completions server.", m: "JSON mode, reads x-ratelimit headers, maps 413 and limit messages to TooLarge, and 400 json_validate_failed to BadJson.", t: "Providers, LlmClient", q: "How does one client serve many providers?", a: "They all copy OpenAI's API shape, so only the base URL, key and model change." },
+    { p: "AnthropicClient.kt", u: "Talks to Claude through the Anthropic Messages API.", m: "Different headers and request shape from OpenAI's, but the same LlmClient interface.", t: "Providers", q: "Why a separate client for Claude?", a: "Anthropic's API isn't OpenAI-compatible: the key goes in an x-api-key header, the system prompt is a separate field, and the reply has a different shape." },
+    { p: "Providers.kt", u: "Built-in provider presets and the saved choice.", m: "Groq, OpenRouter, Cerebras, Ollama, Custom and Claude, each with a base URL and label. ProviderSettings stores the active provider, model and context size.", t: "SettingsScreens, NotesWorker", q: "How are model lists kept current?", a: "They're fetched live from the provider's /v1/models endpoint, because free models change often." },
+    { p: "SecretStore.kt", u: "Stores API keys encrypted.", m: "AES encryption with a key that never leaves the Android Keystore. The prefs file is excluded from backups.", t: "Providers, NotesWorker", q: "Where is the API key?", a: "Encrypted in secrets.xml. The decryption key lives in the phone's secure hardware, so a copied file is useless elsewhere." },
+    { p: "Prompts.kt", u: "Builds the instructions sent to the AI.", m: "Base rules (cover everything, labelled \"going deeper\" explanations, mark [unclear], don't expand unknown acronyms, plain-text formulas), subject guidance, style, length limit, counts, slides, speaker tags, and the JSON schema. Subjects can add instructions or replace the guidance entirely.", t: "NotesGenerator, SubjectScreen", q: "What made the notes better?", a: "Telling the model to cover what was said and to explain beyond it, but to label extra explanations as AI-added and keep bullets short." },
+    { p: "NotesGenerator.kt", u: "The engine: one pass or map-reduce, with every recovery path.", m: "Measures prompt overhead, fits parts to the learned limit, paces for rate limits, saves partial results to resume, repairs or retries bad JSON (3 attempts), merges parts, spreads flashcards and questions evenly, and applies counts.", t: "LlmClient, Prompts, NotesLength, NotesGeneratorTest", q: "How do you merge parts?", a: "Concatenate the sections in order, de-duplicate and evenly spread key terms, cards and questions, then make one small request for the overall title and overview." },
+    { p: "NotesLength.kt", u: "Word budgets and the code that enforces them.", m: "Brief, Standard and Detailed get 10%, 20% and 35% of transcript words. If the reading part is more than 25% over, trims explanations, then trailing bullets, then extra terms, never headings, cards or the quiz.", t: "NotesGenerator, NotesLengthTest", q: "Why enforce in code?", a: "Models don't reliably follow length instructions. Code makes the limit dependable." },
+    { p: "StudyNotes.kt", u: "Parses the AI's JSON into the notes model.", m: "Sections, bullets, explanations, terms, class Q&A, flashcards, quiz. Validates timestamps and slide numbers, strips inline timestamps, and renders Markdown.", t: "NotesPane, NotesExport, CardSync", q: "What if the AI gives a timestamp past the end?", a: "It's dropped (null), so a tap never jumps outside the recording." },
+    { p: "SlidePicker.kt", u: "Chooses which slides to send with each part of the transcript.", m: "TF-IDF-style word overlap, within a token budget, returned in slide order.", t: "NotesGenerator", q: "Why not send every slide?", a: "It wastes the token budget. The slides that share the most distinctive words are the ones that matter." },
+    { p: "NotesWorker.kt", u: "Background job that makes notes for one lecture.", m: "Builds the transcript lines with speaker tags (the lecturer always marked), loads slides and settings, runs NotesGenerator, saves progress and results, and syncs flashcards.", t: "NotesGenerator, CardSync, Jobs", q: "Can you leave the screen while notes generate?", a: "Yes. It's a WorkManager job, and progress is saved in the notes row." },
+    { p: "NotesExport.kt", u: "Saves notes as PDF, Markdown, or an Anki import file.", m: "PDF drawn with Android's PdfDocument. Anki file is tab-separated with header lines, every field quoted so quote marks and # survive.", t: "RecordingScreen", q: "How did you know the Anki export worked?", a: "Imported it with Anki's own importer (the official anki package, 26.09.3): 28 of 28 cards matched exactly, including awkward ones." },
+  ]},
+  { g: ROOT + "docs/", d: "Slides, PDFs, photos and text files.", items: [
+    { p: "DocumentImporter.kt", u: "Imports documents, as a new slides-only lecture or attached to one.", m: "Copies the file into app storage and queues extraction.", t: "AttachmentWorker, HomeScreen, SlidesPane", q: "Can there be a lecture with no recording?", a: "Yes: status DOCUMENT, no audio. Notes come from the slides alone and cite \"Slide N\"." },
+    { p: "TextExtractor.kt", u: "Pulls text out of documents on the phone.", m: "PDF text layer through PdfBox. Pages with under 20 characters are treated as scans: rendered with PdfRenderer, then OCR'd with ML Kit. PPTX: slide XML text runs plus speaker notes. Images: OCR. Text: ~250-word pages.", t: "AttachmentWorker", q: "What's OCR?", a: "Optical character recognition: reading text from an image. ML Kit's offline Latin model does it on the phone." },
+    { p: "AttachmentWorker.kt", u: "Background job that extracts text page by page.", m: "Saves each page as it's read, so long PDFs show progress and partial results.", t: "TextExtractor, Daos", q: "Why page by page?", a: "Progress is visible, and a crash halfway through keeps the finished pages." },
+  ]},
+  { g: ROOT + "study/", d: "Learning from the notes.", items: [
+    { p: "Scheduler.kt", u: "The SM-2 spaced-repetition maths.", m: "New card: Again 1 min, Hard 6 min, Good 1 day, Easy 4 days. Then intervals grow by the card's ease factor (minimum 1.3), capped at 365 days.", t: "StudyScreen, SchedulerTest", q: "Explain SM-2 in one breath.", a: "Each card has an ease factor. Getting it right multiplies its interval by the ease, and getting it wrong resets the interval and lowers the ease, so hard cards come back sooner." },
+    { p: "CardSync.kt", u: "Keeps the review deck in step with the notes.", m: "Adds new cards and removes gone ones. Keeps the schedule of unchanged questions when notes are regenerated.", t: "NotesWorker, Daos", q: "What happens to progress when notes are regenerated?", a: "Cards whose question didn't change keep their schedule, so you don't lose your review history." },
+    { p: "StudyScreen.kt", u: "The study picker and flashcard review.", m: "Choose lectures (per-lecture due, new and total counts, subject chips). Review due cards, or cram all cards for an exam without changing the schedule.", t: "Scheduler, Daos", q: "Why a lecture picker?", a: "You asked for it: students revise specific lectures before a specific exam." },
+    { p: "QuizScreen.kt", u: "One question at a time with instant feedback.", m: "Explanation and a \"hear it in the lecture\" link. Short answers are self-graded. Attempts are saved for last and best scores.", t: "Daos (quiz attempts)", q: "How do quiz answers link to the lecture?", a: "Each question carries a timestamp. Tapping it opens the lecture's player at that moment." },
+  ]},
+  { g: ROOT + "ui/", d: "Jetpack Compose screens.", items: [
+    { p: "AppNav.kt", u: "The navigation graph: which screen shows for which route.", m: "Home, record, lecture, subject, study, quiz, settings, Notes AI and speech models.", t: "All screens", q: "How does navigation work in Compose?", a: "navigation-compose maps route strings to composables, and arguments such as the lecture id are passed in the route." },
+    { p: "HomeScreen.kt", u: "The library: subjects, search, study banner, record and import.", m: "Filter chips per subject, lectures grouped by date, multi-select to move or delete, search across titles, transcripts, notes and slides.", t: "Library, Daos, Importer", q: "What can search find?", a: "Titles, every transcript line (opening at that timestamp), notes text and slide text." },
+    { p: "RecordScreen.kt", u: "The recording screen.", m: "Start, pause, resume and stop, with a level meter, talking to RecorderService.", t: "RecorderService", q: "What if the app is closed mid-recording?", a: "The service keeps recording. If the process dies, the app recovers the audio at the next start." },
+    { p: "RecordingScreen.kt", u: "One lecture: Transcript, Slides and Notes tabs with an audio player.", m: "Live transcript, line editing, find and replace, speakers row and panel, exports, generating notes with style, limit and counts, re-transcribing.", t: "NotesPane, SlidesPane, SpeakersRow, Jobs", q: "How does tapping a line play the audio?", a: "Each segment has a start time. The player seeks there and plays." },
+    { p: "NotesPane.kt", u: "The Notes tab.", m: "Generate card (style, length limit switch, count steppers), progress and errors, rendered notes with timestamp and slide chips, class Q&A, study shortcuts. Existing notes always show, even without an AI set up.", t: "RecordingScreen, StudyNotes", q: "Why show notes without an API key?", a: "After restoring onto a fresh install there's no key yet. Hiding the notes made it look like data was lost." },
+    { p: "SlidesPane.kt", u: "The Slides tab.", m: "Attach files, see extraction progress, rendered pages with their text, remove attachments.", t: "DocumentImporter, Daos", q: "How are slides numbered across files?", a: "1 to n across all of a lecture's attachments, the same numbers the notes cite." },
+    { p: "SpeakersRow.kt", u: "Speaker chips and the speaker panel.", m: "Talk-time percentages, a plain warning that labels can be wrong, voice samples, rename, lecturer flag, and Same person as… → Merge.", t: "SpeakerEdits, RecordingScreen", q: "How does the user check a label?", a: "Play up to 5 samples of that voice (its longest lines, up to 8 s each), then rename or merge." },
+    { p: "SubjectScreen.kt", u: "Edit a subject: name, colour, prompt template, extra instructions or custom prompt.", m: "Includes a preview of exactly what would be sent for a lecture in this subject.", t: "Prompts", q: "Why per-subject prompts?", a: "A maths lecture needs formulas and worked steps, while a history lecture needs dates and causes. One prompt can't fit all subjects." },
+    { p: "Subjects.kt", u: "Subject colours and shared subject UI.", m: "Mid-tone colours that read on light and dark backgrounds, dots and chips.", t: "HomeScreen, SpeakersRow", q: "Why mid-tones?", a: "So one palette works in both light and dark themes." },
+    { p: "SettingsScreens.kt", u: "Settings: speech models, Notes AI, storage, backup, auto speakers.", m: "Provider setup with key test and live model list, compression switch, \"Free up space\".", t: "Providers, SecretStore, AppSettings", q: "How does \"Test key\" work?", a: "It makes a minimal request and loads the model list, so a wrong key fails immediately with a clear message." },
+    { p: "ModelsScreen.kt", u: "Choose and download a speech model; the speed test runs here.", m: "Shows the scanned hardware, the recommendation and \"1-hour lecture ≈ N min\" for each model. Starts the speed test on the first visit. Models that don't fit are greyed out with the reason, a slow phone gets a warning, and a phone that can't run any model is told so (slides-only notes still work).", t: "DeviceCheck, WhisperModels, ModelDownloadWorker", q: "What does a 3 GB phone see?", a: "Tiny and Base available, Small and Medium greyed out with \"Needs 4 GB of RAM; this phone has 3.0 GB…\", and a recommendation based on its own speed test." },
+    { p: "BackupCard.kt", u: "The Backup & restore card.", m: "Uses the system file picker to save or open a zip, shows progress, confirms before replacing, and restarts the app after a restore. Runs in appScope so leaving Settings doesn't cut a backup short.", t: "Backup.kt", q: "Why restart after restoring?", a: "The database was closed and replaced, and every screen holds stale data. A clean start reopens everything correctly." },
+    { p: "Common.kt · theme/Theme.kt", u: "Shared helpers (status labels, progress line, byte formatting) and the Material 3 theme.", m: "Theme supports dark mode and dynamic colour.", t: "All screens", q: "What is Material 3?", a: "Google's current design system. Compose ships its components (buttons, cards, dialogs)." },
+  ]},
+  { g: "app/src/test/ (automated tests)", d: "52 tests run on the computer with ./gradlew testDebugUnitTest.", items: [
+    { p: "notes/NotesGeneratorTest.kt", u: "Tests the notes engine with a fake AI provider.", m: "One-pass, splitting under a 6k limit, resume, JSON repair, rate-limit wait, timestamp validation.", t: "NotesGenerator", q: "How do you test code that calls an AI?", a: "Replace the real client with a fake that returns scripted replies and errors, so every path is tested without the network." },
+    { p: "notes/NotesLengthTest.kt · CountsTest.kt · SlidesNotesTest.kt", u: "Length budgets, flashcard and quiz counts, and slides-only notes.", m: "Includes the bug where asking for 0 items returned all of them.", t: "NotesLength, NotesGenerator", q: "Give an example of a test catching a bug.", a: "spread(max = 0) returned every item instead of none. A test now pins that 0 means empty." },
+    { p: "speakers/SpeakerLinkerTest.kt", u: "Linking speakers across pieces and assigning lines.", m: "Pure Kotlin, no native libraries needed.", t: "SpeakerLinker", q: "Why move logic out of Diarizer for testing?", a: "Diarizer loads native libraries, which fail in JVM tests. The pure maths lives in SpeakerLinker, which tests can load." },
+    { p: "study/SchedulerTest.kt", u: "SM-2 intervals and ease changes.", m: "", t: "Scheduler", q: "Why test a small formula?", a: "Scheduling mistakes are invisible for days or weeks. Tests catch them immediately." },
+    { p: "whisper/RecommendTest.kt", u: "The model rules: recommendation, blocking and messages.", m: "Speed estimates match the test phone, RAM and storage limits, no Medium without a speed test, the fastest fitting model on a very slow phone, no recommendation when nothing fits, RAM blocking even for downloaded models, and storage only checked before downloading.", t: "DeviceCheck, WhisperModels", q: "What does it guarantee?", a: "The app never recommends or lets you use a model the phone can't hold, and always explains why." },
+    { p: "TranscriptReplaceTest.kt", u: "Find and replace, and the lecturer tag.", m: "Whole word, match case, literal replacement text, blank search; the lecturer always tagged.", t: "TranscriptReplace, NotesWorker", q: "Why test that \"$1\" is replaced literally?", a: "In regex replacement, $1 means \"group 1\". The user's text must be inserted exactly as typed." },
+    { p: "data/BackupTest.kt", u: "Backup and restore with real Android storage, using Robolectric.", m: "Full round trip, bad and malicious files rejected without touching data, and path rewriting.", t: "Backup", q: "What is Robolectric?", a: "A library that runs Android framework code (SQLite, files, SharedPreferences) on the computer's JVM, so Android-dependent code is tested without a phone." },
+  ]},
+];
+
+const QUESTIONS = [
+  { c: "Architecture", q: "Walk me through what happens from pressing record to seeing flashcards.", a: "RecorderService writes 16 kHz WAV. On stop, Jobs queues ProcessWorker, which chunks the audio at silences and runs whisper.cpp through JNI, saving segments after each chunk. Optionally, SpeakerWorker labels speakers. Tapping Generate notes queues NotesWorker: it builds timestamped lines, sends them (one pass or split) to the chosen AI provider, validates the JSON and saves the notes. CardSync turns the flashcards into an SM-2 review deck." },
+  { c: "Architecture", q: "Why is there no backend server?", a: "Transcription happens on the phone, and notes go straight from the phone to the provider with the user's own key. That means no hosting cost, no account system, and no stored user data to protect." },
+  { c: "Architecture", q: "How is the code organised?", a: "By feature packages: audio (capture and format), transcribe (jobs and chunking), whisper (models and native bridge), speakers, docs (slides), notes (AI), study, data (Room and backup), and ui (Compose screens)." },
+  { c: "Architecture", q: "What would break if the app was killed mid-transcription?", a: "Nothing is lost. Segments and the transcribedMs checkpoint are saved per chunk, and WorkManager re-runs the job, which resumes from the checkpoint." },
+  { c: "Android", q: "Why WorkManager instead of plain coroutines?", a: "Coroutines die with the process. WorkManager persists jobs, restarts them after a kill or reboot, applies constraints such as battery not low, and gives each job a unique name so it isn't queued twice." },
+  { c: "Android", q: "What is a foreground service and why use one for recording?", a: "A service with a persistent notification. Android lets it run long and keep the microphone with the screen off. Without one, a 3-hour recording would be stopped." },
+  { c: "Android", q: "How does the UI update live while transcribing?", a: "Room DAOs return Flows. Compose collects them as state, so each newly saved segment appears automatically." },
+  { c: "Android", q: "What is R8 and what went wrong with it?", a: "R8 shrinks and renames code for release. JNI classes need keep rules because native code finds them by name. PdfBox referenced a missing optional class, which needed a -dontwarn rule." },
+  { c: "Android", q: "Why can't you install the release build over the debug build?", a: "They're signed with different keys. Android only accepts an update signed with the same key as the installed app, so switching required a backup, uninstall and restore." },
+  { c: "Audio & Whisper", q: "Why 16 kHz mono?", a: "Whisper was trained on 16 kHz mono audio. Recording directly in that format avoids converting later, and speech doesn't need higher rates." },
+  { c: "Audio & Whisper", q: "How did you choose the thread count?", a: "The fast cores among the CPUs the app is currently allowed (sched_getaffinity), re-checked every chunk. Oversubscribing restricted cores was 14× slower. If the allowed set shrinks mid-chunk, a native abort stops Whisper and the chunk is retried." },
+  { c: "Audio & Whisper", q: "How does the app recommend a model?", a: "On the first visit to Speech models it scans the hardware (RAM, chip, fast cores, storage) and runs a speed test: Tiny on a bundled 30-second clip, scaled by each model's measured encode and decode ratios to estimate minutes per hour. It recommends the most accurate model that fits and does an hour in 20 minutes or less. Models that don't fit are blocked with the reason." },
+  { c: "Audio & Whisper", q: "Why not pass the previous chunk's text to Whisper as context?", a: "On the device it made Whisper skip or misplace speech that repeated the prompt's words. Removing it fixed the transcripts, which was confirmed by comparing runs with whisper-cli." },
+  { c: "Audio & Whisper", q: "How are videos handled?", a: "Only the audio track is copied out with MediaExtractor and MediaMuxer, without re-encoding. It takes seconds, and the video itself is never stored." },
+  { c: "Audio & Whisper", q: "How does speaker labelling work?", a: "sherpa-onnx segmentation finds turns, and CAM++ produces a voice embedding per speaker. Audio is processed in 10-minute pieces, and speakers are linked across pieces by cosine similarity to running-average centroids. Each transcript line gets the speaker it overlaps most." },
+  { c: "AI notes", q: "How do you handle a lecture longer than the model's limit?", a: "Map-reduce: split into parts sized to the learned per-request limit, generate the same JSON for each part, merge in code, then make one small request for the title and overview." },
+  { c: "AI notes", q: "How do you deal with free-tier rate limits?", a: "Read the x-ratelimit headers and pace requests. On 429, wait for retry-after. Learn the real token cap from 413 errors. Save finished parts so a failed run resumes instead of starting over." },
+  { c: "AI notes", q: "What if the model returns broken JSON?", a: "First repair it (for Groq, from the failed_generation text it returns). Then retry with a \"JSON only\" reminder, and finally retry without JSON mode. Up to 3 attempts per call." },
+  { c: "AI notes", q: "How do you stop the AI making things up?", a: "The rules say to cover only what was said, mark unclear audio as [unclear], not expand acronyms it doesn't know, and label any extra explanation as AI-added. Transcript errors still leak through, which is why find and replace exists (\"ASM\" → \"agent\")." },
+  { c: "AI notes", q: "How is note length controlled?", a: "A budget (10/20/35% of transcript words by style) is split across parts and stated in each prompt. If the result is still more than 25% over, code trims explanations and trailing bullets. A No-limit mode skips both." },
+  { c: "AI notes", q: "Why did you drop on-device notes?", a: "A model small enough for a phone writes much weaker notes, and running it after Whisper would add heat and battery drain. Free cloud tiers gave better notes at no cost." },
+  { c: "Data & storage", q: "How do you change the database without losing data?", a: "Room migrations: hand-written SQL for each version step (1→9), verified against the exported schema JSON on copies of the real phone database." },
+  { c: "Data & storage", q: "How are API keys protected?", a: "Encrypted with AES using a key held in the Android Keystore that never leaves the phone, and excluded from every kind of backup." },
+  { c: "Data & storage", q: "How does restore avoid corrupting data?", a: "It unpacks to a staging folder and validates the format, database version and integrity, and rejects paths that escape the folder. It rewrites stored paths, then swaps folders by rename and rolls back if any step fails." },
+  { c: "Data & storage", q: "How much space does a lecture take?", a: "About 115 MB per hour as WAV while transcribing, then about 14 MB per hour after AAC compression, which is verified by duration before the WAV is deleted." },
+  { c: "Testing & release", q: "How did you test this?", a: "52 unit tests: a fake AI provider for the notes engine, pure-logic tests for scheduling, speakers and recommendation, and Robolectric for backup. Every feature was also tried on a real phone with a real 80-minute lecture, and exports were checked with Anki's own importer." },
+  { c: "Testing & release", q: "Tell me about a bug a test environment caught before users did.", a: "The releaseTest build (R8 code, separate app ID) showed transcription never starting, because WorkManager rejects expedited work that has a battery constraint. Removing expedited fixed it." },
+  { c: "Testing & release", q: "How did you make the release APK smaller?", a: "arm64-only native libraries, set per build type because Gradle merges ABI filters, plus R8 shrinking: 75 MB down to 28.5 MB." },
+  { c: "Testing & release", q: "How did you test restore without risking real data?", a: "Made a real backup from the real app (read-only), then restored it into the releaseTest copy, which has separate data. That test found that restored notes were hidden without an API key." },
+  { c: "Reflection", q: "What would you do differently?", a: "Set up continuous integration (CI) and a GitHub remote from day one. Add instrumented UI tests. Build Backup & restore before the first real data, not after. Test every AI provider with real keys, not just Groq." },
+  { c: "Reflection", q: "What's the weakest part of the app today?", a: "Speaker labels can still split or mix voices and need a human to merge them. Whisper mishears technical terms, which the unused slide-vocabulary hint might help with. Only Groq has been tested end to end." },
+  { c: "Reflection", q: "What did you learn about phones?", a: "Real devices differ a lot from specs: vivo confines background apps to slow cores, long jobs overheat the phone, and only on-device measurement gives honest speed estimates." },
+  { c: "Reflection", q: "What would you build next?", a: "The slide-vocabulary hint for Whisper (test it carefully, since prompts hurt before), an .apkg Anki package, and HTTP allowed only for local network addresses." },
+  { c: "Audio & Whisper", q: "How do you stop a speech model crashing a low-end phone?", a: "Measure each model's peak memory while transcribing (Tiny 104 MB to Medium 843 MB, plus ~80 MB for the app), set each model's minimum RAM to leave at least 6× headroom, and block models below it: no download, no selection, and transcription never uses them." },
+  { c: "Reflection", q: "Did you try anything that didn't make it in?", a: "Silence skipping with whisper.cpp's built-in voice detection. On 10 minutes of a real lecture it was only 10% faster and dropped a quiet student's question, so I left it off. On-device notes (M6) were also dropped as too weak and too hot on a phone." },
+  { c: "Testing & release", q: "How is the app distributed, and how do updates work?", a: "The code is public on GitHub. A website on GitHub Pages explains the app and links to the APK on a GitHub Release. Updates are new releases signed with the same key, so Android installs them over the old version and keeps the user's data. A different key would force an uninstall." },
+  { c: "Testing & release", q: "What is app signing, and why can't your key ever change?", a: "Every APK is signed with a private key. Android remembers the certificate of an installed app and only accepts updates signed with the same one. If my key changed, every user would have to uninstall, deleting their lectures, to get the update. So the build refuses to make a release without the key, and the key is backed up, encrypted, off the computer." },
+];
+
+const GLOSSARY = [
+  ["JNI", "Java Native Interface. Lets Kotlin call C/C++ code in a native library (.so), and the native code call back."],
+  ["whisper.cpp / GGML", "A C++ port of OpenAI's Whisper speech model. GGML is its tensor library, which runs the model efficiently on CPUs."],
+  ["Quantization", "Storing model weights in fewer bits (here about 5) for smaller, faster models with a small accuracy cost."],
+  ["WAV / PCM", "PCM is raw audio samples. WAV is a file containing PCM plus a short header. The app uses 16 kHz, mono, 16-bit."],
+  ["Resampling / aliasing", "Changing the sample rate. Without a low-pass filter first, high sounds fold back as false low tones (aliasing)."],
+  ["Diarization", "Working out who spoke when, by splitting audio into turns and grouping them by voice."],
+  ["Embedding", "A list of numbers that describes something, here a voice, so similar things get similar numbers."],
+  ["Cosine similarity", "A score from −1 to 1 for how closely two embeddings point the same way. It's used to link voices."],
+  ["Foreground service", "A long-running Android component with a visible notification, allowed to keep working (like recording) in the background."],
+  ["WorkManager", "Android's library for background jobs that must survive app kills and reboots, with constraints and retries."],
+  ["Room / migration", "Room is Android's SQLite database library. A migration upgrades an existing database to a new schema without losing data."],
+  ["Flow / StateFlow", "Kotlin coroutine streams of values. Compose redraws when they emit, so the UI stays live."],
+  ["Jetpack Compose", "Android's modern UI toolkit: screens are Kotlin functions describing the UI for the current state."],
+  ["R8", "The release-build tool that shrinks, optimises and renames code. Needs keep rules for classes used by name."],
+  ["APK signing", "A digital signature on the app file. Android accepts updates only when they're signed with the same key."],
+  ["Map-reduce", "Split a big job into parts (map), process each part, then combine the results (reduce)."],
+  ["Rate limit / 429", "A provider's cap on requests or tokens per minute. HTTP 429 means \"too many requests, wait\"."],
+  ["Token", "The unit AI models count text in, roughly ¾ of a word in English."],
+  ["TF-IDF", "Term frequency × inverse document frequency. It weights words that are distinctive to a slide, used to pick relevant slides."],
+  ["SM-2", "The SuperMemo-2 spaced-repetition algorithm: intervals grow by an ease factor when you remember a card."],
+  ["SAF", "Storage Access Framework: Android's system file picker, used for exports and backups without broad storage permissions."],
+  ["Robolectric", "Runs Android framework code on the computer's JVM so Android-dependent logic can be unit-tested without a phone."],
+  ["Thermal status", "Android's reported device temperature level (0 none … 4 severe … 6 shutdown). The app pauses heavy work at 4."],
+  ["GitHub Pages", "Free static web hosting from a GitHub repository. Here it serves the docs/ folder on main as the project website."],
+  ["GitHub Release", "A tagged version of a repository with downloadable files attached. The APK lives here instead of in git history."],
+  ["Signing keystore (.jks)", "A password-protected file holding the private key that signs release APKs. Not the same thing as the Android Keystore on the phone."],
+  ["Certificate fingerprint", "The SHA-256 hash of the signing certificate. Every genuine release of the app shows the same one (87509efe…037277)."],
+  ["Android Keystore", "Secure, hardware-backed storage for cryptographic keys that can't be exported from the phone."],
+];
+
+/* ---------- render helpers ---------- */
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+$("#decisionCards").innerHTML = DECISIONS.map((d) => `
+  <article class="card"><h3>${esc(d.t)}</h3>
+    <dl><div><dt>Why</dt><dd>${esc(d.why)}</dd></div><div class="rejected"><dt>Rejected</dt><dd>${esc(d.no)}</dd></div></dl>
+  </article>`).join("");
+
+$("#bugCards").innerHTML = BUGS.map((b) => `
+  <article class="card bug"><span class="tag">${esc(b.tag)}</span><h3>${esc(b.t)}</h3>
+    <dl><div><dt>What happened</dt><dd>${esc(b.s)}</dd></div><div><dt>Cause</dt><dd>${esc(b.c)}</dd></div>
+    <div><dt>Fix</dt><dd>${esc(b.f)}</dd></div><div><dt>Verified by</dt><dd>${esc(b.v)}</dd></div></dl>
+  </article>`).join("");
+
+$("#glossList").innerHTML = GLOSSARY.map(([t, d]) => `<div><dt>${esc(t)}</dt><dd>${esc(d)}</dd></div>`).join("");
+
+/* ---------- file explorer ---------- */
+function renderFiles(query) {
+  const q = query.trim().toLowerCase();
+  let shown = 0;
+  const html = FILES.map((grp, gi) => {
+    const items = grp.items.filter((it) => !q || [grp.g, it.p, it.u, it.m, it.t, it.q, it.a].join(" ").toLowerCase().includes(q));
+    if (!items.length) return "";
+    shown += items.length;
+    return `<details class="group" ${q ? "open" : ""} data-g="${gi}">
+      <summary><span class="path">${esc(grp.g)}</span><span class="count">${items.length} item${items.length === 1 ? "" : "s"}</span><span class="gdesc">${esc(grp.d)}</span></summary>
+      ${items.map((it) => `<details class="file">
+        <summary><span class="fname">${esc(it.p)}</span><span class="fpurpose">${esc(it.u)}</span></summary>
+        <div class="fbody">
+          ${it.m ? `<div><span class="k">What's inside</span>${esc(it.m)}</div>` : ""}
+          <div><span class="k">Works with</span><span class="mono">${esc(it.t)}</span></div>
+          <div class="qa"><span><b>Q:</b> ${esc(it.q)}</span><span><b>A:</b> ${esc(it.a)}</span></div>
+        </div></details>`).join("")}
+    </details>`;
+  }).join("");
+  $("#fileGroups").innerHTML = html;
+  $("#fileEmpty").hidden = shown > 0;
+}
+renderFiles("");
+$("#fileSearch").addEventListener("input", (e) => renderFiles(e.target.value));
+$("#expandAll").addEventListener("click", () => document.querySelectorAll("#fileGroups details").forEach((d) => (d.open = true)));
+$("#collapseAll").addEventListener("click", () => document.querySelectorAll("#fileGroups details").forEach((d) => (d.open = false)));
+
+/* ---------- practice ---------- */
+const KEY = "lecture-notes-guide-marks-v1";
+let marks = {};
+try { marks = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { marks = {}; }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(marks)); } catch (e) {} };
+const cats = ["All", ...new Set(QUESTIONS.map((q) => q.c)), "Review again"];
+let filter = "All";
+
+$("#catFilters").innerHTML = cats.map((c) => `<button type="button" class="btn" data-cat="${esc(c)}" aria-pressed="${c === filter}">${esc(c)}</button>`).join("");
+$("#catFilters").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-cat]"); if (!b) return;
+  filter = b.dataset.cat;
+  document.querySelectorAll("#catFilters button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  renderQuestions();
+});
+
+function renderQuestions() {
+  const list = QUESTIONS.map((q, i) => ({ ...q, i })).filter((q) =>
+    filter === "All" ? true : filter === "Review again" ? marks[q.i] === "review" : q.c === filter);
+  $("#questions").innerHTML = list.length ? list.map((q) => `
+    <article class="q" data-i="${q.i}" data-state="${marks[q.i] || ""}">
+      <div class="meta"><span class="cat">${esc(q.c)}</span><span>#${q.i + 1}</span></div>
+      <p class="qt">${esc(q.q)}</p>
+      <div class="ans" hidden><p>${esc(q.a)}</p></div>
+      <div class="actions">
+        <button type="button" class="btn reveal" aria-expanded="false">Show answer</button>
+        <button type="button" class="btn got" aria-pressed="${marks[q.i] === "got"}">Got it</button>
+        <button type="button" class="btn rev" aria-pressed="${marks[q.i] === "review"}">Review again</button>
+      </div>
+    </article>`).join("") : `<p class="empty">Nothing marked “Review again” yet.</p>`;
+  updateProgress();
+}
+$("#questions").addEventListener("click", (e) => {
+  const card = e.target.closest(".q"); if (!card) return;
+  const i = Number(card.dataset.i);
+  if (e.target.closest(".reveal")) {
+    const ans = card.querySelector(".ans"); ans.hidden = !ans.hidden;
+    const btn = card.querySelector(".reveal");
+    btn.textContent = ans.hidden ? "Show answer" : "Hide answer";
+    btn.setAttribute("aria-expanded", String(!ans.hidden));
+    return;
+  }
+  const which = e.target.closest(".got") ? "got" : e.target.closest(".rev") ? "review" : null;
+  if (!which) return;
+  marks[i] = marks[i] === which ? undefined : which;
+  if (!marks[i]) delete marks[i];
+  save();
+  card.dataset.state = marks[i] || "";
+  card.querySelector(".got").setAttribute("aria-pressed", String(marks[i] === "got"));
+  card.querySelector(".rev").setAttribute("aria-pressed", String(marks[i] === "review"));
+  updateProgress();
+});
+function updateProgress() {
+  const got = Object.values(marks).filter((v) => v === "got").length;
+  $("#progText").textContent = `${got} of ${QUESTIONS.length} marked “got it”`;
+  $("#progBar").style.width = `${(got / QUESTIONS.length) * 100}%`;
+}
+$("#resetProg").addEventListener("click", () => { marks = {}; save(); renderQuestions(); });
+renderQuestions();
+
+/* ---------- hero waveform: speech envelope with chunk cuts at quiet moments ---------- */
+(function wave() {
+  const canvas = $("#wave"); const ctx = canvas.getContext("2d");
+  let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const N = 480, total = 8 * 60; // 8 minutes, one bar per second
+  const amp = []; let phrase = 0;
+  for (let i = 0; i < N; i++) {
+    if (phrase <= 0) phrase = 4 + Math.floor(rnd() * 12);
+    phrase--;
+    const pause = phrase === 0 || rnd() < 0.05;
+    amp.push(pause ? 0.04 + rnd() * 0.05 : 0.3 + rnd() * 0.6);
+  }
+  const cuts = [];
+  for (let t = 120; t < total; t += 120) {
+    let best = t, low = 9;
+    for (let s = t - 15; s <= t + 15; s++) if (amp[s] < low) { low = amp[s]; best = s; }
+    cuts.push(best);
+  }
+  function draw() {
+    const css = getComputedStyle(document.documentElement);
+    const w = canvas.clientWidth, h = canvas.clientHeight, dpr = window.devicePixelRatio || 1;
+    canvas.width = w * dpr; canvas.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    const top = 6, bottom = h - 22, mid = (top + bottom) / 2, half = (bottom - top) / 2;
+    const bw = w / N;
+    ctx.fillStyle = css.getPropertyValue("--accent").trim();
+    for (let i = 0; i < N; i++) { const a = amp[i] * half; ctx.fillRect(i * bw, mid - a, Math.max(1, bw * 0.7), a * 2); }
+    ctx.strokeStyle = css.getPropertyValue("--amber").trim(); ctx.fillStyle = css.getPropertyValue("--amber").trim();
+    ctx.font = `11px ${css.getPropertyValue("--font-mono")}`; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]);
+    cuts.forEach((c) => {
+      const x = c * bw + bw / 2; ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+      const label = `${Math.floor(c / 60)}:${String(c % 60).padStart(2, "0")}`;
+      const tw = ctx.measureText(label).width;
+      ctx.fillText(label, Math.min(Math.max(2, x - tw / 2), w - tw - 2), h - 6);
+    });
+    ctx.setLineDash([]);
+  }
+  draw();
+  window.addEventListener("resize", draw);
+  try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", draw); } catch (e) {}
+  new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+})();
+</script>
+
+<!--claude-mermaid-runtime-begin:3477-->
+<style>.mermaid-diagram{margin-block:4px}.mermaid-diagram svg{display:block;margin:0 auto;max-width:100%;height:auto}</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>(function(){
+var CFG={"palettes":{"light":{"surface":"#f4efe4","text":"#42392e","line":"#8a7f6d","border":"#7a6c52","bg":"#fffdf8"},"dark":{"surface":"#262b34","text":"#f2f3f5","line":"#a8adb8","border":"#9aa4b8","bg":"#1f232b"}}};
+if(typeof mermaid==='undefined')return;
+var pres=Array.prototype.slice.call(document.querySelectorAll('pre.mermaid')).filter(function(p){if(p.hasAttribute('data-claude-mermaid-claimed'))return false;p.setAttribute('data-claude-mermaid-claimed','1');return true;});
+if(!pres.length)return;
+var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+var root=document.documentElement;
+var items=pres.map(function(pre){
+var mount=document.createElement('div');mount.className='mermaid-diagram';
+return {pre:pre,mount:mount,src:pre.textContent||''};
+});
+var seq=0;
+var renderGen=0;
+var lastKey='';
+function pageBg(fallback){
+var els=[document.body,document.documentElement];
+for(var i=0;i<els.length;i++){
+var c=els[i]&&getComputedStyle(els[i]).backgroundColor;
+if(c&&c!=='transparent'&&c!=='rgba(0, 0, 0, 0)')return c;
+}
+return fallback;
+}
+function render(){
+var theme=root.getAttribute('data-theme');
+var dark=theme==='dark'||(!!(mq&&mq.matches)&&theme!=='light');
+var pal=dark?CFG.palettes.dark:CFG.palettes.light;
+var bg=pageBg(pal.bg);
+var key=(dark?'d':'l')+'|'+bg;
+if(key===lastKey)return;
+lastKey=key;
+var gen=++renderGen;
+var font=getComputedStyle(document.body).fontFamily||'sans-serif';
+var nat={useMaxWidth:false};
+mermaid.initialize({
+startOnLoad:false,securityLevel:'strict',theme:'base',
+flowchart:nat,sequence:nat,er:nat,state:nat,class:nat,pie:nat,
+gantt:nat,journey:nat,timeline:nat,gitGraph:nat,mindmap:nat,xyChart:nat,
+quadrantChart:nat,sankey:nat,c4:nat,requirement:nat,block:nat,
+packet:nat,kanban:nat,architecture:nat,radar:nat,
+themeVariables:{background:bg,mainBkg:pal.surface,primaryColor:pal.surface,
+primaryTextColor:pal.text,lineColor:pal.line,primaryBorderColor:pal.border,
+nodeBorder:pal.border,clusterBorder:pal.border,edgeLabelBackground:bg,
+clusterBkg:'rgba(127,127,127,0.07)',titleColor:pal.text,
+darkMode:dark,rowOdd:bg,rowEven:'rgba(127,127,127,0.07)',
+attributeBackgroundColorOdd:bg,attributeBackgroundColorEven:'rgba(127,127,127,0.07)',
+fontSize:'16px',fontFamily:font},
+themeCSS:'.node rect, .node circle, .node polygon, .node path, .cluster rect { stroke-width: 2px; }'
+});
+items.forEach(function(it){
+var id='claude-mermaid-'+seq++;
+mermaid.render(id,it.src).then(function(r){
+if(gen!==renderGen)return;
+var prev=it.pre.previousElementSibling;
+if(prev&&prev.className==='mermaid-diagram'&&prev!==it.mount)return;
+it.mount.innerHTML=r.svg;
+if(!it.mount.parentNode)it.pre.parentNode.insertBefore(it.mount,it.pre);
+it.pre.style.display='none';
+},function(){
+var scratch=document.getElementById(id);
+if(scratch)scratch.parentNode.removeChild(scratch);
+scratch=document.getElementById('d'+id);
+if(scratch)scratch.parentNode.removeChild(scratch);
+if(gen!==renderGen)return;
+if(it.mount.parentNode)it.mount.parentNode.removeChild(it.mount);
+it.pre.style.display='';
+});
+});
+}
+render();
+if(mq&&mq.addEventListener)mq.addEventListener('change',render);
+if(typeof MutationObserver!=='undefined')new MutationObserver(render).observe(root,{attributes:true,attributeFilter:['data-theme']});
+})();</script>
+<!--claude-mermaid-runtime-end-->
+
+</body></html>

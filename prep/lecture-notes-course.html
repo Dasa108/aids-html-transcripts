@@ -1,0 +1,1013 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+
+<title>Lecture Notes Build Course</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a workshop manual. Module index on the left (stacked chip bar on phones), one reading column, spec tables and terminal blocks inline. */
+:root {
+  --bg: #F1F3F6;
+  --page: #FFFFFF;
+  --well: #E6EAF0;
+  --ink: #141A26;
+  --muted: #5A6476;
+  --rule: #D5DBE4;
+  --cobalt: #2B55C9;
+  --cobalt-soft: #E1E8FA;
+  --rust: #A84A16;
+  --rust-soft: #F7E5DA;
+  --right: #23794A;
+  --right-soft: #DDF1E4;
+  --wrong: #B3261E;
+  --wrong-soft: #F8DEDC;
+  --term-bg: #18202E;
+  --term-ink: #DCE3EE;
+  --font-display: "Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --s--1: 0.875rem; --s-0: 1.0625rem; --s-1: 1.25rem; --s-2: 1.6rem; --s-3: 2.25rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E121A; --page: #151B26; --well: #1C2433; --ink: #E3E8F0; --muted: #9BA6B8; --rule: #2A3446;
+    --cobalt: #86A6FF; --cobalt-soft: #1E2A48; --rust: #F29563; --rust-soft: #3A2418;
+    --right: #6FD49A; --right-soft: #17321F; --wrong: #F28B82; --wrong-soft: #3B1D1B;
+    --term-bg: #0A0E15; --term-ink: #D3DBE8; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E121A; --page: #151B26; --well: #1C2433; --ink: #E3E8F0; --muted: #9BA6B8; --rule: #2A3446;
+  --cobalt: #86A6FF; --cobalt-soft: #1E2A48; --rust: #F29563; --rust-soft: #3A2418;
+  --right: #6FD49A; --right-soft: #17321F; --wrong: #F28B82; --wrong-soft: #3B1D1B;
+  --term-bg: #0A0E15; --term-ink: #D3DBE8; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: var(--s-0); line-height: 1.65; padding-inline: 16px; padding-block: 0 72px; }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h2 { font-size: var(--s-3); font-weight: 800; letter-spacing: -0.015em; }
+h3 { font-size: var(--s-1); font-weight: 700; margin-top: 8px; }
+h4 { font-size: var(--s-0); font-weight: 700; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 1.3em; display: grid; gap: 6px; }
+a { color: var(--cobalt); }
+code { font-family: var(--font-mono); font-size: 0.82em; background: var(--well); padding: 0.06em 0.35em; border-radius: 4px; overflow-wrap: anywhere; }
+:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+
+.shell { max-width: 1160px; margin: 0 auto; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 44px; }
+.index { position: sticky; top: env(safe-area-inset-top, 0px); align-self: start; padding-top: 36px; display: grid; gap: 2px; max-height: 100vh; overflow-y: auto; padding-bottom: 24px; }
+.index .label { font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.index a { display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; gap: 6px; align-items: baseline; text-decoration: none; color: var(--ink); font-family: var(--font-display); font-size: 0.86rem; padding: 6px 8px; border-radius: 6px; }
+.index a:hover { background: var(--well); }
+.index a .n { font-family: var(--font-mono); color: var(--cobalt); font-size: 0.75rem; }
+.index a .done { color: var(--right); font-size: 0.75rem; }
+.index .meter { margin-top: 12px; font-size: 0.78rem; color: var(--muted); font-family: var(--font-display); }
+main { min-width: 0; padding-top: 36px; display: grid; gap: 40px; }
+.chips { display: none; }
+@media (max-width: 900px) {
+  .shell { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .index { display: none; }
+  .chips { display: flex; gap: 6px; overflow-x: auto; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 4; background: var(--bg); margin-inline: -16px; padding: 10px 16px; border-bottom: 1px solid var(--rule); }
+  .chips a { flex: none; font-family: var(--font-display); font-size: 0.8rem; text-decoration: none; color: var(--ink); border: 1px solid var(--rule); background: var(--page); border-radius: 999px; padding: 3px 11px; }
+  main { padding-top: 20px; }
+  h2 { font-size: var(--s-2); }
+}
+
+.intro { display: grid; gap: 16px; max-width: 70ch; }
+.intro h1 { font-size: clamp(2.2rem, 5.5vw, 3.6rem); font-weight: 800; letter-spacing: -0.02em; }
+.intro .lede { font-size: var(--s-1); color: var(--muted); }
+.stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 0; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--page); }
+.stack div { padding: 12px 16px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); display: grid; gap: 2px; }
+.stack .k { font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.stack .v { font-family: var(--font-mono); font-size: 0.86rem; }
+
+.module { background: var(--page); border: 1px solid var(--rule); border-radius: 12px; padding: clamp(18px, 3vw, 36px); display: grid; gap: 18px; scroll-margin-top: 64px; }
+.module > header { display: grid; gap: 8px; }
+.module .num { font-family: var(--font-mono); font-size: 0.8rem; color: var(--cobalt); }
+.learn { background: var(--cobalt-soft); border-radius: 8px; padding: 12px 16px; font-size: var(--s--1); display: grid; gap: 4px; }
+.learn b { font-family: var(--font-display); }
+.prose { display: grid; gap: 14px; max-width: 72ch; }
+.recap { border-top: 1px dashed var(--rule); padding-top: 14px; display: grid; gap: 8px; font-size: var(--s--1); }
+.recap b { font-family: var(--font-display); color: var(--cobalt); }
+.donebtn { justify-self: start; font-family: var(--font-display); font-size: 0.85rem; border: 1px solid var(--rule); background: var(--page); color: var(--ink); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.donebtn[aria-pressed="true"] { background: var(--right); border-color: var(--right); color: var(--page); }
+
+.tablewrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: var(--s--1); min-width: 520px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--well); }
+tr:last-child td { border-bottom: 0; }
+td.mono, td code { font-family: var(--font-mono); font-size: 0.8rem; }
+td.mono { white-space: nowrap; }
+pre.term { background: var(--term-bg); color: var(--term-ink); font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.55; padding: 14px 16px; border-radius: 8px; overflow-x: auto; margin: 0; }
+pre.term .c { color: var(--muted); }
+.note { border-left: 3px solid var(--rust); background: var(--rust-soft); padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: var(--s--1); max-width: 72ch; }
+.note b { color: var(--rust); font-family: var(--font-display); }
+.diagram { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; padding: 12px; background: var(--page); }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px; }
+.box { border: 1px solid var(--rule); border-radius: 8px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; min-width: 0; font-size: var(--s--1); }
+.box h4 { font-size: 0.95rem; }
+
+/* MCQ */
+.testbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; position: sticky; top: env(safe-area-inset-top, 0px); background: var(--page); padding-block: 10px; z-index: 3; border-bottom: 1px solid var(--rule); }
+@media (max-width: 900px) { .testbar { top: calc(env(safe-area-inset-top, 0px) + 48px); } }
+.score { font-family: var(--font-display); font-weight: 700; font-variant-numeric: tabular-nums; }
+.btn { font-family: var(--font-display); font-size: 0.85rem; border: 1px solid var(--rule); background: var(--page); color: var(--ink); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.btn:hover { border-color: var(--cobalt); }
+.btn[aria-pressed="true"] { background: var(--cobalt); color: var(--page); border-color: var(--cobalt); }
+.mcqs { display: grid; gap: 14px; counter-reset: q; }
+.mcq { border: 1px solid var(--rule); border-radius: 10px; padding: 16px; display: grid; gap: 10px; }
+.mcq .meta { font-family: var(--font-mono); font-size: 0.72rem; color: var(--cobalt); display: flex; justify-content: space-between; gap: 8px; }
+.mcq .qt { font-weight: 600; }
+.opts { display: grid; gap: 6px; }
+.opt { text-align: left; font: inherit; font-size: var(--s--1); border: 1px solid var(--rule); background: var(--page); color: var(--ink); border-radius: 8px; padding: 9px 12px; cursor: pointer; display: grid; grid-template-columns: 1.6em minmax(0, 1fr); gap: 6px; }
+.opt:hover:not([disabled]) { border-color: var(--cobalt); }
+.opt .L { font-family: var(--font-mono); color: var(--muted); }
+.opt[disabled] { cursor: default; }
+.opt.right { background: var(--right-soft); border-color: var(--right); }
+.opt.wrong { background: var(--wrong-soft); border-color: var(--wrong); }
+.why { font-size: var(--s--1); border-radius: 8px; padding: 10px 12px; }
+.why.ok { background: var(--right-soft); }
+.why.no { background: var(--wrong-soft); }
+.why b { font-family: var(--font-display); }
+.empty { color: var(--muted); font-size: var(--s--1); }
+footer { color: var(--muted); font-size: var(--s--1); }
+</style>
+
+<nav class="chips" aria-label="Modules" id="chips"></nav>
+
+<div class="shell">
+  <nav class="index" aria-label="Modules">
+    <span class="label">Course modules</span>
+    <div id="indexLinks"></div>
+    <span class="meter" id="meter">0 of 11 modules done</span>
+  </nav>
+
+  <main>
+    <section class="intro">
+      <span class="num" style="font-family:var(--font-mono);color:var(--cobalt);font-size:.8rem">LectureNotes · versionName 0.1.0 · applicationId com.lecturenotes</span>
+      <h1>How Lecture Notes was built, and with what.</h1>
+      <p class="lede">A course in eleven modules covering every feature, tool, library, version and command that went into the app, in the order that makes them easiest to learn. A 53-question test at the end checks what stuck.</p>
+      <div class="stack">
+        <div><span class="k">Build system</span><span class="v">Gradle 8.7 · AGP 8.5.2</span></div>
+        <div><span class="k">Languages</span><span class="v">Kotlin 1.9.24 · C++17</span></div>
+        <div><span class="k">Java</span><span class="v">OpenJDK 17.0.12</span></div>
+        <div><span class="k">Android</span><span class="v">min 26 · target/compile 34</span></div>
+        <div><span class="k">Native</span><span class="v">NDK 27.2 · CMake 3.22.1</span></div>
+        <div><span class="k">UI</span><span class="v">Compose BOM 2024.06.00</span></div>
+        <div><span class="k">Speech</span><span class="v">whisper.cpp v1.8.7</span></div>
+        <div><span class="k">Speakers</span><span class="v">sherpa-onnx v1.13.8</span></div>
+      </div>
+    </section>
+
+    <!-- M1 -->
+    <article class="module" id="m1">
+      <header><span class="num">Module 1</span><h2>What the app does</h2></header>
+      <div class="learn"><b>You'll learn</b><span>Every feature the app has, and the path a lecture takes from microphone to flashcard.</span></div>
+      <div class="prose">
+        <p>Lecture Notes is an Android app for students. It records or imports a lecture, turns the speech into text on the phone, and then uses an AI service to write study notes from that text. Everything else supports those two jobs.</p>
+        <h3>Features, grouped by what they do</h3>
+        <ul>
+          <li><b>Capture.</b> Record in the app (keeps going with the screen off). Record a video with the camera button. Import or share audio and video files, including from other apps' Share menus. Only the audio of a video is kept.</li>
+          <li><b>Organise.</b> Subjects (courses) with colours, filter chips, lectures grouped by date, multi-select to move or delete, and search across titles, transcript lines, notes and slide text.</li>
+          <li><b>Transcribe on the phone.</b> The app scans the phone and runs a speed test automatically the first time you open Speech models, then recommends a Whisper model (Tiny, Base, Small, Medium). Phones too limited for any model get a clear explanation instead. Transcription runs in the background in 2-minute chunks, resumes after interruptions, pauses when the phone is hot, and waits while the battery is low.</li>
+          <li><b>Fix the transcript.</b> Long-press a line to edit it, or use Find and replace across the whole transcript.</li>
+          <li><b>Speaker labels (optional).</b> Find who is speaking, listen to voice samples, rename, mark the lecturer, and merge speakers who are the same person.</li>
+          <li><b>Slides and PDFs.</b> Attach PDFs, PowerPoints, photos or text files, or make a lecture from slides alone. Text is extracted on the phone, with OCR for scans.</li>
+          <li><b>AI notes.</b> Pick a provider (Groq, OpenRouter, Cerebras, Ollama, a custom server, or Claude) with your own key. Choose a style (Brief, Standard, Detailed), an optional length limit, and how many flashcards and quiz questions to get. The notes have sections with timestamps, "going deeper" explanations, key terms, class Q&amp;A, flashcards and a quiz. Each subject can have its own prompt.</li>
+          <li><b>Study.</b> Pick lectures to study, review flashcards on a spaced-repetition schedule, cram all cards before an exam, and take quizzes with saved scores. Tapping any timestamp plays that moment of the lecture.</li>
+          <li><b>Export.</b> PDF, Markdown, or an Anki import file.</li>
+          <li><b>Look after storage.</b> Audio is compressed after transcription (~115 → ~14 MB per hour). Backup &amp; restore puts everything in one zip.</li>
+        </ul>
+        <h3>The journey of one lecture</h3>
+      </div>
+      <div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  rec[Record / import] --> wav[16 kHz WAV]
+  wav --> tr[Whisper on phone<br/>2-min chunks]
+  tr --> db[(Room database)]
+  db --> sp[Speakers<br/>optional]
+  sl[Slides / PDF] --> db
+  db --> ai[AI notes<br/>your key]
+  ai --> db
+  db --> st[Study + quiz]
+  db --> ex[Exports]
+  db --> zip[Backup zip]
+  tr --> m4a[Compress to AAC]
+</pre>
+      </div>
+      <div class="recap"><b>Recap</b><span>Speech-to-text happens on the phone; note-writing happens in the cloud with the user's own key. All data lives in a local database (Room) that the study, export and backup features read from.</span></div>
+      <button class="donebtn" type="button" data-m="m1" aria-pressed="false">Mark module done</button>
+    </article>
+
+    <!-- M2 -->
+    <article class="module" id="m2">
+      <header><span class="num">Module 2</span><h2>Languages and the toolchain</h2></header>
+      <div class="learn"><b>You'll learn</b><span>Which languages the project is written in, and which tools on the computer turn them into an app.</span></div>
+      <div class="prose">
+        <p>A <b>toolchain</b> is the set of programs that turns source code into something a device can run. Android apps have two toolchains working side by side: one for Kotlin (which runs on Android's Java-style runtime) and one for C++ (which runs directly on the phone's processor).</p>
+      </div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Language / tool</th><th>Version</th><th>What it's used for here</th></tr></thead>
+        <tbody>
+          <tr><td>Kotlin</td><td class="mono">1.9.24</td><td>Almost all app code: screens, database, background jobs, notes logic. Compiled to JVM bytecode targeting Java 17 (<code>jvmTarget = "17"</code>).</td></tr>
+          <tr><td>Kotlin script (<code>.kts</code>)</td><td class="mono">—</td><td>The Gradle build files are themselves Kotlin, so builds are written in the same language as the app.</td></tr>
+          <tr><td>C++</td><td class="mono">C++17</td><td>The JNI bridge to whisper.cpp (<code>whisper_jni.cpp</code>), and whisper.cpp itself.</td></tr>
+          <tr><td>XML</td><td class="mono">—</td><td>The Android manifest and resources: strings, themes, icons, backup rules, network rules.</td></tr>
+          <tr><td>JDK (Java Development Kit)</td><td class="mono">OpenJDK 17.0.12</td><td>Runs Gradle and the Kotlin compiler. Java 17 is what AGP 8.5 requires. Also provides <code>keytool</code>, which makes signing keys.</td></tr>
+          <tr><td>Android SDK platform</td><td class="mono">android-34</td><td>The Android API the code compiles against (<code>compileSdk = 34</code>).</td></tr>
+          <tr><td>Android SDK build-tools</td><td class="mono">34.0.0 / 35 / 36</td><td>Low-level packaging tools, including <code>apksigner</code>, used to check the release signature.</td></tr>
+          <tr><td>Android NDK (Native Development Kit)</td><td class="mono">27.2.12479018</td><td>The C/C++ compiler (Clang) and libraries for building native code for phone CPUs.</td></tr>
+          <tr><td>CMake</td><td class="mono">3.22.1</td><td>Describes how to build the C++ code. Gradle calls it once per CPU architecture.</td></tr>
+          <tr><td>platform-tools (adb)</td><td class="mono">—</td><td>Talking to the phone over USB: install, read the database, run screens (Module 10).</td></tr>
+        </tbody>
+      </table></div>
+      <div class="prose">
+        <h3>The three SDK numbers</h3>
+        <ul>
+          <li><b><code>minSdk = 26</code></b> (Android 8.0): the oldest Android the app installs on. Below this, some APIs it uses (like foreground service types and modern media codecs) are missing.</li>
+          <li><b><code>targetSdk = 34</code></b> (Android 14): the Android version the app is designed and tested for. Android applies that version's rules to the app, for example requiring a declared foreground service type such as <code>microphone</code>.</li>
+          <li><b><code>compileSdk = 34</code></b>: the API level the code is compiled against, which decides which Android functions exist at compile time.</li>
+        </ul>
+        <h3>ABIs: which processors the app supports</h3>
+        <p>An <b>ABI</b> (application binary interface) is a CPU family plus its calling rules. Native code must be compiled separately for each ABI. This app builds for <code>arm64-v8a</code> (almost every modern phone) and, in debug builds only, <code>x86_64</code> (the Android emulator on a PC).</p>
+      </div>
+      <div class="recap"><b>Recap</b><span>Kotlin for the app, C++ for speech recognition, XML for Android's declarations. JDK 17 runs the build. The SDK supplies Android's API, and the NDK plus CMake compile native code for arm64 phones.</span></div>
+      <button class="donebtn" type="button" data-m="m2" aria-pressed="false">Mark module done</button>
+    </article>
+
+    <!-- M3 -->
+    <article class="module" id="m3">
+      <header><span class="num">Module 3</span><h2>Gradle in depth</h2></header>
+      <div class="learn"><b>You'll learn</b><span>What Gradle is, how this project's build files fit together, what the build types do, and exactly what happens when you run <code>./gradlew assembleRelease</code>.</span></div>
+      <div class="prose">
+        <p><b>Gradle</b> is a build automation tool. You describe the project (its source folders, dependencies and options) and Gradle works out the <b>tasks</b> needed to produce an app, runs them in the right order, and skips any whose inputs haven't changed. Android support comes from a plugin, the <b>Android Gradle Plugin (AGP)</b>, which adds tasks like compiling resources, building native code, shrinking and signing.</p>
+        <h3>The wrapper: a pinned Gradle version</h3>
+        <p>Nobody installs Gradle by hand. The project includes a small launcher, <code>gradlew</code> (or <code>gradlew.bat</code> on Windows), that downloads the exact Gradle version named in <code>gradle/wrapper/gradle-wrapper.properties</code> the first time it runs:</p>
+      </div>
+<pre class="term"><span class="c"># gradle/wrapper/gradle-wrapper.properties</span>
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.7-bin.zip</pre>
+      <div class="prose">
+        <h3>The four configuration files</h3>
+      </div>
+      <div class="two">
+        <div class="box"><h4><code>settings.gradle.kts</code></h4><p>Read first. Says where to download plugins and libraries from (Google's Maven repository, Maven Central and the Gradle Plugin Portal), names the project <code>LectureNotes</code>, and includes the one module, <code>:app</code>. <code>FAIL_ON_PROJECT_REPOS</code> forces every repository to be declared here and nowhere else.</p></div>
+        <div class="box"><h4><code>build.gradle.kts</code> (root)</h4><p>Declares plugin versions for the whole project without applying them (<code>apply false</code>): AGP <code>8.5.2</code>, Kotlin Android <code>1.9.24</code>, and KSP <code>1.9.24-1.0.20</code>.</p></div>
+        <div class="box"><h4><code>app/build.gradle.kts</code> (module)</h4><p>The real configuration: applies the three plugins, then sets the SDK levels, native build, build types, signing, packaging, Java version, Compose, the Room schema folder and every dependency.</p></div>
+        <div class="box"><h4><code>gradle.properties</code></h4><p>Build-wide switches: <code>org.gradle.jvmargs=-Xmx3g</code> (3 GB of memory for the build), <code>android.useAndroidX=true</code> (use AndroidX libraries), <code>android.nonTransitiveRClass=true</code> (each module's resource class holds only its own resources, which speeds builds).</p></div>
+      </div>
+      <div class="prose">
+        <h3>The three plugins</h3>
+        <ul>
+          <li><b><code>com.android.application</code></b> (AGP 8.5.2) turns the module into an Android app: it compiles resources, merges manifests, runs R8, packages and signs APKs.</li>
+          <li><b><code>org.jetbrains.kotlin.android</code></b> (1.9.24) compiles Kotlin for Android.</li>
+          <li><b><code>com.google.devtools.ksp</code></b> (1.9.24-1.0.20) is Kotlin Symbol Processing. It reads annotations at compile time and generates code. Room uses it: you write <code>@Dao</code> interfaces and KSP writes the SQL-calling code for you. Its version must match the Kotlin version, which is why it reads <code>1.9.24-…</code>.</li>
+        </ul>
+        <h3>Compose needs a matching compiler</h3>
+        <p>With Kotlin 1.9, Jetpack Compose's compiler is a separate piece pinned to the Kotlin version: <code>composeOptions { kotlinCompilerExtensionVersion = "1.5.14" }</code>. Version 1.5.14 is the one built for Kotlin 1.9.24. A mismatch is a common build failure.</p>
+        <h3>Build types: three flavours of the same app</h3>
+      </div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Build type</th><th>App ID</th><th>ABIs</th><th>R8</th><th>Signed with</th><th>Why it exists</th></tr></thead>
+        <tbody>
+          <tr><td><b>debug</b></td><td class="mono">com.lecturenotes</td><td>arm64-v8a, x86_64</td><td>off</td><td>Debug key (made automatically)</td><td>Fast builds for development. Native code is still compiled with <code>-DCMAKE_BUILD_TYPE=Release</code> because whisper.cpp is unusably slow unoptimised. 75 MB.</td></tr>
+          <tr><td><b>release</b></td><td class="mono">com.lecturenotes</td><td>arm64-v8a</td><td>on</td><td>Your release key</td><td>What you install and keep. 28.5 MB.</td></tr>
+          <tr><td><b>releaseTest</b></td><td class="mono">com.lecturenotes.releasetest</td><td>arm64-v8a</td><td>on</td><td>Debug key</td><td>The same optimised code under a different app ID, so it installs next to the real app with separate data. Debuggable, so its files can be inspected with <code>run-as</code>.</td></tr>
+        </tbody>
+      </table></div>
+<pre class="term"><span class="c">// app/build.gradle.kts (abridged)</span>
+buildTypes {
+    debug {
+        ndk { abiFilters += listOf("arm64-v8a", "x86_64") }
+        externalNativeBuild { cmake { arguments += "-DCMAKE_BUILD_TYPE=Release" } }
+    }
+    release {
+        ndk { abiFilters += "arm64-v8a" }
+        isMinifyEnabled = true
+        proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
+        <span class="c">// ↑ only so the project configures without the key; a check below stops the actual release build</span>
+    }
+    create("releaseTest") {
+        initWith(getByName("release"))
+        applicationIdSuffix = ".releasetest"
+        signingConfig = signingConfigs.getByName("debug")
+        isDebuggable = true
+        matchingFallbacks += "release"
+    }
+}</pre>
+      <div class="note"><b>A lesson learned:</b> ABI filters were first set once in <code>defaultConfig</code>, and the release build still contained x86_64. Gradle <i>adds</i> a build type's filters to the default ones instead of replacing them. Moving the filters into each build type fixed it.</div>
+      <div class="prose">
+        <h3>Signing</h3>
+        <p>Every APK must be signed. The release key lives outside the repository at <code>~/.android/lecturenotes-release.jks</code>, a Java keystore (the format <code>keytool</code> makes). Its passwords live in <code>keystore.properties</code>, which git ignores. The build reads that file with <code>java.util.Properties</code>.</p>
+        <p>If the file is missing (for example on another computer), the <code>release</code> build type still points at the debug key, so Gradle can configure the project and debug builds keep working. But since commit <code>6b94165</code>, a check stops any build that would actually <i>package</i> a release with it. Module 11 explains why that matters.</p>
+<pre class="term"><span class="c">// end of app/build.gradle.kts</span>
+gradle.taskGraph.whenReady {
+    val releaseKey = android.signingConfigs.findByName("release")?.storeFile
+    val packagesRelease = allTasks.any { it.project == project &amp;&amp; it.name in setOf("packageRelease", "signReleaseBundle") }
+    if (packagesRelease &amp;&amp; releaseKey?.exists() != true) throw GradleException("Release builds need the release key. …")
+}</pre>
+        <p><code>taskGraph.whenReady</code> runs after Gradle has decided which tasks to run but before any of them start. So <code>assembleRelease</code> and <code>bundleRelease</code> fail straight away, while <code>assembleDebug</code> and <code>assembleReleaseTest</code>, which package with the debug key on purpose, are unaffected.</p>
+        <h3>R8: shrinking and renaming</h3>
+        <p><b>R8</b> is the release optimiser. It removes unused code, inlines small functions, and renames classes to short names. That breaks anything that finds code <i>by name</i> at runtime, which here means the native libraries. <code>proguard-rules.pro</code> holds the exceptions:</p>
+      </div>
+<pre class="term"><span class="c"># app/proguard-rules.pro (what the rules protect)</span>
+-keep class com.lecturenotes.whisper.WhisperNative / NativeSegment ...   <span class="c"># C++ builds these by name</span>
+-keep class com.k2fsa.sherpa.onnx.** { *; }                              <span class="c"># sherpa's JNI reads fields by name</span>
+-dontwarn com.gemalto.jp2.**                                             <span class="c"># PdfBox's optional JPEG-2000 decoder isn't included</span></pre>
+      <div class="prose">
+        <h3>Native build and packaging</h3>
+        <p><code>externalNativeBuild { cmake { path = file("src/main/cpp/CMakeLists.txt"); version = "3.22.1" } }</code> tells AGP to run CMake for each ABI. The default config passes <code>-DANDROID_STL=c++_shared</code>, so the C++ standard library is shipped once as a shared library. <code>packaging { jniLibs { useLegacyPackaging = true } }</code> extracts native libraries to disk at install time instead of loading them straight from the APK. GGML needs that, because it picks and loads the best CPU-variant library file at runtime (Module 5).</p>
+        <h3>Dependencies and the Compose BOM</h3>
+        <p>Dependencies are declared with <b>configurations</b> that say where each library is needed:</p>
+        <ul>
+          <li><code>implementation</code>: compiled into the app.</li>
+          <li><code>debugImplementation</code>: only in debug builds (Compose's UI inspection tools).</li>
+          <li><code>ksp</code>: a code generator that runs at compile time (Room's compiler).</li>
+          <li><code>testImplementation</code>: only for unit tests on the computer.</li>
+        </ul>
+        <p>A <b>BOM</b> (bill of materials) is a list of versions that are known to work together. <code>platform("androidx.compose:compose-bom:2024.06.00")</code> sets the versions of all Compose libraries at once, which is why lines like <code>androidx.compose.material3:material3</code> have no version number.</p>
+        <h3>Other settings in the module file</h3>
+        <ul>
+          <li><code>compileOptions</code> and <code>kotlinOptions</code> target Java 17.</li>
+          <li><code>buildFeatures { compose = true; buildConfig = true }</code> turns on Compose and the generated <code>BuildConfig</code> class (debug flag, version).</li>
+          <li><code>ksp { arg("room.schemaLocation", "$projectDir/schemas") }</code> makes Room export a JSON description of each database version into <code>app/schemas/</code>.</li>
+          <li><code>testOptions { unitTests { isIncludeAndroidResources = true } }</code> lets Robolectric tests see the app's resources.</li>
+        </ul>
+        <h3>Commands that were actually run</h3>
+      </div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Command</th><th>What it does</th><th>Output</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">./gradlew :app:compileDebugKotlin</td><td>Compiles Kotlin only. A quick check for errors after an edit.</td><td>No APK</td></tr>
+          <tr><td class="mono">./gradlew :app:testDebugUnitTest</td><td>Runs the 52 unit tests on the computer's JVM.</td><td><code>app/build/test-results/</code></td></tr>
+          <tr><td class="mono">./gradlew :app:assembleDebug</td><td>Builds the debug APK, including native code for two ABIs.</td><td><code>app/build/outputs/apk/debug/app-debug.apk</code></td></tr>
+          <tr><td class="mono">./gradlew :app:assembleRelease</td><td>Builds, shrinks with R8 and signs with the release key.</td><td><code>…/apk/release/app-release.apk</code> (28.5 MB)</td></tr>
+          <tr><td class="mono">./gradlew :app:assembleReleaseTest</td><td>The optimised side-by-side test copy.</td><td><code>…/apk/releaseTest/app-releaseTest.apk</code></td></tr>
+          <tr><td class="mono">--console=plain -q</td><td>Flags used to keep output short and readable in logs.</td><td>—</td></tr>
+        </tbody>
+      </table></div>
+      <div class="prose"><h3>From source code to a signed APK</h3></div>
+      <div class="diagram">
+<pre class="mermaid">
+flowchart TD
+  S[settings.gradle.kts<br/>repos + :app] --> P[Apply plugins<br/>AGP, Kotlin, KSP]
+  P --> K[KSP: Room generates DAO code]
+  K --> KC[Kotlin compiler → .class files]
+  P --> RES[Merge manifest + compile resources]
+  P --> CM[CMake + NDK per ABI → .so files]
+  KC --> D[R8 release only: shrink + rename<br/>→ classes.dex]
+  RES --> PK[Package APK]
+  D --> PK
+  CM --> PK
+  J[prebuilt jniLibs<br/>sherpa-onnx, onnxruntime] --> PK
+  PK --> SG[Sign: release key or debug key]
+  SG --> APK[app-release.apk]
+</pre>
+      </div>
+      <div class="recap"><b>Recap</b><span>The wrapper pins Gradle 8.7. Settings name the repositories and modules. The root file pins AGP 8.5.2, Kotlin 1.9.24 and KSP. The module file defines three build types that differ in ABIs, R8 and signing. KSP generates Room code, CMake builds whisper.cpp, R8 shrinks, and the APK is signed last.</span></div>
+      <button class="donebtn" type="button" data-m="m3" aria-pressed="false">Mark module done</button>
+    </article>
+
+    <!-- M4 -->
+    <article class="module" id="m4">
+      <header><span class="num">Module 4</span><h2>Libraries</h2></header>
+      <div class="learn"><b>You'll learn</b><span>Every dependency in <code>app/build.gradle.kts</code>, its version, and the exact job it does in this app.</span></div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Library</th><th>Version</th><th>Used for</th></tr></thead>
+        <tbody>
+          <tr><td>Compose BOM</td><td class="mono">2024.06.00</td><td>Pins all Compose library versions.</td></tr>
+          <tr><td>compose ui, ui-tooling-preview</td><td class="mono">(BOM)</td><td>The core of Jetpack Compose: describing screens as Kotlin functions.</td></tr>
+          <tr><td>material3</td><td class="mono">(BOM)</td><td>Material Design 3 components: buttons, cards, dialogs, chips, switches, progress bars.</td></tr>
+          <tr><td>material-icons-extended</td><td class="mono">(BOM)</td><td>The full icon set (microphone, backup, speaker voice icons, etc.).</td></tr>
+          <tr><td>ui-tooling (debug only)</td><td class="mono">(BOM)</td><td>Layout inspection while developing.</td></tr>
+          <tr><td>core-ktx</td><td class="mono">1.13.1</td><td>Kotlin-friendly helpers for Android, e.g. reading a shared file's URI from an intent.</td></tr>
+          <tr><td>activity-compose</td><td class="mono">1.9.0</td><td>Hosting Compose in MainActivity, and <code>rememberLauncherForActivityResult</code> for file pickers (exports, backup).</td></tr>
+          <tr><td>lifecycle-runtime-compose / viewmodel-compose</td><td class="mono">2.8.3</td><td>ViewModels that survive screen rotation, and collecting Flows safely in Compose.</td></tr>
+          <tr><td>lifecycle-service</td><td class="mono">2.8.3</td><td>A lifecycle-aware Service base for RecorderService.</td></tr>
+          <tr><td>navigation-compose</td><td class="mono">2.7.7</td><td>Moving between screens (AppNav.kt).</td></tr>
+          <tr><td>work-runtime-ktx (WorkManager)</td><td class="mono">2.9.1</td><td>All background jobs: transcription, downloads, speakers, notes, slides, compression.</td></tr>
+          <tr><td>room-runtime, room-ktx</td><td class="mono">2.6.1</td><td>The database, with coroutine and Flow support.</td></tr>
+          <tr><td>room-compiler (via KSP)</td><td class="mono">2.6.1</td><td>Generates the database code from <code>@Entity</code>/<code>@Dao</code> annotations and checks the SQL at compile time.</td></tr>
+          <tr><td>pdfbox-android (com.tom-roush)</td><td class="mono">2.0.27.0</td><td>Reading the text layer of PDFs.</td></tr>
+          <tr><td>ML Kit text-recognition</td><td class="mono">16.0.1</td><td>On-device OCR for scanned PDF pages and photos. The bundled Latin model works offline.</td></tr>
+          <tr><td>junit (tests)</td><td class="mono">4.13.2</td><td>The test framework: <code>@Test</code>, assertions.</td></tr>
+          <tr><td>org.json (tests)</td><td class="mono">20240303</td><td>Real JSON parsing in plain JVM tests, where Android's own org.json is only a stub.</td></tr>
+          <tr><td>robolectric (tests)</td><td class="mono">4.13</td><td>Runs Android's SQLite, files and preferences on the computer for backup tests.</td></tr>
+          <tr><td>androidx.test core (tests)</td><td class="mono">1.6.1</td><td><code>ApplicationProvider</code> to get a Context in Robolectric tests.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="prose">
+        <h3>Not in Gradle, but part of the app</h3>
+        <ul>
+          <li><b>whisper.cpp v1.8.7</b>: a git submodule built from source by CMake (Module 5).</li>
+          <li><b>sherpa-onnx v1.13.8 and ONNX Runtime</b>: prebuilt <code>.so</code> files in <code>app/src/main/jniLibs/</code>, plus sherpa's Kotlin API copied into <code>com/k2fsa/sherpa/onnx/</code>.</li>
+          <li><b>No networking library.</b> The AI clients use Java's built-in <code>HttpURLConnection</code> and <code>org.json</code>, which keeps the app small.</li>
+        </ul>
+      </div>
+      <div class="recap"><b>Recap</b><span>Compose (UI), Lifecycle and Navigation (screens), WorkManager (background jobs), Room (database), PdfBox and ML Kit (slides). Tests use JUnit, org.json, Robolectric and androidx.test. The speech and speaker engines come in as native code, not through Gradle.</span></div>
+      <button class="donebtn" type="button" data-m="m4" aria-pressed="false">Mark module done</button>
+    </article>
+
+    <!-- M5 -->
+    <article class="module" id="m5">
+      <header><span class="num">Module 5</span><h2>Native code: whisper.cpp, GGML, JNI and sherpa-onnx</h2></header>
+      <div class="learn"><b>You'll learn</b><span>How C++ speech recognition runs inside a Kotlin app, why several CPU variants are built, and how the speaker engine is packaged.</span></div>
+      <div class="prose">
+        <h3>whisper.cpp as a git submodule</h3>
+        <p>OpenAI's Whisper is a speech recognition model. <b>whisper.cpp</b> is a C++ re-implementation that runs it efficiently on CPUs. It's included as a <b>git submodule</b>: a separate repository pinned to one commit (tag <code>v1.8.7</code>) inside <code>third_party/whisper.cpp</code>. The app compiles it from source, so the build options can be tuned for phones.</p>
+        <h3>GGML and CPU variants</h3>
+        <p>whisper.cpp does its maths with <b>GGML</b>, a small tensor library. Phone CPUs differ in which fast instructions they support (dot-product, fp16, i8mm, armv9). <code>CMakeLists.txt</code> builds GGML's CPU code once per instruction level, and GGML loads the best one for the phone when the app starts:</p>
+      </div>
+<pre class="term"><span class="c"># app/src/main/cpp/CMakeLists.txt (abridged)</span>
+set(GGML_BACKEND_DL        ON)   <span class="c"># CPU code in separate, loadable libraries</span>
+set(GGML_CPU_ALL_VARIANTS  ON)   <span class="c"># one per instruction-set level</span>
+set(GGML_NATIVE            OFF)  <span class="c"># don't tune for the build computer's CPU</span>
+set(GGML_OPENMP            OFF)
+set(WHISPER_BUILD_TESTS/EXAMPLES/SERVER OFF)
+add_subdirectory(${WHISPER_DIR} whisper.cpp)
+add_library(whisper_jni SHARED whisper_jni.cpp)
+target_link_libraries(whisper_jni PRIVATE whisper ggml ggml-base log android)
+target_compile_options(whisper_jni PRIVATE -O3 -Wall)</pre>
+      <div class="prose">
+        <h3>JNI: calling C++ from Kotlin</h3>
+        <p><b>JNI</b> (Java Native Interface) connects the two worlds. Kotlin declares <code>external fun</code>s, and the C++ file implements functions with matching names. These are the app's bridge functions (<code>WhisperNative.kt</code> ↔ <code>whisper_jni.cpp</code>):</p>
+      </div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Kotlin declaration</th><th>What the C++ side does</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">nativeLoadBackends(libDir)</td><td>Loads the GGML backend libraries, choosing the best CPU variant.</td></tr>
+          <tr><td class="mono">nativeSystemInfo()</td><td>Reports which CPU features were detected.</td></tr>
+          <tr><td class="mono">nativeAllowedCpus()</td><td>Calls <code>sched_getaffinity</code> to list the cores this thread may run on.</td></tr>
+          <tr><td class="mono">nativeInit(modelPath) / nativeFree(handle)</td><td>Loads a model file into native memory and returns a handle, or frees it.</td></tr>
+          <tr><td class="mono">nativeTranscribe(handle, samples, threads, initialPrompt, listener)</td><td>Runs Whisper on a chunk of float samples (greedy decoding, English, non-speech tokens suppressed) and returns an array of segments, calling back with progress.</td></tr>
+          <tr><td class="mono">nativeAbort(handle) / nativeCpuShrunk(handle)</td><td>Stops a running transcription. The abort callback checks every 500 ms whether the allowed CPUs shrank.</td></tr>
+          <tr><td class="mono">nativeTimings / nativeResetTimings</td><td>Encode and decode timings used by the speed test.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="prose">
+        <p>The model lives in native memory that Kotlin's garbage collector doesn't see, so <code>WhisperContext</code> implements <code>Closeable</code> and frees it explicitly. Because R8 would rename the Kotlin classes that C++ looks up by name, they have keep rules (Module 3).</p>
+        <h3>sherpa-onnx and ONNX Runtime</h3>
+        <p>Speaker labelling uses <b>sherpa-onnx v1.13.8</b>, which runs neural networks with <b>ONNX Runtime</b>. Rather than compiling them, the project ships prebuilt libraries per ABI:</p>
+      </div>
+<pre class="term">app/src/main/jniLibs/arm64-v8a/libsherpa-onnx-jni.so
+app/src/main/jniLibs/arm64-v8a/libonnxruntime.so
+app/src/main/jniLibs/x86_64/…            <span class="c"># emulator only, left out of release</span>
+app/src/main/java/com/k2fsa/sherpa/onnx/  <span class="c"># sherpa's Kotlin API, kept in its own package because the .so expects those names</span></pre>
+      <div class="recap"><b>Recap</b><span>whisper.cpp is a pinned submodule built by CMake with every GGML CPU variant. Kotlin reaches it through ten JNI functions. sherpa-onnx arrives as prebuilt .so files plus its Kotlin wrapper. Both need R8 keep rules because native code finds Kotlin classes by name.</span></div>
+      <button class="donebtn" type="button" data-m="m5" aria-pressed="false">Mark module done</button>
+    </article>
+
+    <!-- M6 -->
+    <article class="module" id="m6">
+      <header><span class="num">Module 6</span><h2>Android platform pieces</h2></header>
+      <div class="learn"><b>You'll learn</b><span>Which built-in Android features the app relies on, what each does, and where it's used.</span></div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Android feature</th><th>What it is</th><th>Where it's used</th></tr></thead>
+        <tbody>
+          <tr><td>Manifest permissions</td><td><code>RECORD_AUDIO</code>, <code>INTERNET</code>, <code>POST_NOTIFICATIONS</code>, <code>FOREGROUND_SERVICE</code>, <code>FOREGROUND_SERVICE_MICROPHONE</code>, <code>FOREGROUND_SERVICE_DATA_SYNC</code>, <code>WAKE_LOCK</code></td><td>AndroidManifest.xml</td></tr>
+          <tr><td>Foreground service</td><td>Long-running work with a visible notification. Type <code>microphone</code> for recording; WorkManager's own <code>SystemForegroundService</code> uses type <code>dataSync</code>.</td><td>RecorderService</td></tr>
+          <tr><td>AudioRecord</td><td>Raw microphone samples. Asked for 16 kHz mono 16-bit directly.</td><td>RecorderService</td></tr>
+          <tr><td>MediaExtractor + MediaCodec</td><td>Read compressed audio frames and decode them (mp3, m4a, ogg, opus, flac…) or encode (AAC).</td><td>AudioDecoder, AudioCompressor</td></tr>
+          <tr><td>MediaMuxer</td><td>Writes audio frames into a container (.m4a, .webm) without re-encoding.</td><td>AudioExtractor, AudioCompressor</td></tr>
+          <tr><td>WorkManager (Jetpack)</td><td>Persistent background jobs with constraints. Six workers: ProcessWorker, ModelDownloadWorker, SpeakerWorker, NotesWorker, AttachmentWorker, CompressWorker.</td><td>transcribe/Jobs.kt</td></tr>
+          <tr><td>Room (Jetpack)</td><td>SQLite with generated, compile-checked queries and live Flows.</td><td>data/</td></tr>
+          <tr><td>SharedPreferences</td><td>Small key-value settings files (<code>settings</code>, <code>notes_ai</code>, <code>models</code>, <code>secrets</code>).</td><td>AppSettings, Providers, ModelRepository, SecretStore</td></tr>
+          <tr><td>Android Keystore</td><td>Hardware-backed storage for keys that can't be exported. An AES key there encrypts API keys.</td><td>SecretStore</td></tr>
+          <tr><td>Storage Access Framework</td><td>The system file picker (<code>CreateDocument</code>, <code>OpenDocument</code>). Saves and opens files without broad storage permission.</td><td>Exports, BackupCard</td></tr>
+          <tr><td>FileProvider</td><td>Gives the camera app a safe <code>content://</code> address to write a video into.</td><td>HomeScreen (record video), file_paths.xml</td></tr>
+          <tr><td>Intents (ACTION_SEND)</td><td>Receiving files shared from other apps: audio, video, PDF, PPTX, images.</td><td>MainActivity</td></tr>
+          <tr><td>PdfRenderer / PdfDocument</td><td>Draw a PDF page as an image (for OCR and the Slides tab) / create a PDF (export).</td><td>TextExtractor, SlidesPane, NotesExport</td></tr>
+          <tr><td>PowerManager thermal status</td><td>The phone's temperature level, 0 (none) to 6 (shutdown).</td><td>Thermal.kt (pauses at 4, severe)</td></tr>
+          <tr><td>Notification channels</td><td>"Recording" and "Work" categories the user can control.</td><td>LectureNotesApp</td></tr>
+          <tr><td>Network security config</td><td>Allows plain HTTP, for Ollama on the user's own PC.</td><td>res/xml/network_security_config.xml</td></tr>
+          <tr><td>Backup rules</td><td>Tell Android's automatic cloud backup to skip models, audio and API keys.</td><td>backup_rules.xml, data_extraction_rules.xml</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><b>A WorkManager rule that bit us:</b> expedited (high-priority) work isn't allowed to have a battery constraint. Transcription had both, so WorkManager rejected it and recordings sat queued forever. The releaseTest smoke test caught it, and expedited was removed.</div>
+      <div class="recap"><b>Recap</b><span>AudioRecord captures, MediaCodec/Extractor/Muxer convert, foreground services and WorkManager keep work alive, Room and SharedPreferences store data, Keystore protects keys, SAF and FileProvider move files safely, and thermal status prevents overheating.</span></div>
+      <button class="donebtn" type="button" data-m="m6" aria-pressed="false">Mark module done</button>
+    </article>
+
+    <!-- M7 -->
+    <article class="module" id="m7">
+      <header><span class="num">Module 7</span><h2>Inside each subsystem</h2></header>
+      <div class="learn"><b>You'll learn</b><span>How each part works internally, with the real numbers that were measured and tuned on the phone.</span></div>
+      <div class="prose">
+        <h3>Data model and migrations</h3>
+        <p>Room tables: <code>recordings</code>, <code>segments</code>, <code>subjects</code>, <code>notes</code>, <code>review_cards</code>, <code>quiz_attempts</code>, <code>attachments</code>, <code>attachment_pages</code>, <code>speakers</code>. The schema grew one feature at a time. Each version has a hand-written <b>migration</b>, SQL that upgrades an existing database without losing data:</p>
+      </div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Version</th><th>Added</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">v1</td><td>Recordings and transcript segments</td></tr>
+          <tr><td class="mono">v2</td><td>Subjects for organising lectures</td></tr>
+          <tr><td class="mono">v3</td><td>AI study notes</td></tr>
+          <tr><td class="mono">v4</td><td>Per-subject notes prompts</td></tr>
+          <tr><td class="mono">v5</td><td>Study mode: flashcard review schedule, quiz scores</td></tr>
+          <tr><td class="mono">v6</td><td>Slides and PDFs attached to lectures</td></tr>
+          <tr><td class="mono">v7</td><td>Speaker labels</td></tr>
+          <tr><td class="mono">v8</td><td>Optional length limit for notes (<code>wordBudget</code>)</td></tr>
+          <tr><td class="mono">v9</td><td>Chosen flashcard and quiz counts</td></tr>
+        </tbody>
+      </table></div>
+      <div class="prose">
+        <p>Every migration was checked against Room's exported schema JSON (<code>app/schemas/…/N.json</code>) using copies of the real phone database.</p>
+        <h3>Transcription</h3>
+        <ul>
+          <li>Audio is always 16 kHz mono PCM16 WAV, about 1.9 MB per minute.</li>
+          <li><code>ChunkPlanner</code> cuts ~2-minute chunks at the quietest half-second near each target. Each chunk is a checkpoint (<code>transcribedMs</code>).</li>
+          <li>For imports, decoding and transcription overlap: the first chunk starts after ~2¾ minutes are decoded (12 s after sharing a 7-minute video, instead of ~40 s).</li>
+          <li>Threads = fast cores among the allowed CPUs. In the background, vivo limits the app to cores {0,1,5,6}. Oversubscribing was 14× slower (408 s vs 30 s per 60 s of audio).</li>
+          <li>Foreground: about 3.5× faster than real time with Small. Background: about real time.</li>
+          <li>No carried-over prompt between chunks: it made Whisper skip repeated speech.</li>
+          <li>A <code>HeavyWork</code> mutex lets only one heavy job run at a time, and <code>Thermal</code> pauses at severe heat.</li>
+        </ul>
+        <h3>Model choice: checking what a phone can handle</h3>
+        <p>The app can be installed on any arm64 phone with Android 8.0 or newer, so it can't assume a fast phone like yours. It decides in three steps, all on the phone it's running on.</p>
+        <h4>Step 1: the hardware scan (automatic, every visit)</h4>
+        <p>Opening Settings → Speech models runs <code>DeviceInfo.read()</code>, which collects:</p>
+        <ul>
+          <li><b>Total RAM</b>, from Android's <code>ActivityManager.MemoryInfo</code>.</li>
+          <li><b>The chip name</b>, from <code>Build.SOC_MANUFACTURER</code> and <code>Build.SOC_MODEL</code> on Android 12+, or <code>Build.HARDWARE</code> on older phones.</li>
+          <li><b>Cores and fast cores.</b> It reads each core's top clock speed from <code>/sys/devices/system/cpu/cpuN/cpufreq/cpuinfo_max_freq</code>, and every core faster than the slowest group counts as fast.</li>
+          <li><b>Free storage</b>, from <code>StatFs</code> on the app's folder.</li>
+        </ul>
+        <p>A model <b>fits</b> when the phone's RAM (plus 0.5 GB, because phones report a bit less than advertised) meets the model's minimum. To <b>download</b> it, free storage must also be more than twice its size; storage stops mattering once it's downloaded. Models that don't fit are <b>blocked</b>: the Download button is disabled with the reason, and a downloaded model too big for the phone's memory can't be selected or used.</p>
+        <p>The RAM minimums come from measured peak memory while transcribing a 30-second clip: whisper.cpp alone uses Tiny 104 MB, Base 176 MB, Small 369 MB, Medium 843 MB, and the app adds about 80 MB. On your phone the app peaked at 181 MB during the Tiny test. Android kills large apps well before RAM is full, so each minimum leaves at least 6× the model's peak as headroom.</p>
+      </div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Model</th><th>Size</th><th>Min. RAM (peak use)</th><th>Encode / decode cost (× Tiny's encode time)</th><th>Per 30 s on the test phone</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">tiny.en-q5_1</td><td>32 MB</td><td>2 GB (~185 MB)</td><td>1.0 / 2.6</td><td>~2 s</td></tr>
+          <tr><td class="mono">base.en-q5_1</td><td>60 MB</td><td>3 GB (~260 MB)</td><td>2.2 / 4.0</td><td>~3.5 s</td></tr>
+          <tr><td class="mono">small.en-q5_1</td><td>190 MB</td><td>4 GB (~450 MB)</td><td>8.5 / 6.7</td><td>~8.6 s</td></tr>
+          <tr><td class="mono">medium.en-q5_0</td><td>539 MB</td><td>6 GB (~925 MB)</td><td>23 / 9.0</td><td>~13.5–15 s</td></tr>
+        </tbody>
+      </table></div>
+      <div class="prose">
+        <h4>Step 2: the speed test (automatic on the first visit)</h4>
+        <p><code>DeviceCheck.run()</code> downloads Tiny if needed (32 MB), transcribes the bundled 30-second clip <code>assets/bench30.wav</code> once to warm up and once timed, and reads whisper.cpp's encode time. Then, for every model:</p>
+      </div>
+<pre class="term">minutes per lecture hour = Tiny encode time × (encode ratio + decode ratio) × 120 windows of 30 s</pre>
+      <div class="prose">
+        <p>Decoding is estimated from encode ratios because the short test clip decodes unrealistically fast. On your phone this predicts Small at ≈ 15 minutes per hour, against ≈ 17 measured.</p>
+        <p>The test starts by itself the first time Speech models is opened, once per install. A failed test isn't retried automatically, but leaving the screen mid-test lets it try again next visit, and "Test again" re-runs it any time. Results are stored in the phone's own <code>models</code> settings, which backups leave out, so a new phone always measures itself.</p>
+        <h4>Step 3: the recommendation</h4>
+        <ul>
+          <li><b>With a speed test:</b> the most accurate model that fits and does a 1-hour lecture in 20 minutes or less with the app open. If none is that fast, it picks the fastest model that fits and warns: "This phone is slow for transcription: even Tiny takes about N min per lecture hour."</li>
+          <li><b>Without one:</b> a memory-only guess, the biggest model that fits but never Medium. The screen says the recommendation is based on memory only.</li>
+          <li><b>When nothing fits:</b> no recommendation at all. The screen says "This phone can't transcribe on-device" and explains why: "needs at least 2 GB of RAM, and this phone has X GB", or "free up at least N MB". It adds that notes from slides and PDFs still work, because those don't need Whisper.</li>
+        </ul>
+      </div>
+      <div class="note"><b>What the checks can't know:</b> the speed ratios between models were measured on one chip (Snapdragon 8s Gen 4), so estimates on other chips are approximate. Estimates also assume the app is open; some brands, like vivo and Xiaomi, slow background apps 2–3×. A phone that is 32-bit only or older than Android 8.0 can't install the app at all, so it never reaches these checks.</div>
+      <div class="prose">
+        <p>Model downloads come from Hugging Face, resume if interrupted, and are verified by SHA-256 before use.</p>
+        <h3>Speakers</h3>
+        <ul>
+          <li>Models: pyannote segmentation 3.0 (int8, 1.5 MB) finds turns; 3D-Speaker CAM++ (30 MB) makes voice embeddings. Downloaded on first use.</li>
+          <li>Processed in 10-minute pieces: 80 minutes of float audio would be ~300 MB in memory.</li>
+          <li>Clustering threshold 0.9 instead of sherpa's default 0.5, which turned the lecturer into 15 speakers.</li>
+          <li><code>SpeakerLinker</code> links pieces by cosine similarity to running-average centroids, gives each line the speaker with most overlap, and drops voices under 3 s.</li>
+          <li>About 13 minutes for an 80-minute lecture with the app open. The phone reached thermal status 4.</li>
+          <li>Merging moves lines, combines talk time, and renumbers default names in one transaction.</li>
+        </ul>
+        <h3>Slides</h3>
+        <ul>
+          <li>PDF text layer via PdfBox. Pages with fewer than 20 characters are treated as scans: rendered with PdfRenderer and read with ML Kit OCR.</li>
+          <li>PPTX files are zip archives of XML: the app reads the <code>&lt;a:t&gt;</code> text runs of each <code>slideN.xml</code> plus speaker notes from <code>notesSlideN.xml</code>.</li>
+          <li>Text files are split into ~250-word pages. Slides are numbered 1..n across all of a lecture's files.</li>
+          <li><code>SlidePicker</code> sends the most relevant slides with each transcript part (TF-IDF word overlap, up to ~700 tokens).</li>
+        </ul>
+        <h3>Notes generation</h3>
+        <ul>
+          <li>Input: one <code>[mm:ss] text</code> line per segment, so every note can cite its moment. Speaker tags appear where the speaker changes, and the lecturer is always tagged as such.</li>
+          <li>One request if the lecture fits, otherwise parts of up to ~4k tokens (about 15 minutes of speech), merged in code, plus one small request for the title and overview.</li>
+          <li>Learns the provider's real limit from 413 "Limit X, Requested Y" errors, paces from <code>x-ratelimit-*</code> headers, waits for <code>retry-after</code> on 429, splits a part if the reply is cut off, and saves finished parts in <code>partialJson</code>.</li>
+          <li>Broken JSON: repair, then retry with a reminder, then retry without JSON mode (3 attempts).</li>
+          <li>Length budget: Brief, Standard and Detailed = 10%, 20% and 35% of transcript words (50%, 100% and 150% of slide text for slides-only lectures, minimum 150). Enforced if more than 25% over.</li>
+          <li>Flashcards 0–60 and quiz 0–30, or Auto, which scales with length.</li>
+          <li>A real run: 2,010 words against a 2,229-word budget, 28 cards, 15 quiz questions.</li>
+        </ul>
+        <h3>Study (SM-2)</h3>
+        <ul>
+          <li>New card buttons: Again 1 min, Hard 6 min, Good 1 day, Easy 4 days.</li>
+          <li>After that, intervals grow by the card's ease factor (minimum 1.3), capped at 365 days.</li>
+          <li>20 new cards a day. Cards due within 20 minutes come back in the same session.</li>
+          <li>Cram mode shows every card shuffled without changing the schedule. Regenerating notes keeps the schedule of unchanged questions.</li>
+        </ul>
+        <h3>Storage and backup</h3>
+        <ul>
+          <li>After transcription: AAC 32 kbps in .m4a (~14 MB per hour), duration-checked (within 2 s) before the WAV is deleted.</li>
+          <li>Backup zip: <code>manifest.json</code> (format, DB version, original folder, settings), <code>database/lecturenotes.db</code> (after a WAL checkpoint), <code>files/audio/…</code>, <code>files/attachments/…</code>.</li>
+          <li>Restore: stage, validate, rewrite paths, swap by rename, roll back on failure, restart. Your real backup was 133 MB for 3 lectures.</li>
+        </ul>
+      </div>
+      <div class="recap"><b>Recap</b><span>Nine schema versions; 2-minute resumable chunks with smart threading; a measured model recommendation; speakers in 10-minute pieces at threshold 0.9; on-device slide text; map-reduce notes that learn limits; SM-2 study; compression and a safe backup.</span></div>
+      <button class="donebtn" type="button" data-m="m7" aria-pressed="false">Mark module done</button>
+    </article>
+
+    <!-- M8 -->
+    <article class="module" id="m8">
+      <header><span class="num">Module 8</span><h2>Models and online services</h2></header>
+      <div class="learn"><b>You'll learn</b><span>What the app downloads, from where, and exactly what data leaves the phone.</span></div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>What</th><th>Source</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Whisper models <code>ggml-&lt;id&gt;.bin</code></td><td class="mono">huggingface.co/ggerganov/whisper.cpp</td><td>English-only, quantized. Hash-checked.</td></tr>
+          <tr><td>Segmentation model</td><td class="mono">huggingface.co/csukuangfj/sherpa-onnx-pyannote-segmentation-3-0</td><td><code>model.int8.onnx</code>, 1.5 MB</td></tr>
+          <tr><td>Speaker embedding model</td><td class="mono">github.com/k2-fsa/sherpa-onnx releases</td><td>3D-Speaker CAM++ English (VoxCeleb, 16 kHz), 30 MB</td></tr>
+          <tr><td>Gradle, plugins, libraries</td><td class="mono">services.gradle.org, Google Maven, Maven Central</td><td>At build time only, on the computer.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="prose"><h3>AI providers</h3></div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Provider</th><th>Base URL</th><th>API style</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Groq (used for your notes)</td><td class="mono">https://api.groq.com/openai/v1</td><td>OpenAI-compatible</td><td>Free tier</td></tr>
+          <tr><td>OpenRouter</td><td class="mono">https://openrouter.ai/api/v1</td><td>OpenAI-compatible</td><td>Free models available</td></tr>
+          <tr><td>Cerebras</td><td class="mono">https://api.cerebras.ai/v1</td><td>OpenAI-compatible</td><td>Free tier</td></tr>
+          <tr><td>Ollama</td><td class="mono">http://&lt;your PC&gt;:11434/v1</td><td>OpenAI-compatible</td><td>Free, private</td></tr>
+          <tr><td>Custom</td><td class="mono">any /v1/chat/completions server</td><td>OpenAI-compatible</td><td>Varies</td></tr>
+          <tr><td>Claude (Anthropic)</td><td class="mono">https://api.anthropic.com/v1</td><td>Anthropic Messages API</td><td>Paid</td></tr>
+        </tbody>
+      </table></div>
+      <div class="prose">
+        <p>Your notes were generated with <code>openai/gpt-oss-120b</code> on Groq, with a 131,072-token context. The model list is fetched live from each provider's <code>/v1/models</code> endpoint because free models change often.</p>
+        <h3>What leaves the phone</h3>
+        <ul>
+          <li><b>Audio: never.</b> Transcription and speaker labelling are on-device.</li>
+          <li><b>Text: only when you tap Generate notes</b>, and only to the provider you chose: the transcript lines, relevant slide text and speaker tags.</li>
+          <li><b>API key:</b> stored encrypted, sent only to its own provider, never in backups.</li>
+          <li>There's no server of our own and no analytics.</li>
+        </ul>
+      </div>
+      <div class="recap"><b>Recap</b><span>Models come from Hugging Face and GitHub on first use. Notes go straight from the phone to one of six providers. Five are OpenAI-compatible and share one client; Claude has its own. Audio never leaves the device.</span></div>
+      <button class="donebtn" type="button" data-m="m8" aria-pressed="false">Mark module done</button>
+    </article>
+
+    <!-- M9 -->
+    <article class="module" id="m9">
+      <header><span class="num">Module 9</span><h2>Testing</h2></header>
+      <div class="learn"><b>You'll learn</b><span>The kinds of test in the project, what each test file proves, and why some logic was moved to make it testable.</span></div>
+      <div class="prose">
+        <p><b>Unit tests</b> run on the computer's JVM, not on the phone, so they're fast. Plain JVM tests can't use real Android classes. Robolectric fills that gap by running Android's own code, including SQLite, on the computer.</p>
+      </div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Test file</th><th>Proves</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">NotesGeneratorTest</td><td>One-pass and split runs, splitting under a 6k limit, resuming, JSON repair, rate-limit waits, timestamp validation, using a <b>fake provider</b> that returns scripted replies and errors.</td></tr>
+          <tr><td class="mono">NotesLengthTest</td><td>Budgets and the trimming order.</td></tr>
+          <tr><td class="mono">CountsTest</td><td>Flashcard and quiz counts, including the bug where 0 returned everything.</td></tr>
+          <tr><td class="mono">SlidesNotesTest</td><td>Notes from slides only, with "Slide N" citations.</td></tr>
+          <tr><td class="mono">SpeakerLinkerTest</td><td>Linking speakers across pieces and assigning lines.</td></tr>
+          <tr><td class="mono">SchedulerTest</td><td>SM-2 intervals and ease changes.</td></tr>
+          <tr><td class="mono">RecommendTest</td><td>Speed estimates match what was measured on the test phone. The recommendation respects RAM and storage, never picks Medium without a speed test, falls back to the fastest model that fits on a very slow phone, returns no model (with a reason) when nothing fits, blocks models too big for the phone's RAM even if already downloaded, and only checks storage before downloading.</td></tr>
+          <tr><td class="mono">TranscriptReplaceTest</td><td>Whole word, match case, literal replacement text, and the lecturer tag.</td></tr>
+          <tr><td class="mono">BackupTest (Robolectric)</td><td>Full backup and restore round trip, bad and malicious files rejected, path rewriting.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><b>Designing for tests:</b> speaker maths originally lived in <code>Diarizer</code>, which loads native libraries that fail in JVM tests. Moving the pure logic into <code>SpeakerLinker</code> made it testable. In the same way, <code>Backup</code> takes a <code>Context</code> and database rather than the app singleton, so Robolectric can drive it.</div>
+      <div class="prose">
+        <h3>Testing beyond unit tests</h3>
+        <ul>
+          <li>Every feature was run on the real phone with a real 80-minute lecture.</li>
+          <li>The releaseTest build was smoke-tested for R8 problems, and caught the WorkManager bug.</li>
+          <li>Anki exports were imported with Anki's own importer.</li>
+          <li>Backup was tested by restoring your real backup into releaseTest, which caught the hidden-notes bug.</li>
+        </ul>
+      </div>
+      <div class="recap"><b>Recap</b><span>52 JVM tests (JUnit, with Robolectric for Android storage), fakes instead of network calls, logic separated from native code, plus real-device and real-tool checks for what unit tests can't reach.</span></div>
+      <button class="donebtn" type="button" data-m="m9" aria-pressed="false">Mark module done</button>
+    </article>
+
+    <!-- M10 -->
+    <article class="module" id="m10">
+      <header><span class="num">Module 10</span><h2>Tools used while building</h2></header>
+      <div class="learn"><b>You'll learn</b><span>The computer-side tools that installed, inspected and tested the app on your phone, and what each command did.</span></div>
+      <div class="prose">
+        <h3>adb: the Android Debug Bridge</h3>
+        <p><b>adb</b> (in <code>~/Android/Sdk/platform-tools/</code>) talks to a phone over USB once USB debugging is on. It did most of the hands-on work:</p>
+      </div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Command</th><th>Used for</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">adb devices</td><td>Check the phone is connected.</td></tr>
+          <tr><td class="mono">adb install -r app.apk</td><td>Install an update and <b>keep data</b> (<code>-r</code> = replace). Only works if the signing key matches.</td></tr>
+          <tr><td class="mono">adb uninstall com.lecturenotes</td><td>Remove an app and its data, done once to switch from debug to release.</td></tr>
+          <tr><td class="mono">adb shell run-as com.lecturenotes …</td><td>Run a command as the app, to read its private files. Only works on debuggable builds.</td></tr>
+          <tr><td class="mono">adb exec-out run-as … cat databases/lecturenotes.db</td><td>Copy the database (and its <code>-wal</code>/<code>-shm</code> files) to the computer to inspect it.</td></tr>
+          <tr><td class="mono">adb pull / push</td><td>Copy files, such as backup zips, between phone and computer.</td></tr>
+          <tr><td class="mono">adb shell dumpsys window | power | jobscheduler | audio | package</td><td>Read system state: which app is in front, whether the screen is on, running background jobs, whether audio is playing, the installed version and flags.</td></tr>
+          <tr><td class="mono">adb shell settings put global stay_on_while_plugged_in 7</td><td>Keep the screen on during tests, then set back to 0.</td></tr>
+          <tr><td class="mono">adb shell monkey -p &lt;package&gt; -c android.intent.category.LAUNCHER 1</td><td>Launch an app.</td></tr>
+          <tr><td class="mono">adb shell uiautomator dump</td><td>Save the screen's layout as XML, to find buttons by their text.</td></tr>
+          <tr><td class="mono">adb shell input tap X Y / keyevent</td><td>Tap a button or press Back or Home.</td></tr>
+          <tr><td class="mono">adb logcat</td><td>Read the phone's log for crashes.</td></tr>
+          <tr><td class="mono">adb exec-out screencap -p</td><td>Take a screenshot.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><b>A safety rule from this project:</b> screen automation only ran when Lecture Notes (or the file picker it opened) was in front, so a tap could never land in another app you were using.</div>
+      <div class="prose"><h3>Other tools</h3></div>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Tool</th><th>Used for</th></tr></thead>
+        <tbody>
+          <tr><td>git, with a submodule</td><td>Version control: 16 commits, whisper.cpp pinned with <code>git submodule</code>. Secrets kept out with <code>.gitignore</code>.</td></tr>
+          <tr><td>apksigner (build-tools)</td><td><code>apksigner verify --print-certs</code> confirmed the release APK was signed with your key (CN=Lecture Notes).</td></tr>
+          <tr><td>keytool (JDK)</td><td>The JDK's tool for creating keystores like <code>lecturenotes-release.jks</code>.</td></tr>
+          <tr><td>Python 3 + sqlite3</td><td>Inspecting copies of the phone's database, checking migrations, verifying backups and notes (word counts, "ASM" check).</td></tr>
+          <tr><td>whisper-cli (whisper.cpp)</td><td>Running Whisper on the computer to compare transcripts, which proved the carried-over prompt was the problem, and to measure model cost ratios.</td></tr>
+          <tr><td>anki Python package (26.9.3)</td><td>Installed in a throwaway virtual environment to import exports with Anki's real importer.</td></tr>
+          <tr><td>Claude Code</td><td>The AI coding assistant that wrote the code under your direction, ran builds, tests and adb commands, and committed the work.</td></tr>
+        </tbody>
+      </table></div>
+      <div class="recap"><b>Recap</b><span>adb installed builds, read databases, and drove the screen safely. apksigner and keytool handled signing. Python checked databases, whisper-cli diagnosed transcription, the anki package verified exports, and git tracked everything.</span></div>
+      <button class="donebtn" type="button" data-m="m10" aria-pressed="false">Mark module done</button>
+    </article>
+
+    <!-- M11 -->
+    <article class="module" id="m11">
+      <header><span class="num">Module 11</span><h2>Releasing</h2></header>
+      <div class="learn"><b>You'll learn</b><span>Why debug and release are different apps to Android, how your phone was switched without losing data, and how the app was published with a website anyone can download it from.</span></div>
+      <div class="prose">
+        <p>Android remembers which key signed an installed app and accepts updates only with the same key. The debug build was signed with Android Studio's automatic debug key, and the release build with your release key. That makes them incompatible as updates, even though both use the ID <code>com.lecturenotes</code>. Uninstalling deletes the app's data, which is why Backup &amp; restore was built first.</p>
+        <h3>The switch, step by step</h3>
+        <ol>
+          <li>Built the release APK and verified its signature with <code>apksigner</code>.</li>
+          <li>Made a fresh backup in the app (Settings → Back up) and checked it on the computer: integrity ok, 3 lectures, 991 lines, notes, 28 cards.</li>
+          <li>Saved two safety copies in <code>~/LectureNotes-backups/</code>: the backup zip and a raw <code>tar</code> of the app's data folder.</li>
+          <li><code>adb uninstall com.lecturenotes</code>, then <code>adb install app-release.apk</code>. The installed app no longer had the DEBUGGABLE flag.</li>
+          <li>Settings → Restore → picked the zip → "Replace and restore". The app restarted with everything back.</li>
+          <li>Left for you: entering the Groq key again (keys never travel) and downloading the Small speech model.</li>
+        </ol>
+        <h3>Updating from now on</h3>
+<pre class="term">./gradlew :app:assembleRelease
+adb install -r app/build/outputs/apk/release/app-release.apk   <span class="c"># keeps all data</span></pre>
+        <p>This only works while you still have <code>lecturenotes-release.jks</code> and <code>keystore.properties</code>. Keep copies somewhere other than this computer.</p>
+        <h3>Publishing: repository, website and download</h3>
+        <p>On 27 October the project went public, in three pieces that all live on GitHub:</p>
+        <ul>
+          <li><b>The repository</b>, <a href="https://github.com/Dasa108/lecture-notes">github.com/Dasa108/lecture-notes</a>, holds the source and full history. Before making it public, the whole history was searched for the release key, <code>keystore.properties</code> and API keys. None had ever been committed, thanks to <code>.gitignore</code>.</li>
+          <li><b>A GitHub Release</b> (tag <code>v0.1.0</code>) carries the signed APK as an attached file named <code>LectureNotes.apk</code>. Release files sit outside git history, so the 28.5 MB APK doesn't make every clone bigger.</li>
+          <li><b>GitHub Pages</b> serves the website from the <code>docs/</code> folder on <code>main</code> at <a href="https://dasa108.github.io/lecture-notes/">dasa108.github.io/lecture-notes</a>. It's one hand-written HTML file with no build step. An empty <code>docs/.nojekyll</code> file turns off Jekyll, the site builder Pages would otherwise run.</li>
+        </ul>
+        <p>The site's Download button links to <code>releases/latest/download/LectureNotes.apk</code>. GitHub redirects that address to the file in the newest release, so the page never needs editing when you ship an update.</p>
+        <p>The commands used, with the <code>gh</code> GitHub command-line tool:</p>
+<pre class="term">gh repo create Dasa108/lecture-notes --public --source . --remote origin --push
+gh release create v0.1.0 LectureNotes.apk --title "Lecture Notes 0.1.0"
+gh api -X POST repos/Dasa108/lecture-notes/pages \
+  -f "source[branch]=main" -f "source[path]=/docs"   <span class="c"># turn on Pages</span></pre>
+        <p>To ship version 0.2.0: raise <code>versionCode</code> and <code>versionName</code> in <code>app/build.gradle.kts</code>, run <code>assembleRelease</code>, copy the APK to <code>LectureNotes.apk</code> (the name must stay the same), and run <code>gh release create v0.2.0 LectureNotes.apk</code>. Because it's signed with the same key, people install it over the old version and keep their lectures.</p>
+        <h3>Keys and signing, in depth</h3>
+        <p>Signing is how Android knows who made an app. A signature proves two things: the APK hasn't been changed since it was signed, and every version came from the same <b>developer</b>. Android uses the second to decide whether an update may replace an installed app.</p>
+      </div>
+      <div class="tablewrap"><table>
+          <tr><th>Piece</th><th>In this project</th></tr>
+          <tr><td>Keystore</td><td><code>~/.android/lecturenotes-release.jks</code>, a password-protected file that holds one or more keys. Made once with <code>keytool -genkeypair</code>.</td></tr>
+          <tr><td>Key (alias)</td><td>An RSA 4096-bit private key with a self-signed certificate, <code>CN=Lecture Notes, O=Personal</code>. The alias is the key's name inside the keystore.</td></tr>
+          <tr><td>Two passwords</td><td>The store password opens the keystore; the key password unlocks the key. Both sit in <code>keystore.properties</code>, never in git.</td></tr>
+          <tr><td>Certificate fingerprint</td><td>The SHA-256 of the certificate: <code>87509efe…037277</code>. Every genuine Lecture Notes APK shows this exact value.</td></tr>
+          <tr><td>Signature scheme</td><td>APK Signature Scheme v2, which signs the whole file. The old v1 (JAR) scheme is skipped because minSdk 26 doesn't need it; v1 only matters below Android 7.0.</td></tr>
+        </table></div>
+      <div class="prose">
+        <p><b>Why the key can never change.</b> Android compares the new APK's certificate with the installed app's. If they differ, the install fails with <code>INSTALL_FAILED_UPDATE_INCOMPATIBLE</code> and the only way forward is uninstalling, which deletes every lecture. That's why a release accidentally signed with the debug key would be so bad, and why the build now refuses to make one.</p>
+        <p><b>Checking a signature:</b></p>
+<pre class="term">apksigner verify --print-certs app-release.apk   <span class="c"># shows the DN and SHA-256 fingerprint</span></pre>
+        <p><b>The backup.</b> If the key is lost, no update can ever reach people who installed the app. If it's stolen, someone could sign a fake update that installs over yours. So the backup is encrypted: the keystore and <code>keystore.properties</code> are packed with <code>tar</code> and encrypted with <code>gpg --symmetric</code> (AES-256) using a passphrase only you know, into <code>~/LectureNotes-backups/lecturenotes-release-key.tar.gz.gpg</code>. A README next to it explains how to restore it. One copy must live somewhere other than this computer.</p>
+<pre class="term">gpg -d lecturenotes-release-key.tar.gz.gpg | tar -xz -C ~   <span class="c"># restore on a new computer</span></pre>
+        <p><b>What the Play Store would change.</b> With Play App Signing, Google keeps the key that signs what users install, and you only hold an <i>upload key</i>, which can be reset if lost. Installing APKs directly from GitHub has no such safety net, so your own backup is the only protection.</p>
+        <p>The page also shows the APK's SHA-256 checksum, so anyone can confirm the file they downloaded is the one you published. Its layout was checked by taking full-page screenshots with headless Firefox at desktop width (1280 px) and phone width (390 px).</p>
+      </div>
+      <div class="recap"><b>Recap</b><span>Different keys make debug and release different apps to Android. The switch was backup → verify → uninstall → install release → restore. Future updates install over it with <code>adb install -r</code>, as long as the key is kept. The public download is an APK on a GitHub Release, linked from a GitHub Pages site in <code>docs/</code>.</span></div>
+      <button class="donebtn" type="button" data-m="m11" aria-pressed="false">Mark module done</button>
+    </article>
+
+    <!-- Test -->
+    <section class="module" id="test">
+      <header><span class="num">Final test</span><h2>Check what you learned</h2></header>
+      <p class="prose">Choose an answer for each question. You'll see straight away whether it's right and why. Your answers are saved in this browser only.</p>
+      <div class="testbar">
+        <span class="score" id="score">0 / 0 answered · 0 correct</span>
+        <button class="btn" type="button" id="onlyWrong" aria-pressed="false">Show only wrong</button>
+        <button class="btn" type="button" id="resetTest">Reset test</button>
+      </div>
+      <div class="mcqs" id="mcqs"></div>
+    </section>
+
+    <footer>Built from the repository at commit 6b94165: its build files, manifest, source and SPEC.md, and the conversation that built the app. Measurements come from a vivo I2405 (Snapdragon 8s Gen 4).</footer>
+  </main>
+</div>
+
+<script>
+const MODULES = [
+  ["m1", "What the app does"], ["m2", "Languages & toolchain"], ["m3", "Gradle in depth"], ["m4", "Libraries"],
+  ["m5", "Native code"], ["m6", "Android pieces"], ["m7", "Inside each subsystem"], ["m8", "Models & services"],
+  ["m9", "Testing"], ["m10", "Tools while building"], ["m11", "Releasing"], ["test", "Final test"],
+];
+const MCQ = [
+  { m: 1, q: "Where does speech-to-text happen?", o: ["On the phone, with whisper.cpp", "On Groq's servers", "On Anthropic's servers", "On a server you host"], a: 0, e: "Transcription is fully on-device. Only text is ever sent to an AI provider." },
+  { m: 1, q: "What does the app keep from an imported video?", o: ["The whole video", "Only the audio track", "Keyframes and audio", "Nothing until transcribed"], a: 1, e: "AudioExtractor copies out just the audio track, without re-encoding it." },
+  { m: 2, q: "What does minSdk = 26 mean?", o: ["The app is designed for Android 8.0", "The app won't install on anything older than Android 8.0", "It compiles against API 26", "It needs 26 MB free"], a: 1, e: "minSdk is the oldest Android version the app installs on. targetSdk (34) is the version it's designed for." },
+  { m: 2, q: "Which JDK version runs this project's build?", o: ["8", "11", "17", "21"], a: 2, e: "OpenJDK 17.0.12. AGP 8.5 requires Java 17, and the code targets JVM 17." },
+  { m: 2, q: "What does the NDK provide?", o: ["The Kotlin compiler", "C/C++ compilers and libraries for phone CPUs", "The Gradle wrapper", "Android's UI toolkit"], a: 1, e: "The Native Development Kit (27.2.12479018) builds native code, such as whisper.cpp, for arm64." },
+  { m: 2, q: "Why does the debug build include x86_64?", o: ["Some phones use x86_64", "So it runs on the Android emulator on a PC", "Gradle requires two ABIs", "For faster builds"], a: 1, e: "x86_64 is for the emulator. Release builds ship arm64-v8a only." },
+  { m: 3, q: "Which Gradle version does the wrapper download?", o: ["7.6", "8.5.2", "8.7", "9.0"], a: 2, e: "gradle-wrapper.properties points to gradle-8.7-bin.zip. 8.5.2 is the Android Gradle Plugin's version." },
+  { m: 3, q: "Which version is the Android Gradle Plugin?", o: ["8.5.2", "8.7", "1.9.24", "2.6.1"], a: 0, e: "com.android.application version 8.5.2, declared in the root build.gradle.kts." },
+  { m: 3, q: "What is KSP used for in this project?", o: ["Shrinking release code", "Generating Room's database code from annotations", "Building C++", "Signing APKs"], a: 1, e: "Kotlin Symbol Processing runs room-compiler, which generates DAO code and checks SQL at compile time." },
+  { m: 3, q: "Why is the KSP version written 1.9.24-1.0.20?", o: ["It's a beta", "It must match the Kotlin version (1.9.24)", "It's the Room version", "It's two plugins"], a: 1, e: "KSP releases are tied to a specific Kotlin compiler version." },
+  { m: 3, q: "What does settings.gradle.kts declare?", o: ["Dependencies", "Repositories and which modules exist (:app)", "Build types", "Signing keys"], a: 1, e: "It names the repositories and includes the :app module. Dependencies and build types live in app/build.gradle.kts." },
+  { m: 3, q: "What does a BOM such as compose-bom 2024.06.00 do?", o: ["Bundles fonts", "Sets compatible versions for a family of libraries", "Measures build time", "Generates UI code"], a: 1, e: "A bill of materials pins versions together, so Compose dependencies are written without version numbers." },
+  { m: 3, q: "Which Compose compiler version matches Kotlin 1.9.24?", o: ["1.5.14", "2.0.0", "1.4.3", "2024.06.00"], a: 0, e: "kotlinCompilerExtensionVersion = \"1.5.14\". With Kotlin 1.9, the Compose compiler is pinned separately." },
+  { m: 3, q: "What is special about the releaseTest build type?", o: ["No R8", "Release code with a different app ID, so it installs next to the real app", "Includes test code", "Signed with the release key"], a: 1, e: "applicationIdSuffix \".releasetest\", debug signing and debuggable, but the same R8-optimised code." },
+  { m: 3, q: "Why did release still contain x86_64 at first?", o: ["CMake bug", "Gradle added the build type's ABI filters to the defaultConfig filters", "R8 kept them", "The NDK forced it"], a: 1, e: "ABI filters merge instead of replacing. They're now set per build type." },
+  { m: 3, q: "What does R8 do?", o: ["Signs the APK", "Shrinks, optimises and renames code in release builds", "Runs tests", "Compiles C++"], a: 1, e: "isMinifyEnabled = true turns R8 on, with rules from proguard-rules.pro." },
+  { m: 3, q: "Why do some classes need -keep rules?", o: ["They're large", "Native code finds them by name, and R8 would rename them", "They're tests", "They're Compose screens"], a: 1, e: "WhisperNative/NativeSegment and the sherpa-onnx classes are looked up by name from C++." },
+  { m: 3, q: "What happens if keystore.properties is missing?", o: ["Release builds stop with a clear error; debug and releaseTest builds still work", "Release silently falls back to the debug key", "The APK isn't signed", "Gradle creates a new key"], a: 0, e: "It used to fall back silently. Since 6b94165 a taskGraph.whenReady check stops packageRelease and signReleaseBundle when the release key is missing." },
+  { m: 3, q: "Why useLegacyPackaging = true for jniLibs?", o: ["Smaller APK", "GGML loads CPU-variant libraries from disk at runtime, so they must be extracted", "Required by Room", "For Android 7 support"], a: 1, e: "Extracted native libraries let GGML pick and load libggml-cpu-*.so files." },
+  { m: 3, q: "Which command runs the unit tests?", o: ["./gradlew assembleDebug", "./gradlew :app:testDebugUnitTest", "adb test", "./gradlew lint"], a: 1, e: "testDebugUnitTest runs the 48 JVM tests and writes results to app/build/test-results." },
+  { m: 3, q: "What does gradle.properties' -Xmx3g do?", o: ["Limits the APK to 3 GB", "Gives the Gradle process up to 3 GB of memory", "Sets the phone's heap", "Allows 3 threads"], a: 1, e: "org.gradle.jvmargs sets the build JVM's memory." },
+  { m: 4, q: "Which library runs background jobs?", o: ["Room", "WorkManager 2.9.1", "Navigation 2.7.7", "Lifecycle 2.8.3"], a: 1, e: "work-runtime-ktx 2.9.1 runs transcription, downloads, speakers, notes, slides and compression." },
+  { m: 4, q: "What reads the text layer of PDFs?", o: ["ML Kit", "PdfBox-Android 2.0.27.0", "PdfRenderer", "ONNX Runtime"], a: 1, e: "PdfBox reads text. ML Kit does OCR for scanned pages, which PdfRenderer draws as images." },
+  { m: 4, q: "Why is org.json a test dependency?", o: ["For JSON exports", "Android's org.json is only a stub in plain JVM tests", "Room needs it", "Robolectric needs it"], a: 1, e: "Unit tests run outside Android, where the framework's classes are empty stubs." },
+  { m: 4, q: "Which version of Room does the app use?", o: ["2.6.1", "2.9.1", "1.13.1", "2.8.3"], a: 0, e: "room-runtime, room-ktx and room-compiler are all 2.6.1." },
+  { m: 4, q: "How do the AI clients make HTTP requests?", o: ["OkHttp", "Retrofit", "Java's built-in HttpURLConnection", "Ktor"], a: 2, e: "No networking library is used. HttpURLConnection and org.json keep the app small." },
+  { m: 5, q: "How is whisper.cpp included?", o: ["A Gradle dependency", "A git submodule built from source by CMake", "A prebuilt .so", "Downloaded at runtime"], a: 1, e: "third_party/whisper.cpp is pinned at v1.8.7 and built by app/src/main/cpp/CMakeLists.txt." },
+  { m: 5, q: "What does GGML_CPU_ALL_VARIANTS do?", o: ["Builds for every ABI", "Builds GGML's CPU code once per instruction-set level and picks the best at runtime", "Enables GPU support", "Enables OpenMP"], a: 1, e: "Phones support different instructions (dotprod, fp16, i8mm, armv9). The best variant is loaded at runtime." },
+  { m: 5, q: "What does nativeAllowedCpus() use?", o: ["/proc/meminfo", "sched_getaffinity", "Build.SUPPORTED_ABIS", "PowerManager"], a: 1, e: "It lists the cores the thread may run on, which vivo restricts for background apps." },
+  { m: 5, q: "Why does WhisperContext implement Closeable?", o: ["For Compose", "The model lives in native memory the garbage collector can't free", "For Room", "To support streaming"], a: 1, e: "close() calls nativeFree to release the model's memory explicitly." },
+  { m: 5, q: "How does sherpa-onnx get into the app?", o: ["Built from source", "Prebuilt .so files in jniLibs plus its Kotlin API copied in", "From Maven Central", "Downloaded with the models"], a: 1, e: "libsherpa-onnx-jni.so and libonnxruntime.so per ABI, with the wrapper in com/k2fsa/sherpa/onnx." },
+  { m: 6, q: "Which foreground service type does RecorderService declare?", o: ["dataSync", "microphone", "mediaPlayback", "location"], a: 1, e: "Android 14 (targetSdk 34) requires a type. WorkManager's own service uses dataSync." },
+  { m: 6, q: "Why was transcription never starting in releaseTest?", o: ["Missing permission", "Expedited work can't have a battery constraint", "R8 removed the worker", "No model downloaded"], a: 1, e: "WorkManager rejects that combination, so expedited was removed." },
+  { m: 6, q: "Where are API keys protected?", o: ["Plain SharedPreferences", "Encrypted with an AES key held in the Android Keystore", "In the Room database", "In the backup zip"], a: 1, e: "SecretStore encrypts them, and secrets.xml is excluded from every backup." },
+  { m: 6, q: "What does the Storage Access Framework give the app?", o: ["Root access", "The system file picker, to save and open files without broad storage permission", "Cloud sync", "Faster disk"], a: 1, e: "Used for exports and Backup & restore (CreateDocument / OpenDocument)." },
+  { m: 7, q: "What is the current database schema version?", o: ["5", "7", "9", "12"], a: 2, e: "Version 9, which added the chosen flashcard and quiz counts. There are 8 migrations from 1→9." },
+  { m: 7, q: "About how long is each transcription chunk?", o: ["30 seconds", "2 minutes", "10 minutes", "The whole file"], a: 1, e: "~2 minutes, cut at the quietest half-second near the target. Whisper uses 30-second windows inside a chunk." },
+  { m: 7, q: "Why was the speaker clustering threshold raised to 0.9?", o: ["Faster", "The default 0.5 split the lecturer into 15 speakers", "Less memory", "Required by sherpa"], a: 1, e: "0.9 gave 8 speakers. Merging by ear handles the rest." },
+  { m: 7, q: "How does the app learn a provider's per-request limit?", o: ["From documentation", "From 413 \"Limit X, Requested Y\" errors", "It asks the user", "It doesn't"], a: 1, e: "The learned limit sizes the parts in later requests." },
+  { m: 7, q: "For a new SM-2 card, what does \"Good\" schedule?", o: ["1 minute", "6 minutes", "1 day", "4 days"], a: 2, e: "Again 1 min, Hard 6 min, Good 1 day, Easy 4 days. After that, intervals grow by the ease factor." },
+  { m: 8, q: "Which model wrote your notes?", o: ["claude-sonnet", "openai/gpt-oss-120b on Groq", "llama on Ollama", "An on-device model"], a: 1, e: "Groq's openai/gpt-oss-120b, with a 131,072-token context." },
+  { m: 8, q: "Where do Whisper models download from?", o: ["Google Play", "huggingface.co/ggerganov/whisper.cpp", "GitHub releases of the app", "Groq"], a: 1, e: "The files are named ggml-<id>.bin and verified by SHA-256." },
+  { m: 9, q: "What does Robolectric let tests do?", o: ["Run on the phone", "Run Android code such as SQLite and files on the computer's JVM", "Generate UI", "Measure speed"], a: 1, e: "BackupTest uses it for a full backup and restore round trip." },
+  { m: 9, q: "How is the notes engine tested without the internet?", o: ["It isn't", "With a fake provider that returns scripted replies and errors", "With a recorded Groq session", "Only on the phone"], a: 1, e: "NotesGeneratorTest covers one pass, splitting, resume, JSON repair and rate limits." },
+  { m: 10, q: "What does adb install -r do?", o: ["Installs fresh, deleting data", "Replaces the app and keeps its data (if the signing key matches)", "Reinstalls twice", "Installs to the SD card"], a: 1, e: "-r means replace. It fails if the new APK is signed with a different key." },
+  { m: 10, q: "Why could run-as read the debug app's database but not the release app's?", o: ["Release is encrypted", "run-as only works on debuggable apps", "Release has no database", "Permissions were revoked"], a: 1, e: "That's why releaseTest is debuggable even though it runs release code." },
+  { m: 10, q: "Which tool confirmed the release APK's signature?", o: ["keytool", "apksigner verify --print-certs", "adb logcat", "git"], a: 1, e: "apksigner from build-tools printed CN=Lecture Notes and the certificate's SHA-256 digest." },
+  { m: 11, q: "Why couldn't the release build install over the debug build?", o: ["Different app IDs", "Different signing keys", "Different minSdk", "R8 changed the package name"], a: 1, e: "Both use com.lecturenotes, but Android only accepts updates signed with the same key." },
+  { m: 11, q: "What's needed to keep updating the release app without uninstalling?", o: ["The source code only", "lecturenotes-release.jks and keystore.properties", "The debug key", "A Google account"], a: 1, e: "Lose the key and every future update needs the backup → uninstall → restore cycle." },
+  { m: 7, q: "What does the hardware scan read to decide which models fit?", o: ["Battery level and screen size", "RAM, chip, fast cores and free storage", "Android version only", "Network speed"], a: 1, e: "DeviceInfo reads total RAM, the chip name, cores (fast ones from each core's top clock speed) and free storage. A model fits if RAM meets its minimum and free storage is over twice its size." },
+  { m: 7, q: "When does the speed test run on a new phone?", o: ["Never; it's only on the developer's phone", "Automatically the first time Speech models is opened, and again whenever you tap Test again", "Every time the app starts", "Only after the first lecture"], a: 1, e: "It runs once automatically per install. Results stay on that phone and aren't in backups." },
+  { m: 7, q: "What happens on a phone where no model fits (say, 1.2 GB RAM)?", o: ["It recommends Tiny anyway", "It shows no recommendation and explains why, noting that slides-only notes still work", "The app crashes", "It downloads Medium"], a: 1, e: "WhisperModels.recommend returns no model, and unsupportedReason explains the RAM or storage shortfall." },
+  { m: 7, q: "A 3 GB phone opens Speech models. What happens to Small (needs 4 GB)?", o: ["It downloads but runs slowly", "Download is disabled with the reason, because the app could be closed mid-transcription", "It's recommended anyway", "Only the storage is checked"], a: 1, e: "Models that don't fit the phone's RAM are blocked. Small peaks around 450 MB in the app, and its 4 GB minimum leaves at least 6× headroom." },
+  { m: 11, q: "Where does the website's APK actually live?", o: ["Committed in the docs/ folder", "Attached to a GitHub Release", "On Google Play", "On a separate file-hosting server"], a: 1, e: "Release files are kept outside git history, so the 28.5 MB APK doesn't bloat every clone." },
+  { m: 11, q: "Why does the Download button never need editing for a new version?", o: ["It's generated by a GitHub Action", "It points to releases/latest/download/LectureNotes.apk, which GitHub redirects to the newest release", "The page reads the version from Gradle", "Pages rebuilds it on every commit"], a: 1, e: "As long as each release attaches a file with the same name, the 'latest' link follows it." },
+  { m: 11, q: "Why was the git history searched before the repository was made public?", o: ["GitHub requires it", "To make sure the release key, its password file and API keys had never been committed", "To shrink the repository", "To remove the submodule"], a: 1, e: "Anything ever committed stays in history. A leaked release key would let someone sign apps as you. .gitignore had kept them out all along." },
+  { m: 11, q: "What does the empty docs/.nojekyll file do?", o: ["Hides the folder from search engines", "Tells GitHub Pages to serve the files as they are instead of running the Jekyll site builder", "Blocks downloads", "Turns on HTTPS"], a: 1, e: "Without it, Pages would process the folder with Jekyll, which skips some files and adds a build step the site doesn't need." },
+  { m: 11, q: "Why was the silent fallback to the debug key dangerous once the app was public?", o: ["Debug APKs are larger", "An update signed with the wrong key can't install over the existing app, so users would have to uninstall and lose their lectures", "Debug keys expire after a day", "GitHub rejects debug APKs"], a: 1, e: "Android only accepts updates signed with the same certificate as the installed app." },
+  { m: 11, q: "Why is the key backup encrypted with gpg?", o: ["To make it smaller", "keystore.properties holds the passwords in plain text, and a stolen key could sign fake updates that install over yours", "GitHub requires it", "Android can't read unencrypted keys"], a: 1, e: "gpg --symmetric with AES-256 and a passphrase only you know protects the copy you keep off the computer." },
+  { m: 11, q: "How can you tell an APK is a genuine Lecture Notes build?", o: ["The file name", "apksigner verify --print-certs shows certificate SHA-256 87509efe…037277", "Its size is 27 MB", "It asks for permission to record"], a: 1, e: "The certificate fingerprint identifies the signing key. The file checksum on the website identifies one specific APK." },
+  { m: 11, q: "What would Play App Signing have changed?", o: ["Nothing", "Google would hold the app signing key, and you'd only hold an upload key that can be reset if lost", "It removes the need for any key", "It signs with the debug key"], a: 1, e: "Distributing APKs directly has no such safety net, so your own backup is the only protection." },
+];
+
+/* ---------- navigation and module progress ---------- */
+const DONE_KEY = "lecture-notes-course-done-v1";
+const TEST_KEY = "lecture-notes-course-test-v1";
+const load = (k) => { try { return JSON.parse(localStorage.getItem(k) || "{}") || {}; } catch (e) { return {}; } };
+const store = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+let done = load(DONE_KEY);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function renderNav() {
+  document.getElementById("indexLinks").innerHTML = MODULES.map(([id, name], i) =>
+    `<a href="#${id}"><span class="n">${id === "test" ? "✓" : i + 1}</span><span>${esc(name)}</span><span class="done">${done[id] ? "done" : ""}</span></a>`).join("");
+  document.getElementById("chips").innerHTML = MODULES.map(([id, name], i) =>
+    `<a href="#${id}">${id === "test" ? "Test" : (i + 1) + ". " + esc(name)}</a>`).join("");
+  const n = MODULES.filter(([id]) => id !== "test" && done[id]).length;
+  document.getElementById("meter").textContent = `${n} of 11 modules done`;
+  document.querySelectorAll(".donebtn").forEach((b) => {
+    const on = !!done[b.dataset.m];
+    b.setAttribute("aria-pressed", String(on));
+    b.textContent = on ? "Module done ✓" : "Mark module done";
+  });
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest(".donebtn"); if (!b) return;
+  const m = b.dataset.m; if (done[m]) delete done[m]; else done[m] = true;
+  store(DONE_KEY, done); renderNav();
+});
+renderNav();
+
+/* ---------- MCQ test ---------- */
+let answers = load(TEST_KEY);
+let onlyWrong = false;
+function renderTest() {
+  const list = MCQ.map((q, i) => ({ ...q, i })).filter((q) => !onlyWrong || (answers[q.i] !== undefined && answers[q.i] !== q.a));
+  document.getElementById("mcqs").innerHTML = list.length ? list.map((q) => {
+    const chosen = answers[q.i];
+    const answered = chosen !== undefined;
+    return `<article class="mcq" data-i="${q.i}">
+      <div class="meta"><span>Module ${q.m}</span><span>Q${q.i + 1}</span></div>
+      <p class="qt">${esc(q.q)}</p>
+      <div class="opts">${q.o.map((o, j) => {
+        const cls = answered ? (j === q.a ? "right" : j === chosen ? "wrong" : "") : "";
+        return `<button type="button" class="opt ${cls}" data-j="${j}" ${answered ? "disabled" : ""}><span class="L">${"ABCD"[j]}</span><span>${esc(o)}</span></button>`;
+      }).join("")}</div>
+      ${answered ? `<p class="why ${chosen === q.a ? "ok" : "no"}"><b>${chosen === q.a ? "Correct." : "Not quite."}</b> ${esc(q.e)}</p>` : ""}
+    </article>`;
+  }).join("") : `<p class="empty">${onlyWrong ? "No wrong answers to review. Nice work." : ""}</p>`;
+  const answeredN = Object.keys(answers).length;
+  const right = MCQ.filter((q, i) => answers[i] === q.a).length;
+  document.getElementById("score").textContent = `${answeredN} / ${MCQ.length} answered · ${right} correct${answeredN ? ` (${Math.round((right / answeredN) * 100)}%)` : ""}`;
+}
+document.getElementById("mcqs").addEventListener("click", (e) => {
+  const opt = e.target.closest(".opt"); if (!opt || opt.disabled) return;
+  const i = Number(opt.closest(".mcq").dataset.i);
+  answers[i] = Number(opt.dataset.j); store(TEST_KEY, answers); renderTest();
+});
+document.getElementById("onlyWrong").addEventListener("click", (e) => {
+  onlyWrong = !onlyWrong; e.currentTarget.setAttribute("aria-pressed", String(onlyWrong)); renderTest();
+});
+document.getElementById("resetTest").addEventListener("click", () => { answers = {}; store(TEST_KEY, answers); renderTest(); });
+renderTest();
+</script>
+
+<!--claude-mermaid-runtime-begin:3477-->
+<style>.mermaid-diagram{margin-block:4px}.mermaid-diagram svg{display:block;margin:0 auto;max-width:100%;height:auto}</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>(function(){
+var CFG={"palettes":{"light":{"surface":"#f4efe4","text":"#42392e","line":"#8a7f6d","border":"#7a6c52","bg":"#fffdf8"},"dark":{"surface":"#262b34","text":"#f2f3f5","line":"#a8adb8","border":"#9aa4b8","bg":"#1f232b"}}};
+if(typeof mermaid==='undefined')return;
+var pres=Array.prototype.slice.call(document.querySelectorAll('pre.mermaid')).filter(function(p){if(p.hasAttribute('data-claude-mermaid-claimed'))return false;p.setAttribute('data-claude-mermaid-claimed','1');return true;});
+if(!pres.length)return;
+var mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+var root=document.documentElement;
+var items=pres.map(function(pre){
+var mount=document.createElement('div');mount.className='mermaid-diagram';
+return {pre:pre,mount:mount,src:pre.textContent||''};
+});
+var seq=0;
+var renderGen=0;
+var lastKey='';
+function pageBg(fallback){
+var els=[document.body,document.documentElement];
+for(var i=0;i<els.length;i++){
+var c=els[i]&&getComputedStyle(els[i]).backgroundColor;
+if(c&&c!=='transparent'&&c!=='rgba(0, 0, 0, 0)')return c;
+}
+return fallback;
+}
+function render(){
+var theme=root.getAttribute('data-theme');
+var dark=theme==='dark'||(!!(mq&&mq.matches)&&theme!=='light');
+var pal=dark?CFG.palettes.dark:CFG.palettes.light;
+var bg=pageBg(pal.bg);
+var key=(dark?'d':'l')+'|'+bg;
+if(key===lastKey)return;
+lastKey=key;
+var gen=++renderGen;
+var font=getComputedStyle(document.body).fontFamily||'sans-serif';
+var nat={useMaxWidth:false};
+mermaid.initialize({
+startOnLoad:false,securityLevel:'strict',theme:'base',
+flowchart:nat,sequence:nat,er:nat,state:nat,class:nat,pie:nat,
+gantt:nat,journey:nat,timeline:nat,gitGraph:nat,mindmap:nat,xyChart:nat,
+quadrantChart:nat,sankey:nat,c4:nat,requirement:nat,block:nat,
+packet:nat,kanban:nat,architecture:nat,radar:nat,
+themeVariables:{background:bg,mainBkg:pal.surface,primaryColor:pal.surface,
+primaryTextColor:pal.text,lineColor:pal.line,primaryBorderColor:pal.border,
+nodeBorder:pal.border,clusterBorder:pal.border,edgeLabelBackground:bg,
+clusterBkg:'rgba(127,127,127,0.07)',titleColor:pal.text,
+darkMode:dark,rowOdd:bg,rowEven:'rgba(127,127,127,0.07)',
+attributeBackgroundColorOdd:bg,attributeBackgroundColorEven:'rgba(127,127,127,0.07)',
+fontSize:'16px',fontFamily:font},
+themeCSS:'.node rect, .node circle, .node polygon, .node path, .cluster rect { stroke-width: 2px; }'
+});
+items.forEach(function(it){
+var id='claude-mermaid-'+seq++;
+mermaid.render(id,it.src).then(function(r){
+if(gen!==renderGen)return;
+var prev=it.pre.previousElementSibling;
+if(prev&&prev.className==='mermaid-diagram'&&prev!==it.mount)return;
+it.mount.innerHTML=r.svg;
+if(!it.mount.parentNode)it.pre.parentNode.insertBefore(it.mount,it.pre);
+it.pre.style.display='none';
+},function(){
+var scratch=document.getElementById(id);
+if(scratch)scratch.parentNode.removeChild(scratch);
+scratch=document.getElementById('d'+id);
+if(scratch)scratch.parentNode.removeChild(scratch);
+if(gen!==renderGen)return;
+if(it.mount.parentNode)it.mount.parentNode.removeChild(it.mount);
+it.pre.style.display='';
+});
+});
+}
+render();
+if(mq&&mq.addEventListener)mq.addEventListener('change',render);
+if(typeof MutationObserver!=='undefined')new MutationObserver(render).observe(root,{attributes:true,attributeFilter:['data-theme']});
+})();</script>
+<!--claude-mermaid-runtime-end-->
+
+</body></html>

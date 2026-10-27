@@ -25,6 +25,14 @@ TABS = [
      [("conversation_transcript.md", "Precursor (Antigravity)"), ("transript_lecture.md", "Claude Code")]),
 ]
 
+# Interview-prep pages in prep/ (published copies of the study artifacts), linked from each tab.
+PREP = {
+    "venheilheim": [("The Venheilheim Build (interview course)", "venheilheim-build.html")],
+    "focusbank": [("FocusBank Learning Lab (incl. interview prep)", "focusbank-learning-lab.html")],
+    "lecture": [("Lecture Notes Field Guide (interview guide)", "lecture-notes-field-guide.html"),
+                ("Lecture Notes Build Course", "lecture-notes-course.html")],
+}
+
 # Personal details that must not appear on the public site.
 REDACT = {"asaiyan195@gmail.com": "[email removed]"}
 
@@ -165,8 +173,10 @@ def render_tab(tid, title, parts):
                 f'<div class="resp">{html.escape(r) or "<em>(no text response)</em>"}</div></details></article>'
             )
         print(f"{title}: {fname} {len(turns)} turns")
+    prep = "".join(f'<a href="PREP/{href}">{html.escape(label)} →</a>' for label, href in PREP.get(tid, []))
+    prep = f'<nav class="prep"><span>Interview prep</span>{prep}</nav>' if prep else ""
     return (f'<section class="transcript" id="{tid}"><h2>{title} <span class="count">{n} turns</span></h2>'
-            f'{"".join(items)}</section>')
+            f'{prep}{"".join(items)}</section>')
 
 
 # Each tab wears the theme of its project's own website.
@@ -224,6 +234,10 @@ summary:hover{color:var(--accent)}
 .pv{display:block;font:400 13px var(--body);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 details[open] .pv{display:none}
 .resp{padding:10px 14px 14px;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.5 var(--mono);background:var(--resp);max-height:80vh;overflow:auto}
+.prep{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:-6px 0 18px}
+.prep span{font:600 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.prep a{font:600 14px var(--display);color:var(--accent-ink);background:var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none}
+.prep a:hover{filter:brightness(1.1)}
 .transcript,.turn{scroll-margin-top:110px}
 .hidden{display:none}
 """
@@ -242,7 +256,10 @@ cur().querySelectorAll('.turn').forEach(t=>t.classList.toggle('hidden',q&&!t.tex
 """
 
 
-def page(title, tabs, fonts):
+def page(title, tabs, base):
+    """base is the path from this page back to the site root ('' or '../')."""
+    tabs = [(tid, t, body.replace('href="PREP/', f'href="{base}prep/')) for tid, t, body in tabs]
+    fonts = f"{base}fonts/"
     buttons = "".join(f'<button data-show="{tid}" aria-pressed="false">{t}</button>' for tid, t, _ in tabs) if len(tabs) > 1 else ""
     return (f'<!doctype html>\n<html lang="en" data-tab="{tabs[0][0]}"><head><meta charset="utf-8">\n'
             f'<meta name="viewport" content="width=device-width, initial-scale=1">\n'
@@ -255,7 +272,7 @@ def page(title, tabs, fonts):
 
 built = [(tid, title, out, render_tab(tid, title, parts)) for tid, title, out, parts in TABS]
 with open(f"{root}/index.html", "w", encoding="utf-8") as f:
-    f.write(page("AIDS Transcripts", [(tid, t, body) for tid, t, _, body in built], "fonts/"))
+    f.write(page("AIDS Transcripts", [(tid, t, body) for tid, t, _, body in built], ""))
 for tid, t, out, body in built:
     with open(f"{root}/transcripts/{out}", "w", encoding="utf-8") as f:
-        f.write(page(f"{t} Transcript", [(tid, t, body)], "../fonts/"))
+        f.write(page(f"{t} Transcript", [(tid, t, body)], "../"))

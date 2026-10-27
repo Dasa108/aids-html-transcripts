@@ -1,0 +1,909 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>The Venheilheim Build</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column like a manual, a sticky progress strip, each module a chapter ending in a checkpoint. */
+:root {
+  --paper: #eef1f6;
+  --sheet: #ffffff;
+  --ink: #18223a;
+  --muted: #56607a;
+  --rule: #cfd6e4;
+  --gold: #9a6b12;
+  --gold-soft: #f3e6c8;
+  --teal: #1d6f6a;
+  --teal-soft: #d9efec;
+  --code-bg: #e4e9f2;
+  --display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0e1422; --sheet: #151d30; --ink: #e6e9f2; --muted: #9aa4bd; --rule: #2a3550;
+    --gold: #e2b65a; --gold-soft: #3a2f17; --teal: #6fd0c6; --teal-soft: #15302f; --code-bg: #1d2740;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0e1422; --sheet: #151d30; --ink: #e6e9f2; --muted: #9aa4bd; --rule: #2a3550;
+  --gold: #e2b65a; --gold-soft: #3a2f17; --teal: #6fd0c6; --teal-soft: #15302f; --code-bg: #1d2740;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 17px/1.6 var(--body); margin: 0; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--sheet); }
+.wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 64px; }
+header.top { padding-block: 40px 20px; display: grid; gap: 10px; }
+.eyebrow { font: 500 12px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+h1 { font: 700 clamp(30px, 6vw, 44px)/1.1 var(--display); margin: 0; letter-spacing: .02em; text-wrap: balance; }
+h2 { font: 700 clamp(22px, 4.4vw, 28px)/1.2 var(--display); margin: 0; letter-spacing: .02em; text-wrap: balance; }
+h3 { font: 700 18px/1.3 var(--body); margin: 8px 0 0; }
+p, ul, ol { margin: 0; }
+ul, ol { padding-left: 22px; display: grid; gap: 6px; }
+.lede { color: var(--muted); max-width: 62ch; }
+code, .mono { font-family: var(--mono); font-size: .86em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+pre { font: 13px/1.5 var(--mono); background: var(--code-bg); padding: 12px 14px; border-radius: 6px; overflow-x: auto; margin: 0; }
+a { color: var(--teal); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--sheet); border-bottom: 1px solid var(--rule); }
+.bar .wrap { padding-block: 10px; display: flex; gap: 14px; align-items: center; }
+.meter { flex: 1; height: 8px; background: var(--code-bg); border-radius: 4px; overflow: hidden; min-width: 0; }
+.meter i { display: block; height: 100%; width: 0; background: var(--gold); transition: width .3s; }
+.bar span { font: 500 13px var(--mono); color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+nav.toc { display: grid; gap: 4px; padding-block: 8px 28px; }
+nav.toc a { display: grid; grid-template-columns: 2.4em 1fr auto; gap: 10px; align-items: baseline; text-decoration: none; color: var(--ink); padding: 8px 10px; border-radius: 6px; }
+nav.toc a:hover { background: var(--sheet); }
+nav.toc .n { font: 500 13px var(--mono); color: var(--gold); font-variant-numeric: tabular-nums; }
+nav.toc .st { font: 500 12px var(--mono); color: var(--muted); }
+nav.toc a.done .st { color: var(--teal); }
+
+section.mod { display: grid; gap: 16px; padding-block: 36px; border-top: 1px solid var(--rule); }
+.modhead { display: grid; gap: 6px; }
+.goal { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; padding: 14px 16px; display: grid; gap: 6px; }
+.goal b { font: 500 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.here { border-left: 3px solid var(--teal); background: var(--teal-soft); padding: 12px 16px; border-radius: 0 8px 8px 0; display: grid; gap: 6px; }
+.here b.lab, .story b.lab { font: 500 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+.story { border-left: 3px solid var(--gold); background: var(--gold-soft); padding: 12px 16px; border-radius: 0 8px 8px 0; display: grid; gap: 6px; }
+.tbl { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+th { font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+.check { display: grid; gap: 14px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 18px 16px; }
+.check > header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.check > header h3 { margin: 0; font: 700 18px var(--display); letter-spacing: .03em; }
+.check > header small { color: var(--muted); }
+.q { display: grid; gap: 8px; padding-top: 12px; border-top: 1px dashed var(--rule); }
+.q:first-of-type { border-top: 0; padding-top: 0; }
+.q p.ask { font-weight: 700; }
+.q .lvl { font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
+textarea { width: 100%; min-height: 70px; font: 15px/1.5 var(--body); color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 10px; resize: vertical; }
+details summary { cursor: pointer; color: var(--teal); font-weight: 700; font-size: 15px; }
+details .ans { margin-top: 8px; padding: 10px 12px; background: var(--teal-soft); border-radius: 6px; display: grid; gap: 6px; }
+button.done-btn { justify-self: start; font: 700 15px var(--body); color: var(--sheet); background: var(--ink); border: 0; border-radius: 6px; padding: 10px 16px; cursor: pointer; }
+button.done-btn[aria-pressed="true"] { background: var(--teal); }
+dl.gloss { display: grid; grid-template-columns: minmax(0, 11em) minmax(0, 1fr); gap: 8px 16px; margin: 0; }
+dl.gloss dt { font-weight: 700; }
+dl.gloss dd { margin: 0; color: var(--ink); }
+@media (max-width: 520px) { dl.gloss { grid-template-columns: minmax(0, 1fr); } dl.gloss dd { margin-bottom: 8px; } }
+.fill { background: var(--gold-soft); border: 1px dashed var(--gold); border-radius: 6px; padding: 8px 12px; font-size: 15px; }
+@media (prefers-reduced-motion: reduce) { .meter i { transition: none; } }
+
+/* Plain-word help: every technical term is tappable, opening its explanation in place. */
+button.term { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; text-align: inherit; cursor: help; border-bottom: 1.5px dotted var(--teal); border-radius: 0; line-height: inherit; }
+button.term:hover, button.term[aria-expanded="true"] { color: var(--teal); }
+.tip { display: block; margin: 6px 0 8px; padding: 8px 12px; background: var(--sheet); border: 1px solid var(--rule); border-left: 3px solid var(--teal); border-radius: 0 6px 6px 0; font: 400 15px/1.5 var(--body); font-style: normal; color: var(--ink); text-align: left; }
+.tip b { font-weight: 700; }
+.tip a { font-size: 13px; margin-left: 6px; }
+section.primer { display: grid; gap: 16px; padding-block: 28px 36px; border-top: 1px solid var(--rule); }
+.split { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; padding: 14px 16px; display: grid; gap: 6px; align-content: start; }
+.card b.lab { font: 500 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--gold); }
+ol.flow { list-style: none; padding: 0; counter-reset: step; gap: 0; }
+ol.flow li { counter-increment: step; position: relative; padding: 8px 0 8px 40px; border-left: 2px solid var(--rule); margin-left: 13px; }
+ol.flow li::before { content: counter(step); position: absolute; left: -14px; top: 7px; width: 26px; height: 26px; border-radius: 50%; background: var(--sheet); border: 2px solid var(--teal); color: var(--teal); font: 500 13px/22px var(--mono); text-align: center; }
+ol.flow li .who { display: block; font: 500 12px var(--mono); letter-spacing: .06em; color: var(--muted); }
+.gfind { width: 100%; font: 16px var(--body); color: var(--ink); background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 9px 12px; }
+#gloss { display: grid; gap: 18px; }
+#gloss h4 { font: 500 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin: 0 0 8px; }
+#gloss .none { color: var(--muted); }
+</style>
+
+<div class="bar"><div class="wrap"><div class="meter" aria-hidden="true"><i id="meter"></i></div><span id="count">0 / 13 modules</span></div></div>
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">Interview course · Prologue and Act I · build 0.64.7 (155)</div>
+  <h1>The Venheilheim Build</h1>
+  <p class="lede">How the game was made, which software was used and why, taught in thirteen short modules. Read a module, answer its checkpoint in your own words in the box, then open the model answer and compare. Your answers stay in this browser. Mark the module done and move on.</p>
+  <p class="lede">New to the technical words? Read <a href="#words">Start here</a> first. Any word with a <button type="button" class="term" data-demo>dotted underline</button> can be tapped for a plain explanation, and all of them are collected in the <a href="#glossary">Glossary</a>.</p>
+</header>
+
+<nav class="toc" id="toc" aria-label="Modules"></nav>
+
+<section class="primer" id="words">
+  <div class="modhead"><div class="eyebrow">Start here · no checkpoint</div><h2>The words you'll need</h2></div>
+  <p><strong>Code</strong> is the written instructions a computer follows. It's kept as ordinary text files, and each file is called a <strong>script</strong>. This project has two separate kinds of code, written in two different languages, and the course keeps calling them by name:</p>
+  <div class="split">
+    <div class="card"><b class="lab">Game code</b>
+      <p>The code <em>inside the game</em>. It runs on the phone or PC while someone plays: movement, combat, the story, dialogue, saves, menus.</p>
+      <p>Language: <strong>GDScript</strong>, Godot's own. Folder: <code>game/</code>. About 33,000 lines.</p>
+      <p>Example: <code>player.gd</code> decides what happens when you press dodge.</p>
+    </div>
+    <div class="card"><b class="lab">Tool code</b>
+      <p>Helper programs that run <em>only on the development computer</em>, before the game is built, to make the game's content. Players never run it and it isn't in the app.</p>
+      <p>Language: <strong>Python</strong>. Folder: <code>tools/</code>. About 21,000 lines.</p>
+      <p>Example: <code>gen_world.py</code> builds the whole island map; an importer cuts a generated sprite sheet into animation frames.</p>
+    </div>
+  </div>
+  <p>Think of a film: the game code is the film playing in the cinema, and the tool code is the studio equipment used to make it. The audience only ever sees what the equipment produced. Here, the tool code writes files (maps, sprites, sound loops) and the game code loads those files and brings them to life.</p>
+  <h3>How the pieces connect</h3>
+  <ol class="flow">
+    <li>You write a <strong>prompt</strong>: a written request for a picture, with exact sizes.<span class="who">you</span></li>
+    <li>An <strong>image model</strong> (an AI that draws) turns it into a big sheet of drawings.<span class="who">image AI</span></li>
+    <li><strong>Tool code</strong> (Python) cuts that sheet into game-sized sprites, and other tool scripts generate the maps.<span class="who">tool code · run by Claude Code</span></li>
+    <li><strong>Godot</strong>, the game engine, imports those image and data files so the game can use them.<span class="who">the engine</span></li>
+    <li><strong>Game code</strong> (GDScript) uses them while the game runs: draws the map, moves Eirik, plays the story.<span class="who">game code · written by Claude Code under your direction</span></li>
+    <li>An <strong>export</strong> (a build) packs everything into one app file: an APK for Android, an .exe for Windows.<span class="who">the engine</span></li>
+    <li><strong>adb</strong> copies the APK onto your phone, and you play it and judge it.<span class="who">you</span></li>
+  </ol>
+  <h3>Five more you'll meet straight away</h3>
+  <div class="tbl"><table>
+    <tr><th>Word</th><th>Plain meaning</th></tr>
+    <tr><td>Engine</td><td>Ready-made software that does the common, heavy work of any game (drawing, sound, input, building for each platform), so you only write what makes yours different. Here: Godot.</td></tr>
+    <tr><td>File / folder / path</td><td>A path is a file's address, folders separated by slashes: <code>tools/world/gen_world.py</code> is the file gen_world.py in the world folder inside tools.</td></tr>
+    <tr><td>JSON</td><td>A plain-text way of writing down structured information (names, numbers, lists) that people and programs can both read. Saves, quests and map objects are JSON.</td></tr>
+    <tr><td>Test</td><td>Code that runs part of the game by itself and checks the result is right, printing PASS or FAIL.</td></tr>
+    <tr><td>Git</td><td>A history of every saved change to the project, so any earlier state can be looked at or restored. Each saved step is a commit.</td></tr>
+  </table></div>
+</section>
+
+<!-- 1 -->
+<section class="mod" id="m1" data-title="The project in one minute">
+  <div class="modhead"><div class="eyebrow">Module 1</div><h2>The project in one minute</h2></div>
+  <div class="goal"><b>After this you can</b><p>Give a 30-second and a 2-minute pitch, and quote the project's real numbers.</p></div>
+  <p><strong>Venheilheim</strong> is a 2D top-down pixel-art action RPG with an open world, made in the Godot engine. It is built mobile-first for Android and also ships for Windows and Linux. Big story moments are told as comic panels; everything else is played.</p>
+  <p>The story: Eirik, the newly crowned Human King, marries Syra. Her dowry jewel, the Hollow Shard, was planted by Malakor, the Uren ruler. The Shard drains Eirik's Aura Core, explodes and kills Syra, and a golden rift pulls Eirik to the island of Venheilheim. There, powerless, he learns an older power called Ren, trains, builds a ship and sails north through a mist only Ren can see through. Act I ends with him wrecked and adrift as an Uren warship approaches.</p>
+  <h3>What is built, in play order</h3>
+  <ol>
+    <li><strong>The opening in Lierdand Valley:</strong> a cliff city, a sparring lesson with Halvard that teaches Aura, Aura Slash and Aura Dash.</li>
+    <li><strong>The pirate assault:</strong> the march to the Wyvernwood, scouts, the camp, the stockade, the cove, the boss Red Mattock, hauling up the river chain.</li>
+    <li><strong>The way home:</strong> on horseback, Lierdand Harbour, a royal galley up the river, a barge to Solaris.</li>
+    <li><strong>Solaris and the Prologue:</strong> the capital, the homecoming crowd, the royal procession, the wedding, the Shard, the rift.</li>
+    <li><strong>Act I on Venheilheim:</strong> the ruins, the sword, the Training Grounds with four Ren circles and trials, the Cradle and the prophecy, building the ship.</li>
+    <li><strong>The sea crossing:</strong> mist, sea creatures fought from the deck, a storm, a giant monster, the wreck, the rescue ship.</li>
+  </ol>
+  <h3>Numbers to remember</h3>
+  <div class="tbl"><table>
+    <tr><th>What</th><th>Figure</th></tr>
+    <tr><td>Current version</td><td>0.64.7, Android build code 155</td></tr>
+    <tr><td>Game code (GDScript)</td><td>about 33,000 lines</td></tr>
+    <tr><td>Tool code (Python)</td><td>about 21,000 lines</td></tr>
+    <tr><td>Story chapters in the state machine</td><td>32, from <code>OPENING_EVENING</code> to <code>ACT1_ASHPLAINS</code></td></tr>
+    <tr><td>Playable maps</td><td>9: Lierdand, gorge, Wyvernwood, Millbrook, river road, harbour, Solaris, Venheilheim, the voyage deck</td></tr>
+    <tr><td>Abilities the player unlocks</td><td>18 (sword moves, Aura, Ren techniques, the Uren disguise)</td></tr>
+    <tr><td>Automated test scenes</td><td>48, plus 54 screenshot scenes</td></tr>
+    <tr><td>Image files in the game</td><td>about 1,300 PNGs</td></tr>
+    <tr><td>Git history</td><td>starts 4 Oct 2026; last pushed checkpoint <code>d9045b4</code> (19 Oct)</td></tr>
+  </table></div>
+  <div class="story"><b class="lab">Pitch to learn by heart</b>
+    <p><em>30 seconds:</em> "Venheilheim is a pixel-art action RPG I designed and built in Godot, for Android first and also Windows and Linux. It covers a full prologue and first act: nine maps, a story told through play and comic panels, a combat and training system, about 33,000 lines of game code. I directed the design, story and art, used image-generation models for the art and an AI coding agent as my engineering team, and built a pipeline of Python tools that generate the maps and import the art."</p>
+    <p><em>2 minutes:</em> add the story premise in two sentences, one technical decision (maps generated by Python scripts, not painted by hand), one hard problem you solved (Module 7 has good ones), and how you tested and shipped it to your phone.</p>
+  </div>
+  <div class="check" data-mod="m1">
+    <header><h3>Checkpoint 1</h3><small>Answer first, then compare</small></header>
+    <div class="q"><span class="lvl">Easy</span><p class="ask">Tell me about your project in thirty seconds.</p><textarea id="a1-1" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Use the 30-second pitch above. Hit four things: what it is (2D pixel-art action RPG), the engine and platforms (Godot; Android, Windows, Linux), the scope (Prologue and Act I, nine maps), and your role (designer and director, working with AI tools).</p></div></details></div>
+    <div class="q"><span class="lvl">Easy</span><p class="ask">What platforms does it run on, and which came first?</p><textarea id="a1-2" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Android first: the game was designed mobile-first, with touch controls and a small 426×240 pixel screen that scales up. Windows (an .exe plus a ZIP) and Linux builds are exported from the same project. Every release I installed on my own phone to check it.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">How big is it? Give me some numbers.</p><textarea id="a1-3" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>About 33,000 lines of GDScript in the game and 21,000 lines of Python tools, nine maps, 32 story chapters, 18 unlockable abilities, 48 automated test scenes, and about 1,300 images. It's at version 0.64.7, the 155th Android build.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">What would you say was the hardest part?</p><textarea id="a1-4" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Keeping the art consistent. The sprites come from an image model, and it doesn't reliably follow a layout: rows touch, a view comes back turned the wrong way, two outfits get mixed. I wrote precise prompts with sizes in game pixels, and the importers cut each sheet automatically and scale it once so the hero is always 28 pixels tall. When a sheet was wrong I asked for just the broken rows again instead of faking a fix in code.</p></div></details></div>
+    <button class="done-btn" data-done="m1" aria-pressed="false">Mark module 1 done</button>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="mod" id="m2" data-title="The engine: Godot and GDScript">
+  <div class="modhead"><div class="eyebrow">Module 2</div><h2>The engine: Godot and GDScript</h2></div>
+  <div class="goal"><b>After this you can</b><p>Explain why Godot was chosen, and its core ideas: nodes, scenes, scripts, autoloads, signals, renderer and screen scaling.</p></div>
+  <p><strong>Godot</strong> (version 4.7.2 here) is a free, open-source game engine. Its own scripting language, <strong>GDScript</strong>, looks like Python and is built into the editor.</p>
+  <h3>Why Godot, not Unity or Unreal</h3>
+  <ul>
+    <li><strong>The project changed direction.</strong> The first plans were 3D, then Unreal Engine 5. They moved to Godot and 2D pixel art because the scope (a whole act of story) was only realistic in 2D, and the game had to run well on phones.</li>
+    <li><strong>It's light and free.</strong> No licence fees. The development machine has no graphics card, and Godot's simpler renderer runs fine on it.</li>
+    <li><strong>Strong 2D and easy exports.</strong> Godot has proper 2D tools (pixel-snapped sprites, tile maps, 2D physics) and exports to Android, Windows and Linux from one project.</li>
+    <li><strong>Everything is text.</strong> Scenes, scripts and settings are plain text files, so scripts and an AI agent can read, write and diff them, and tests can run from the command line with no window (<code>--headless</code>).</li>
+  </ul>
+  <h3>The core ideas</h3>
+  <ul>
+    <li><strong>Nodes and scenes.</strong> Everything is a tree of nodes: a sprite, a collision area, a timer, a camera. A scene is a saved tree you can reuse. Eirik is a node with a sprite, a body and hit areas under it.</li>
+    <li><strong>Scripts</strong> attach behaviour to a node: <code>player/player.gd</code> handles movement and combat.</li>
+    <li><strong>Autoloads</strong> are singletons loaded at start and reachable from anywhere. This project has five: <code>Events</code> (the signal bus), <code>Game</code> (input, settings, hit-stop, screen shake), <code>StoryState</code> (chapter, flags, abilities), <code>SaveSystem</code> and <code>Quests</code>.</li>
+    <li><strong>Signals</strong> are Godot's events. Systems don't hold references to each other; they emit and listen through <code>Events</code>, for example <code>player_hp_changed</code>, which the HUD listens to. That keeps the systems loosely coupled.</li>
+    <li><strong>Renderer.</strong> The project uses <em>GL Compatibility</em>, the OpenGL-based renderer for older and weaker devices. It works on cheap phones and on a machine without a GPU.</li>
+    <li><strong>Pixel scaling.</strong> The game draws to a 426×240 screen and stretches it to the window (<code>canvas_items</code> stretch mode), so pixel art stays crisp at any size. Sprites are stored at twice that resolution ("texel 2") for finer detail at the same on-screen size.</li>
+    <li><strong>Shaders</strong> are small GPU programs. <code>world/water.gdshader</code> animates rivers (flowing lanes and glints) and the harbour sea (rolling swells and broken crests).</li>
+  </ul>
+  <div class="story"><b class="lab">Problem and fix</b>
+    <p><strong>Everything drawn by a shader came out too dark.</strong> The shader re-read the texture itself (<code>texture(TEXTURE, UV)</code>), which skips Godot's colour conversion and tinting. Fix: start from <code>COLOR</code>, which already holds the correct pixel.</p>
+    <p><strong>Pictures drawn in code showed as white boxes.</strong> A texture loaded inside a draw call and not kept anywhere was freed before the frame rendered. Fix: keep loaded textures in a cache dictionary.</p>
+  </div>
+  <div class="check" data-mod="m2">
+    <header><h3>Checkpoint 2</h3><small>Answer first, then compare</small></header>
+    <div class="q"><span class="lvl">Easy</span><p class="ask">Why did you pick Godot?</p><textarea id="a2-1" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>It's free and open source, very good at 2D, light enough for phones and for my machine with no GPU, and it exports to Android, Windows and Linux from one project. The project first planned 3D and Unreal, and I moved to Godot with pixel art to keep a whole act realistic in scope.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">What's an autoload, and which ones did you have?</p><textarea id="a2-2" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>A singleton node Godot loads at start and keeps alive across scenes. We had five: Events, a signal bus; Game, for input, settings, hit-stop and shake; StoryState, for the current chapter, flags and abilities; SaveSystem, with three save slots; and Quests.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">How do your systems talk to each other?</p><textarea id="a2-3" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Through signals on a global bus, <code>Events</code>. When the player is hit, the health code emits <code>player_hp_changed</code>, and the HUD listens and redraws the bar. Neither one needs a reference to the other, so I can change or remove one without breaking the other.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">How do you keep pixel art crisp on screens of different sizes?</p><textarea id="a2-4" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>The game renders to a fixed 426×240 viewport, and Godot stretches it to the window in <code>canvas_items</code> mode with nearest-neighbour filtering. Every sprite is stored at exactly twice that resolution and drawn at half scale, so it gains detail without changing size. Characters are all 28 game pixels tall, so the scale stays consistent everywhere.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">Tell me about a rendering bug you hit.</p><textarea id="a2-5" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>The water and flash shaders made everything too dark, because they re-sampled the texture and skipped the colour conversion and tint that Godot had already applied. Using the incoming <code>COLOR</code> value fixed it. Another one: textures loaded during drawing were garbage-collected before the frame rendered and showed as white boxes, fixed by caching them.</p></div></details></div>
+    <button class="done-btn" data-done="m2" aria-pressed="false">Mark module 2 done</button>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="mod" id="m3" data-title="Game architecture">
+  <div class="modhead"><div class="eyebrow">Module 3</div><h2>Game architecture</h2></div>
+  <div class="goal"><b>After this you can</b><p>Walk an interviewer from launching the app to playing a story beat, and explain how story progress and saves work.</p></div>
+  <h3>Boot order</h3>
+  <p><code>title.tscn</code> (title screen, pick a save slot) → <code>act_card.tscn</code> (the act's title card) → <code>main.tscn</code>. <code>main.gd</code> assembles the game: the world, the player, the camera, HUD, touch controls, the dialogue box, the comic player, the story director, the pause menu, the journal and the tutorial. It also changes maps, sets lighting moods (normal, underground torchlight, the Cradle's twilight) and plays ambience.</p>
+  <h3>The story is a state machine</h3>
+  <ul>
+    <li><strong>Chapters.</strong> <code>StoryState.CHAPTERS</code> is an ordered list of 32 chapter names, such as <code>ASSAULT_STOCKADE</code>, <code>PROLOGUE_WEDDING</code> and <code>ACT1_TRAINING_GROUNDS</code>. Exactly one is current.</li>
+    <li><strong>Flags</strong> record smaller facts: <code>mattock_spared</code>, <code>relic_opened</code>, <code>hw_company_mounted</code>.</li>
+    <li><strong>Abilities</strong> are unlocked as quest rewards, so the player learns one mechanic at a time.</li>
+    <li><strong>Story scripts.</strong> One script per part: <code>opening.gd</code>, <code>assault.gd</code>, <code>homeward.gd</code>, <code>procession.gd</code>, <code>voyage.gd</code>, plus <code>story_director.gd</code>, which receives story events and runs the matching scene.</li>
+    <li><strong>The world follows the story.</strong> Objects on the map carry rules such as <code>show_in</code>, <code>hide_in</code> or <code>if_flag</code>, so the right people and props appear in each chapter without separate maps.</li>
+  </ul>
+  <h3>Quests and saves</h3>
+  <ul>
+    <li><strong>Quests</strong> live in data (<code>assets/story/quests.json</code>): steps of kinds like read, rest, defeat, take, reach and event. The journal only ever shows what the player has learned, never future steps.</li>
+    <li><strong>Saves</strong> are JSON files in the app's user folder, three slots. The game autosaves when the phone sends it to the background.</li>
+    <li><strong>Rest snapshots.</strong> Resting at a shrine writes a second snapshot; dying returns you to it, with defeated enemies back on their feet.</li>
+    <li><strong>Save versioning.</strong> Each save carries a version number. When Solaris grew its Outer Ward, positions in older saves were shifted on load, so old saves still work.</li>
+  </ul>
+  <div class="story"><b class="lab">Problem and fix</b><p><strong>"Save and return to title" did nothing.</strong> Story scenes lock input while they play. One scene never released the lock, and the pause menu refused to open while input was locked, so the save button was unreachable. Fix (0.64.2): the pause menu is blocked only while a comic plays, and returning to the title clears the input lock, unpauses and resets the time scale.</p></div>
+  <div class="check" data-mod="m3">
+    <header><h3>Checkpoint 3</h3><small>Answer first, then compare</small></header>
+    <div class="q"><span class="lvl">Easy</span><p class="ask">How does the game know where you are in the story?</p><textarea id="a3-1" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>A global StoryState holds the current chapter from an ordered list of 32, plus flags for smaller facts and the set of unlocked abilities. Story scripts move the chapter on, and everything else reads it: which NPCs appear, what they say, which map exits are open.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">How do you avoid making a different map for every chapter?</p><textarea id="a3-2" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Every object in a map's data can carry conditions: <code>show_in</code> or <code>hide_in</code> a list of chapters, or <code>if_flag</code>. NPCs can have positions and lines per chapter. One Solaris map serves the homecoming, the procession and the wedding day, with different crowds and guards in each.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">How does saving work? What if you change the game after people have saved?</p><textarea id="a3-3" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>JSON files, three slots, autosave when the app is backgrounded, and a rest snapshot for respawning after death. Each save has a version number; when a change would break old saves, the loader migrates them. When Solaris was enlarged, it shifted saved positions on that map.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">Describe a bug caused by state that wasn't cleaned up.</p><textarea id="a3-4" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Story scenes set a global input lock. One path out of a scene never cleared it, and the pause menu wouldn't open while it was set, so players couldn't save and quit. I changed the pause menu to block only during comic pages and made "return to title" reset the lock, the pause and the time scale. The lesson I wrote into the handoff: every path out of a scene must release the lock.</p></div></details></div>
+    <button class="done-btn" data-done="m3" aria-pressed="false">Mark module 3 done</button>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="mod" id="m4" data-title="The world: maps, chunks and the camera">
+  <div class="modhead"><div class="eyebrow">Module 4</div><h2>The world: maps, chunks and the camera</h2></div>
+  <div class="goal"><b>After this you can</b><p>Explain how a map goes from a Python script to the screen, and how the game stays fast on a phone.</p></div>
+  <h3>Maps are data, made by scripts</h3>
+  <ul>
+    <li><strong>Two files per map.</strong> A Python generator (for example <code>tools/world/gen_world.py</code> for Solaris and the island) writes <code>&lt;map&gt;_map.bin</code>, one byte per tile saying what it is (grass, cobble, wall, water, stairs…), and <code>&lt;map&gt;_meta.json</code>, every placed object: buildings, props, NPCs with their lines, doors, triggers, entry points, region names, rooms.</li>
+    <li><strong>Sizes.</strong> The island map is 600×690 tiles; Solaris is about 522×332 after the Outer Ward and River Gate were added; each tile is 16 game pixels.</li>
+    <li><strong>A tile atlas</strong> (<code>tiles.png</code>, with a hi-res copy) holds every ground tile. The world picks variants with noise so ground doesn't repeat.</li>
+  </ul>
+  <h3>Drawing it fast: chunk streaming</h3>
+  <p><code>world/world.gd</code> cuts each map into 32×32-tile chunks and loads only the chunks around the player, unloading the rest. Each chunk lays its tiles, spawns its props and people, and adds flat ground details (shadows, debris) to a single decal layer to keep the number of nodes down. Solaris's crowd is capped at 80 active people at once.</p>
+  <h3>Depth and the camera</h3>
+  <ul>
+    <li><strong>Y-sorting.</strong> Props stand on their bottom-centre point and are drawn in order of their y position, so Eirik walks in front of a wall's base and behind its top.</li>
+    <li><strong>Colliders.</strong> Each prop type has a collision box or radius in a table in <code>world.gd</code>. Grass never blocks; walls, trees, rocks and water do.</li>
+    <li><strong>Shadows</strong> come from a height value per tile type, with light from the north-west.</li>
+    <li><strong>Rooms.</strong> House interiors are built in empty space beside the map. The world flood-fills the map into separate areas, and the camera stays inside the area the player is in, so you never see the black void or another house's interior at the edge of the screen.</li>
+    <li><strong>Travel.</strong> A trigger object (<code>event: "travel"</code>) sends the player to another map's named entry point.</li>
+  </ul>
+  <div class="story"><b class="lab">Problem and fix</b>
+    <p><strong>Seven Solaris buildings were black inside</strong>, the gaol among them. Their rooms had been placed using an old map coordinate, so the door led to empty space. Fixing one calculation in the generator (<code>x1 + INT</code>) put all thirteen work rooms where their doors point. A test that walks out of every room now reports only one blocked room, the King's study.</p>
+    <p><strong>The bride vanished from the chapel.</strong> NPCs that move between chapters were only listed in the chunk of their first position, so the chapel chunk didn't know she should be there. Fix: list each NPC in the chunk of every position it can have.</p>
+  </div>
+  <div class="check" data-mod="m4">
+    <header><h3>Checkpoint 4</h3><small>Answer first, then compare</small></header>
+    <div class="q"><span class="lvl">Easy</span><p class="ask">How are your maps made? Did you paint them in the editor?</p><textarea id="a4-1" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>No, they're generated by Python scripts. Each generator lays out the map in code, such as Solaris's rings of walls, avenues and districts, and writes a binary tile grid plus a JSON file of every object. If I want to move a gate, I change a number and rerun the script, and the map, the minimap and an overview image all update.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">How do you keep a 600×690-tile world running on a phone?</p><textarea id="a4-2" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Chunk streaming. The map is split into 32×32-tile chunks, and only those near the player are loaded. Small ground details are drawn as decals in one layer instead of thousands of nodes, and the Solaris crowd is capped at 80 active people. The target was about 60 frames per second.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">How does depth work in a top-down game?</p><textarea id="a4-3" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Y-sorting: every sprite is anchored at its feet, and sprites lower on the screen are drawn on top. Collision boxes cover only the base of a building, so you can walk behind a roof but not through the walls. Shadows use a height per tile type with light from the north-west.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">Tell me about a bug in the world system and how you found it.</p><textarea id="a4-4" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>While checking the gaol, I found its interior was black. The room-placement code still used an old map offset, so the room sat away from where the door led. The same bug hit six other buildings. One fix in the generator repaired all of them, and a test that walks every door in Solaris confirmed it. The test had been reporting those rooms as blocked, which was the clue.</p></div></details></div>
+    <button class="done-btn" data-done="m4" aria-pressed="false">Mark module 4 done</button>
+  </div>
+</section>
+
+<!-- 5 -->
+<section class="mod" id="m5" data-title="Gameplay systems">
+  <div class="modhead"><div class="eyebrow">Module 5</div><h2>Gameplay systems</h2></div>
+  <div class="goal"><b>After this you can</b><p>Explain the player controller, combat, the Aura and Ren mechanics, enemies and how the game guides the player without arrows.</p></div>
+  <h3>The player and combat</h3>
+  <ul>
+    <li><strong>Movement</strong> uses acceleration and friction, plus sprint, dodge, a Slash then Heavy combo, and guard with a timed parry.</li>
+    <li><strong>Hitbox and hurtbox</strong> are two kinds of Godot <code>Area2D</code> (<code>combat/hitbox.gd</code>, <code>hurtbox.gd</code>). An attack switches its hitbox on for a few frames; anything with a hurtbox on the other team that overlaps receives the hit once per swing.</li>
+    <li><strong>Game feel.</strong> A short freeze on impact ("hit-stop"), screen shake, flashes and squash make hits feel solid.</li>
+  </ul>
+  <h3>Two energy systems, one at a time</h3>
+  <ul>
+    <li><strong>Aura</strong> (the opening): a stored Core powering Aura Slash and Aura Dash. Eirik loses it at the wedding.</li>
+    <li><strong>Ren</strong> (Act I): no Core. In the Meridian View the player routes Ren with direction keys: hands, head, legs, back to the heart. Four training circles teach it in order: Circulation, Repetition, the Beam and the Sword, Swift Legs.</li>
+    <li><strong>Progress.</strong> Five clean repetitions give one power point. Each point adds 8% strength but makes the flow faster and harder to time. Ren use builds Strain on the meridians; too much and he seizes up.</li>
+    <li><strong>Upgrades.</strong> Rare runestones are spent in a 25-node skill tree in a teaching book.</li>
+  </ul>
+  <h3>Enemies and allies</h3>
+  <p>Kata Sentinels and Ren constructs in the Training Grounds; pirates in the Wyvernwood, including bowmen on towers and ladders who can be hit from every side; the boss Red Mattock with a hook pull and a sweep; and allied soldiers who fight his crew so Eirik faces him alone.</p>
+  <h3>Guidance without waypoints</h3>
+  <p>A firm design rule: no quest arrows or map markers. Directions come from people in conversation ("north-east, past the mill"), signposts, and the Resonance Fragment, which only glows warmer or colder. The rejected alternative was a compass, judged "too direct". The journal only records what the player has heard or read.</p>
+  <h3>Phones</h3>
+  <p>On-screen touch controls, a sprint toggle that's meaningful on a phone, and a pause button.</p>
+  <div class="story"><b class="lab">Problem and fix</b><p><strong>The bowman on the ladder couldn't be hit.</strong> Archers on towers stand drawn higher than their feet, so their hurtbox sat on the ground below them and slashes from the side or back missed. Fix: perched archers get an extra hurtbox covering their raised body, and a soldier's line hints that Aura Slash reaches them.</p></div>
+  <div class="check" data-mod="m5">
+    <header><h3>Checkpoint 5</h3><small>Answer first, then compare</small></header>
+    <div class="q"><span class="lvl">Easy</span><p class="ask">How does hit detection work?</p><textarea id="a5-1" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Two kinds of area: hitboxes on attacks and hurtboxes on bodies, on separate collision layers. An attack turns its hitbox on for its active frames; any overlapping hurtbox on the other team gets the hit once per activation, and its owner handles the damage.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">How do you teach the player so many mechanics?</p><textarea id="a5-2" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>One at a time, through play. Abilities are quest rewards, so each appears when the story needs it: sprint when the bell rings, Aura in the spar, Ren in four circles that each need their own stone tablet read first. Tablets give short precepts; the live exercise shows the keys. No pages of instructions.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">Why no quest markers? Isn't that frustrating?</p><textarea id="a5-3" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>It's a deliberate design choice: the world should feel lived in, so people tell you the way, as they would. To keep it fair, directions are plain and repeated by several characters, there are signposts at forks, and the journal keeps what you've been told. The one magical guide, the Fragment, only says warmer or colder.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">How did you balance the Ren progression?</p><textarea id="a5-4" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Power is bounded and has a cost. Five clean repetitions earn a point worth 8% more strength, but each point also speeds up the flow you must time, so getting stronger demands more skill. Strain limits spamming. Runestones are scarce, with eight to find and a 10% one-time drop, and the tree's prices rise 2, 3, 4 across all branches.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">Give me a combat bug and its fix.</p><textarea id="a5-5" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Archers on towers were drawn raised, but their hurtbox stayed at their feet, so you could only hit them from the front. I added a second hurtbox at their raised height for perched enemies, so slashes from any side connect, and added a hint line about Aura Slash.</p></div></details></div>
+    <button class="done-btn" data-done="m5" aria-pressed="false">Mark module 5 done</button>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="mod" id="m6" data-title="Python tooling">
+  <div class="modhead"><div class="eyebrow">Module 6</div><h2>Python tooling</h2></div>
+  <div class="goal"><b>After this you can</b><p>Explain why the content is generated by scripts, which Python libraries were used and what each tool family does.</p></div>
+  <p>About 21,000 lines of Python in <code>tools/</code> make the game's data and art. The game never runs Python; it only loads what the tools write.</p>
+  <div class="tbl"><table>
+    <tr><th>Library</th><th>What it is</th><th>Used for</th></tr>
+    <tr><td>Pillow (PIL)</td><td>image reading, writing and resizing</td><td>cutting sprite sheets, resizing with LANCZOS, drawing map overviews and minimaps</td></tr>
+    <tr><td>NumPy</td><td>fast arrays and maths</td><td>treating images as pixel arrays: transparency masks, row and column profiles, heights</td></tr>
+    <tr><td>SciPy (ndimage)</td><td>scientific image tools</td><td>finding separate figures on a sheet (connected-component labelling), growing a mask (dilation); also audio filtering</td></tr>
+    <tr><td>soundfile / libsndfile</td><td>audio file reading and writing</td><td>preparing the ambience loops</td></tr>
+  </table></div>
+  <h3>The tool families</h3>
+  <ul>
+    <li><code>tools/paths.py</code> holds every project path in one place, so scripts run from any folder.</li>
+    <li><code>tools/world/</code> has the map generators (<code>gen_world.py</code>, <code>gen_lierdand.py</code>, <code>gen_port.py</code>, …), tile makers and <code>map_render.py</code>, which draws the overview maps the owner follows in <code>docs/maps/</code>.</li>
+    <li><code>tools/sprites/</code> has the importers that turn generated art into game sprites (Module 7) and helpers to look at a sheet before cutting it (<code>blob_index.py</code>, <code>contact_sheet.py</code>).</li>
+    <li><code>tools/comics/</code> holds the comic script and panel curation (Module 8); <code>tools/audio/</code> holds the loop preparation (Module 9).</li>
+  </ul>
+  <h3>Why generate, not hand-place?</h3>
+  <ul>
+    <li><strong>Reproducible:</strong> rerun a script and you get the same map.</li>
+    <li><strong>Easy to change:</strong> widen a gate or move the gaol by editing one line.</li>
+    <li><strong>Reviewable:</strong> the layout is code, so it can be diffed and versioned.</li>
+    <li><strong>Natural at scale:</strong> 1,016 Solaris houses are packed by a sampler; trees use value noise so they never sit on a grid.</li>
+  </ul>
+  <p>Rules can be enforced in code too. Props within 34 pixels of the procession route are cleared automatically, and NPCs found standing on it are printed as warnings.</p>
+  <div class="check" data-mod="m6">
+    <header><h3>Checkpoint 6</h3><small>Answer first, then compare</small></header>
+    <div class="q"><span class="lvl">Easy</span><p class="ask">What did you use Python for, if the game is in GDScript?</p><textarea id="a6-1" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>The content pipeline. Python scripts generate every map, import and cut the AI-generated art into sprite sheets, build the comic scenes and prepare the audio. The game loads their output files; it never runs Python.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">Which Python libraries, and what for?</p><textarea id="a6-2" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Pillow to read, resize and write images; NumPy to treat images as arrays, for transparency masks and measuring figure heights; SciPy's ndimage to find each separate figure on a sheet by connected-component labelling; and soundfile with NumPy and SciPy for the audio loops.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">What's the advantage of generating a city in code over painting it?</p><textarea id="a6-3" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Changes are cheap and safe. Solaris is rings with fixed radii, avenues and districts. When the owner asked for an Outer Ward, or gates parallel to the walls, it was a code change and a rerun, not hours of repainting. Rules are enforced automatically, like keeping the procession route clear, and an overview map is redrawn on every run so I can review the result.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">How do you keep generated maps looking natural, not like a grid?</p><textarea id="a6-4" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Value noise and jittered picks for trees and copses, a row-by-row sampler for packing houses of different sizes, generated ruin decay (breaches, rubble, toppled columns all falling the same way), and a decal layer for small ground clutter.</p></div></details></div>
+    <button class="done-btn" data-done="m6" aria-pressed="false">Mark module 6 done</button>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="mod" id="m7" data-title="The art pipeline">
+  <div class="modhead"><div class="eyebrow">Module 7</div><h2>The art pipeline</h2></div>
+  <div class="goal"><b>After this you can</b><p>Describe the round trip from a written prompt to an animated sprite in the game, and the problems AI-generated art caused.</p></div>
+  <h3>The round trip</h3>
+  <ol>
+    <li><strong>Write the prompt first.</strong> Each needed sheet gets a prompt in <code>SPRITE_PROMPTS.md</code>: the exact size in game pixels, the rows and frame counts, the views (front, back, side), drawn at 4× on flat magenta with nothing touching, and reference images to attach.</li>
+    <li><strong>Generate.</strong> The owner generates the sheet with an image model and saves it in <code>art_sources/sprites/</code> under the name the prompt gives.</li>
+    <li><strong>Look at it.</strong> Before cutting, check which piece is which (<code>blob_index.py</code> numbers every piece).</li>
+    <li><strong>Import.</strong> A Python importer cuts and places every frame (below) and writes a PNG plus a JSON layout.</li>
+    <li><strong>Check in the game.</strong> Import into Godot, take screenshots, compare sizes, then mark the prompt as supplied.</li>
+  </ol>
+  <div class="fill"><strong>Fill this in from memory:</strong> the project files don't record which image generator made the sprite sheets. Be ready to name the tool or tools you used, and why. Some comic work came from other AI sessions in Google's Antigravity (Gemini).</div>
+  <h3>How an importer cuts a sheet</h3>
+  <ul>
+    <li><strong>Key out the magenta</strong> background to transparency (chroma keying).</li>
+    <li><strong>Find the rows:</strong> count solid pixels per line and split at the emptiest lines near each expected boundary, because figures sometimes touch from row to row.</li>
+    <li><strong>Find the figures</strong> in a row the same way, by columns, then keep the largest connected piece plus anything within a few pixels of it (hair, a strap, the blade).</li>
+    <li><strong>One scale per sheet,</strong> never per frame. It's set by the standing idle pose, so Eirik is 28 game pixels tall in every animation and outfit.</li>
+    <li><strong>Place each frame</strong> with the feet on one ground line, centred on the body's mass so a blade swung out doesn't push him sideways. Resize with LANCZOS, then threshold the transparency for crisp pixel edges.</li>
+    <li><strong>Write the layout:</strong> frame size, origin, <code>texel: 2</code>, and each animation's row, frame count, speed and looping. In the game, <code>core/sprite_sheet.gd</code> turns that into Godot animations and can merge extra sheets onto a character.</li>
+  </ul>
+  <h3>Rules that kept quality</h3>
+  <ul>
+    <li><strong>Eirik's look</strong> is defined by the owner's sheets and is never reshaped by code. He is 28 px like everyone else, never bigger, never a chibi.</li>
+    <li><strong>Every sprite at texel 2;</strong> art drawn by code gets a redraw prompt instead.</li>
+    <li><strong>No faking.</strong> Never paste characters into comic panels to imitate new art; get real art or keep the old.</li>
+    <li><strong>No roads in sprites:</strong> the game draws its own road tiles.</li>
+  </ul>
+  <div class="story"><b class="lab">Problems and fixes (good interview stories)</b>
+    <ul>
+      <li><strong>Mixed outfits.</strong> A sheet asked for armed and empty-handed versions side by side; the model mixed them within rows. Fix: one version per sheet, every row one animation, all sheets generated in one session with the same reference attached, then one importer at one scale.</li>
+      <li><strong>Rows that overlapped</strong> (blades and fallen bodies reaching into the next row) couldn't be cut, so that sheet was asked for again with clear spacing.</li>
+      <li><strong>A sheet that didn't match its brief.</strong> The wedding-uniform sheet came back with 15 rows instead of 18, with no hit rows and no side slash. I mapped what was there and borrowed sensibly: "hit" plays the first two stagger frames of death, and the side slash uses the side heavy cut.</li>
+      <li><strong>The wrong view.</strong> A front sprint came back turned three-quarters to the right, so only those two rows were regenerated, then scaled to match the back sprint.</li>
+      <li><strong>Gates facing the wrong way.</strong> City gates came back facing the viewer when the wall runs north–south. The prompt was rewritten with a layout reference; when it still failed, the gaps were left open rather than shipping wrong art.</li>
+      <li><strong>Fitting art to the map.</strong> The gaol's yard gate was scaled so the passage between its stone piers is exactly 48 game pixels, the three-tile opening in the wall, which puts the piers on the wall tiles themselves.</li>
+    </ul>
+  </div>
+  <div class="check" data-mod="m7">
+    <header><h3>Checkpoint 7</h3><small>Answer first, then compare</small></header>
+    <div class="q"><span class="lvl">Easy</span><p class="ask">Who made the art?</p><textarea id="a7-1" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>I art-directed it and generated it with image models. I wrote detailed prompts with exact in-game sizes and reference images, generated the sheets, then a Python pipeline cut them into game sprites. Name the generator you used. I made the visual rules myself: the hero's design, scale, outfits and no faked compositing.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">How do you turn one big generated image into an animation?</p><textarea id="a7-2" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Key out the magenta background; find the rows by splitting at the emptiest horizontal lines; find each figure by columns and connected components; scale the whole sheet once by the idle pose so the character is 28 pixels tall; place each frame with its feet on a shared ground line, centred on its mass; and write a PNG atlas with a JSON layout listing every animation's row, frame count and speed. The game builds animations from that JSON.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">Why scale per sheet and not per frame?</p><textarea id="a7-3" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Per-frame scaling would make a crouch the same height as standing, so the character would grow and shrink during animations. One scale per sheet, set by the standing pose, keeps real proportions: a crouch stays shorter and the size stays consistent between animations.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">What are the limits of AI-generated art for games, from your experience?</p><textarea id="a7-4" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Consistency and layout. The model drifts in proportions between separate requests, mixes variants that share a row, ignores row counts, draws the wrong view, lets limbs cross into neighbouring frames, and leaves pink fringes from the magenta. I countered with tight prompts, one version per sheet, references from the game itself, one session per character outfit, automatic cutting that tolerates touching figures, and asking again for only the broken rows.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">A generated sheet is missing three rows. What do you do?</p><textarea id="a7-5" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>First map what's actually there; the wedding sheet came with 15 of 18 rows. Use every good row. For the gaps, borrow frames that look natural: the death's first stagger frames as a hit reaction, the side heavy cut as a side slash. Note it in the prompt file, and offer the owner a small prompt for just the missing rows. Never stretch or redraw the character in code.</p></div></details></div>
+    <button class="done-btn" data-done="m7" aria-pressed="false">Mark module 7 done</button>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="mod" id="m8" data-title="Comics and the story">
+  <div class="modhead"><div class="eyebrow">Module 8</div><h2>Comics and the story</h2></div>
+  <div class="goal"><b>After this you can</b><p>Explain how the comic scenes are produced and played, and how the story canon is managed.</p></div>
+  <ul>
+    <li><strong>The panels.</strong> The Prologue's big moments are 46 panels in seven scenes (the intro, the royal garden, the vows, the Shard awakening, its message, the bride's death, the rift), generated at 1920×1080 and kept in <code>production_vault/</code> with face and costume benchmarks for continuity.</li>
+    <li><strong>One script for all scenes.</strong> <code>tools/comics/comic_script.py</code> defines every scene: panel order, layout, camera and text. Running it writes each scene's <code>scene.json</code> and a readable <code>docs/story/COMIC_SCRIPT.md</code>.</li>
+    <li><strong>Curation.</strong> <code>curate_panels.py</code> has one recipe per panel (source, crop box, colour grade, overlays) and crops each to the shape it's shown at, with faces kept in the central band.</li>
+    <li><strong>Playback.</strong> <code>ui/comic_player.gd</code> plays a scene and supports animated panels; the Shard's explosion is a frame animation cut from an artist sheet.</li>
+    <li><strong>The canon.</strong> <code>docs/story/Venheilheim_Master_Story.md</code> is the single story authority. It started from the original PDF and was merged with the owner's LaTeX story bible (the "Codex"), with the owner ruling on each conflict, and changes are marked with dates.</li>
+    <li><strong>Prompts.</strong> New panels are briefed in <code>COMIC_PROMPTS.md</code>, for example O5c, the harbour panel for the assault's ending.</li>
+  </ul>
+  <div class="check" data-mod="m8">
+    <header><h3>Checkpoint 8</h3><small>Answer first, then compare</small></header>
+    <div class="q"><span class="lvl">Easy</span><p class="ask">Why mix comic panels with gameplay?</p><textarea id="a8-1" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Some moments, like the wedding, the Shard and Syra's death, need faces and drama that 28-pixel sprites can't carry. Panels give them weight; everything else is played. It also keeps scope realistic: a panel costs much less than a fully animated cutscene.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">How do you keep characters consistent across 46 generated panels?</p><textarea id="a8-2" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Benchmarks and rules: a face benchmark panel and a costume benchmark per character, written continuity rules (Eirik clean-shaven, the jewel only from the dowry on), reference images attached to every prompt, and a curation step that crops and grades every panel the same way.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">How do you manage a story that's changing while you build?</p><textarea id="a8-3" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>One canonical document, edited in place, with dated change marks and the owner's rulings recorded. Later acts stay outlines until they're built, and open questions are listed explicitly. The comic text comes from one script, so a wording change updates every scene file at once.</p></div></details></div>
+    <button class="done-btn" data-done="m8" aria-pressed="false">Mark module 8 done</button>
+  </div>
+</section>
+
+<!-- 9 -->
+<section class="mod" id="m9" data-title="Audio">
+  <div class="modhead"><div class="eyebrow">Module 9</div><h2>Audio</h2></div>
+  <div class="goal"><b>After this you can</b><p>Explain where the sounds came from, how they were made to loop, and how Godot plays them by position.</p></div>
+  <ul>
+    <li><strong>Three ambience loops</strong> so far: the waterfall, wind on exposed peaks and storm rain, 588 KiB in total.</li>
+    <li><strong>Sources and licences.</strong> CC0 (public domain) recordings from Freesound, through public mirrors. Every source's URL, author, licence and SHA-256 hash is recorded in <code>art_sources/audio/SOURCES.json</code>, and credits ship with the game.</li>
+    <li><strong>Preparation.</strong> <code>tools/audio/prepare_ambience.py</code> (NumPy, SciPy, libsndfile) trims the long recordings, makes the falls mono, removes low rumble, overlaps the end into the start so the loop has no seam, and levels everything with headroom. It's repeatable and never overwrites the originals.</li>
+    <li><strong>In the game.</strong> Godot audio buses for mixing; positional players (<code>AudioStreamPlayer2D</code>) at the waterfall so it gets louder as you approach, with the listener on the player; fades by place and weather; ambience ducks under dialogue; the volume is set in the pause menu and saved.</li>
+  </ul>
+  <div class="check" data-mod="m9">
+    <header><h3>Checkpoint 9</h3><small>Answer first, then compare</small></header>
+    <div class="q"><span class="lvl">Easy</span><p class="ask">Where did the sound come from? Any licensing concerns?</p><textarea id="a9-1" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>CC0 recordings from Freesound. CC0 needs no attribution, but I still recorded each source's URL, author, licence and a SHA-256 hash, and ship a credits file. I didn't assume a whole website is one licence; each file is checked.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">How do you make a recording loop seamlessly?</p><textarea id="a9-2" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Trim to a steady section, filter out sub-bass rumble, then crossfade the end into the beginning so the wrap point matches, and level it with headroom. It's done by a script, so it's repeatable and the originals stay untouched.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">How does positional audio work in Godot 2D?</p><textarea id="a9-3" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>An AudioStreamPlayer2D sits at the sound's place in the world, and a listener sits on the player. Volume and panning follow the distance and direction between them. Buses group sounds for mixing, so ambience can be ducked while someone speaks.</p></div></details></div>
+    <button class="done-btn" data-done="m9" aria-pressed="false">Mark module 9 done</button>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="mod" id="m10" data-title="Testing and quality">
+  <div class="modhead"><div class="eyebrow">Module 10</div><h2>Testing and quality</h2></div>
+  <div class="goal"><b>After this you can</b><p>Explain how a game like this is tested automatically, and why tests are kept focused.</p></div>
+  <ul>
+    <li><strong>Headless test scenes.</strong> 48 test scenes in <code>game/tests/</code> run Godot with no window (<code>godot --headless</code>). Each sets up a chapter, drives the game and prints PASS or FAIL per check. For example <code>test_assault</code> runs 47 checks: the scouts talk, there are no mid-raid rests, Mattock is fought alone, the chain is hauled, the company mounts.</li>
+    <li><strong>Simulated input.</strong> Tests send key and tap events with <code>Input.parse_input_event</code>. A dialogue line takes two taps, one to finish the typing and one to advance.</li>
+    <li><strong>Play bots.</strong> <code>tests/play_assault.gd</code> plays a whole section by goals, like a player would.</li>
+    <li><strong>Screenshot scenes.</strong> 54 scenes jump to places and save PNGs, which are then actually looked at. They need a real window, so the owner is told before one opens.</li>
+    <li><strong>Focused, not everything.</strong> The owner's rule: test only the area that changed. The full suite runs only for major changes.</li>
+  </ul>
+  <div class="story"><b class="lab">Problems and fixes</b>
+    <p><strong>A crash only in release builds.</strong> A delayed tutorial call fired after its lesson had closed and read a missing entry. Debug builds survive such script errors; release builds crash. A debug export of a repro scene printed the error. Since then, test logs are always searched for <code>SCRIPT ERROR</code>.</p>
+    <p><strong>One typing error broke every test.</strong> GDScript couldn't infer a variable's type in a loop over tweens, and a parse error stops the whole script. Explicit types fixed it, and the rule "give variables explicit types when the value is a Variant" went into the handoff.</p>
+  </div>
+  <div class="check" data-mod="m10">
+    <header><h3>Checkpoint 10</h3><small>Answer first, then compare</small></header>
+    <div class="q"><span class="lvl">Easy</span><p class="ask">How do you test a game automatically?</p><textarea id="a10-1" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Godot runs headless from the command line. Each test scene puts the game in a known state, simulates input, waits for the story to react and asserts on the result: the chapter changed, a flag was set, an NPC can be talked to. Bots play whole sections, and screenshot scenes capture places for a human to review.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">Why not run all the tests every time?</p><textarea id="a10-2" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Whole-route playthroughs are slow, and most changes are local. Testing only the changed area gives a fast loop. Major changes or a release candidate still get the full suite.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">Tell me about a bug that only appeared in release.</p><textarea id="a10-3" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>A segfault in release only. A tutorial callback scheduled 0.55 seconds after a step still fired after the lesson closed, and read a lesson that no longer existed. Debug builds log that and carry on; release builds crash. I reproduced it with a debug export of a small scene, guarded the callback, and since then we search every test log for script errors.</p></div></details></div>
+    <button class="done-btn" data-done="m10" aria-pressed="false">Mark module 10 done</button>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="mod" id="m11" data-title="Builds and delivery">
+  <div class="modhead"><div class="eyebrow">Module 11</div><h2>Builds and delivery</h2></div>
+  <div class="goal"><b>After this you can</b><p>Explain how one project becomes three platform builds, how versions are tracked, and how builds reach a phone.</p></div>
+  <div class="tbl"><table>
+    <tr><th>Platform</th><th>Output</th><th>Notes</th></tr>
+    <tr><td>Android</td><td><code>build/venheilheim-debug.apk</code></td><td>debug-signed; installed on the owner's phone with adb</td></tr>
+    <tr><td>Windows</td><td><code>build/windows/Venheilheim.exe</code> + ZIP</td><td>game data embedded in the .exe; the ZIP adds a README</td></tr>
+    <tr><td>Linux</td><td><code>build/linux/venheilheim.x86_64</code></td><td>single executable</td></tr>
+  </table></div>
+  <ul>
+    <li><strong>Export presets</strong> in <code>game/export_presets.cfg</code> describe each platform. Builds run from the command line, for example <code>godot --headless --export-debug "Android" ../build/venheilheim-debug.apk</code>. Test files are excluded from exports.</li>
+    <li><strong>Versioning.</strong> Every release bumps the version name (0.64.7), the Android version code (155) and the Windows file and product versions together, and adds a README change-log entry.</li>
+    <li><strong>One at a time.</strong> Exports run one after another with no other Godot open. Two Godot processes importing at once once wrote broken import files that shipped in a build.</li>
+    <li><strong>Android SDK and adb.</strong> The Android SDK provides adb, the tool that talks to a phone over USB: <code>adb install --no-incremental -r</code>. Incremental install once reported "Success" while writes had failed, so it's not trusted. <code>aapt2 dump badging</code> checks the APK's version and icon.</li>
+    <li><strong>Git and GitHub.</strong> Source, art, prompts and documents are versioned; builds are not (they exceed GitHub's 100 MB file limit and are rebuilt anyway). Commits happen only when the owner asks.</li>
+  </ul>
+  <div class="check" data-mod="m11">
+    <header><h3>Checkpoint 11</h3><small>Answer first, then compare</small></header>
+    <div class="q"><span class="lvl">Easy</span><p class="ask">How do you get a build onto your phone?</p><textarea id="a11-1" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Godot exports a debug-signed APK from the command line, then adb from the Android SDK installs it over USB. I check the installed version and that it launches.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">How do you version releases?</p><textarea id="a11-2" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>A semantic-style version name (0.64.7) plus Android's integer version code (155), bumped together with the Windows file version on every release. Each release has a change-log entry in the README and a status line in the handoff document.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">Have you had a broken build? What happened?</p><textarea id="a11-3" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Yes. Two Godot processes were importing assets at the same time and wrote half-finished import files, which shipped and failed with "Expected value, got 'ERROR'". The fix was to delete those cached imports and reimport, and the rule since then is one Godot process during imports and exports, with the three platforms exported one after another.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">Why aren't builds in Git?</p><textarea id="a11-4" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>They're 400 to 490 MB each, far over GitHub's 100 MB file limit, and they can be rebuilt from source at any time. Git holds what's authored: code, tools, art sources, prompts and documents.</p></div></details></div>
+    <button class="done-btn" data-done="m11" aria-pressed="false">Mark module 11 done</button>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="mod" id="m12" data-title="Working with AI">
+  <div class="modhead"><div class="eyebrow">Module 12</div><h2>Working with AI</h2></div>
+  <div class="goal"><b>After this you can</b><p>Describe your role truthfully and confidently, and explain how you kept AI-produced work at your standard.</p></div>
+  <h3>Who did what</h3>
+  <div class="tbl"><table>
+    <tr><th>Who</th><th>What</th></tr>
+    <tr><td>You (the owner)</td><td>The game's vision, story canon and rulings, design rules, art direction, prompts reviewed and images generated, every build played and judged on your phone, priorities and acceptance.</td></tr>
+    <tr><td>Claude Code (an AI coding agent)</td><td>Wrote and changed most of the GDScript and Python, ran Godot headless for tests and exports, cut and imported art, took screenshots, installed builds, kept the documents up to date. All of it on your instructions.</td></tr>
+    <tr><td>Image models</td><td>Drew sprite sheets, props and comic panels from your prompts.</td></tr>
+    <tr><td>Other AI sessions</td><td>Some comic-integration tools came from sessions in Google's Antigravity (Gemini).</td></tr>
+  </table></div>
+  <h3>How the quality was kept</h3>
+  <ul>
+    <li><strong>A handoff document</strong> (<code>PROJECT_HANDOFF.md</code>, about 1,500 lines) that any new session reads first: how to work with you, where everything is, gotchas, status.</li>
+    <li><strong>Written standing rules</strong> that carry across sessions: Eirik 28 px and never reshaped, prompts before building, focused tests, no waypoints, sprites at texel 2, gates parallel to walls, export all three platforms.</li>
+    <li><strong>Short feedback loops:</strong> change, focused test, screenshot, export, install, play, give feedback. Many of your instructions are one line from playing the build.</li>
+    <li><strong>Saying no to fakes:</strong> rejecting pasted-together panels and code-reshaped heroes, and asking for real art again.</li>
+  </ul>
+  <div class="story"><b class="lab">How to say it in an interview</b><p>"I was the director and product owner. I used an AI coding agent as my engineering team and image models as my art team. I set the design, wrote the rules, reviewed every build on device and decided what shipped. I didn't type most of the code myself, but I understand how it works, because I specified it, debugged it with the agent and tested it." Then prove the understanding with the details from Modules 2 to 11. Never claim you wrote the code by hand if you didn't; interviewers respect honest direction plus real understanding.</p></div>
+  <div class="check" data-mod="m12">
+    <header><h3>Checkpoint 12</h3><small>Answer first, then compare</small></header>
+    <div class="q"><span class="lvl">Easy</span><p class="ask">Did you write the code yourself?</p><textarea id="a12-1" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Most of it was written by an AI coding agent working under my direction. I decided what to build and how it should behave, reviewed the results in the game, caught the bugs by playing, and set the rules it had to follow. I can explain how each system works, for example how the world streams in chunks or how the sprite importer scales a sheet.</p></div></details></div>
+    <div class="q"><span class="lvl">Medium</span><p class="ask">How do you keep an AI consistent over weeks of work?</p><textarea id="a12-2" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Written context. A handoff document every session reads first, a memory of standing rules, a change log per version, and prompts kept in files. Rules like "the hero is 28 pixels" or "test only what changed" are written once and applied every time, instead of repeated in every request.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">Give an example where the AI got it wrong and how you caught it.</p><textarea id="a12-3" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>The stockade and city gates were placed across the walls instead of in line with them. I spotted it playing the build, asked for every gate in the game to be checked, and the stockade's back gate was rebuilt. Another: sprite prompts asked for paved roads in the art, which clashes with the game's own road tiles; I had that removed from every prompt. Both became written rules.</p></div></details></div>
+    <div class="q"><span class="lvl">Hard</span><p class="ask">What did you learn about directing AI tools?</p><textarea id="a12-4" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Be specific and measurable: sizes in pixels, rows and frame counts, which way a gate faces. Keep the context in files, not in your head. Check results yourself on the real device, because tests pass on things that still look wrong. And when output is bad, ask for the real thing again rather than accept a workaround that looks fake.</p></div></details></div>
+    <button class="done-btn" data-done="m12" aria-pressed="false">Mark module 12 done</button>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="mod" id="m13" data-title="Mock interview and cheat sheet">
+  <div class="modhead"><div class="eyebrow">Module 13</div><h2>Mock interview and cheat sheet</h2></div>
+  <div class="goal"><b>After this you can</b><p>Answer mixed questions in any order, and revise from one page the night before.</p></div>
+  <div class="check" data-mod="m13">
+    <header><h3>Mock interview</h3><small>15 questions, mixed</small></header>
+    <div class="q"><span class="lvl">1</span><p class="ask">Walk me through what happens when you tap New Game.</p><textarea id="a13-1" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>The title scene sets up a save slot, the act card shows, then main.tscn builds the world, player, camera, HUD and story director. With no save, main picks the first chapter's map and outfit; the prelude plays the pirate raid on the river chain, then the opening in Lierdand begins.</p></div></details></div>
+    <div class="q"><span class="lvl">2</span><p class="ask">What's in a map file?</p><textarea id="a13-2" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>A binary grid of one byte per tile for terrain, and a JSON file of every object (props, buildings, NPCs and their lines, doors, triggers, entries, regions, rooms) with conditions for chapters and flags.</p></div></details></div>
+    <div class="q"><span class="lvl">3</span><p class="ask">How do NPCs know what to say?</p><textarea id="a13-3" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Their lines are in the map data, optionally per chapter or per flag, and can be overridden by id in a per-map lines file. House residents come from a smalltalk file, one entry per door, so nobody repeats.</p></div></details></div>
+    <div class="q"><span class="lvl">4</span><p class="ask">What does "texel 2" mean?</p><textarea id="a13-4" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Every sprite is stored at twice the game's pixel resolution and drawn at half scale: the same size on screen, finer detail. Props are recorded in hires.json and loaded through one helper; character sheets carry "texel": 2 in their JSON.</p></div></details></div>
+    <div class="q"><span class="lvl">5</span><p class="ask">How do you stop the camera showing the void around a room?</p><textarea id="a13-5" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>The world flood-fills the map into separate areas. The camera is clamped to the rectangle of the area the player stands in, and rooms are framed in black.</p></div></details></div>
+    <div class="q"><span class="lvl">6</span><p class="ask">How did you make rivers look like they flow?</p><textarea id="a13-6" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>A canvas shader in world space. The map gives each river a flow direction; the shader streams bands and short glints along it in lanes moving at slightly different speeds. The harbour sea uses a separate branch with bent swells and broken white crests rolling toward the shore.</p></div></details></div>
+    <div class="q"><span class="lvl">7</span><p class="ask">How does the boss fight keep allies out of the way?</p><textarea id="a13-7" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Allies aren't allowed to target the boss. They're assigned to his crew, and more crew spawn while fewer than three remain, up to twelve, so the soldiers stay busy and Eirik fights Mattock alone. His hook no longer chains straight into a smash.</p></div></details></div>
+    <div class="q"><span class="lvl">8</span><p class="ask">What's the riskiest technical decision you made?</p><textarea id="a13-8" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Generating all maps in code instead of an editor. It depends on the generators staying correct, as the room-offset bug showed, but it made large changes cheap and let tests and overview maps verify every regeneration.</p></div></details></div>
+    <div class="q"><span class="lvl">9</span><p class="ask">How would you add a new character sprite tomorrow?</p><textarea id="a13-9" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Write a prompt with sizes, rows and views; generate it on magenta; check the pieces; add an import group that cuts it at one scale to 28 px with feet on the ground line; register it at texel 2; give it collision or merge it onto an NPC; regenerate the map; import in Godot; screenshot; then mark the prompt supplied.</p></div></details></div>
+    <div class="q"><span class="lvl">10</span><p class="ask">What would you do differently?</p><textarea id="a13-10" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Lock the sprite format and get each character's whole outfit in one session from the start, since mixed sessions caused most re-generation. Commit more often in small checkpoints. And build an automatic size check for imported sprites earlier.</p></div></details></div>
+    <div class="q"><span class="lvl">11</span><p class="ask">How do you handle performance on low-end phones?</p><textarea id="a13-11" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>The compatibility renderer, a small 426×240 screen, chunk streaming, decals instead of many nodes, a cap of 80 active people in the city, and suspending the ambient crowd during the scripted procession.</p></div></details></div>
+    <div class="q"><span class="lvl">12</span><p class="ask">How is the story's state kept from breaking old saves?</p><textarea id="a13-12" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Saves carry a version, and the loader migrates older ones, for example shifting positions when Solaris grew. Map ids are kept stable (Solaris is still "palace" internally) so saves and tests keep working.</p></div></details></div>
+    <div class="q"><span class="lvl">13</span><p class="ask">What does your test for the pirate assault check?</p><textarea id="a13-13" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>47 checks across the section: scouts can be talked to, only one rest before the raid, perched archers can be hit, Mattock is fought solo and his hook doesn't chain, the chain haul plays, and the company mounts afterwards.</p></div></details></div>
+    <div class="q"><span class="lvl">14</span><p class="ask">Which tools would you list on your CV for this project?</p><textarea id="a13-14" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Godot 4 and GDScript; Python with Pillow, NumPy and SciPy; GLSL-style Godot shaders; the Android SDK and adb; Git and GitHub; Claude Code as an AI coding agent; your image-generation tools; Freesound CC0 audio with NumPy and SciPy processing; Linux.</p></div></details></div>
+    <div class="q"><span class="lvl">15</span><p class="ask">Why should we hire you, based on this project?</p><textarea id="a13-15" aria-label="Your answer"></textarea><details><summary>Show model answer</summary><div class="ans"><p>Talk about shipping a large, coherent piece of work: a clear vision held across weeks, explicit rules and documents that kept quality up, tight testing and on-device review, and using AI tools effectively and honestly. Use one concrete story, such as the sprite-consistency fix or the room-offset bug.</p></div></details></div>
+    <button class="done-btn" data-done="m13" aria-pressed="false">Mark module 13 done</button>
+  </div>
+
+  <h3>Cheat sheet</h3>
+  <div class="tbl"><table>
+    <tr><th>Software</th><th>Role in the project</th></tr>
+    <tr><td>Godot 4.7.2, GDScript</td><td>Engine and game code; compatibility renderer; 426×240 viewport</td></tr>
+    <tr><td>Godot shaders</td><td>Water flow, sea waves, hit flash</td></tr>
+    <tr><td>Python 3: Pillow, NumPy, SciPy</td><td>Map generators, sprite importers, comic curation, audio loops</td></tr>
+    <tr><td>Image-generation models</td><td>Sprite sheets, props and comic panels from written prompts (name yours)</td></tr>
+    <tr><td>Claude Code</td><td>AI coding agent: code, tools, tests, exports, documents</td></tr>
+    <tr><td>Google Antigravity (Gemini)</td><td>Other sessions that added comic-integration tools</td></tr>
+    <tr><td>Freesound (CC0), libsndfile</td><td>Ambience sources and processing</td></tr>
+    <tr><td>Android SDK, adb, aapt2</td><td>Installing and checking builds on the phone</td></tr>
+    <tr><td>Git, GitHub</td><td>Source history; builds kept out</td></tr>
+    <tr><td>Linux</td><td>Development machine, no GPU</td></tr>
+  </table></div>
+  <div class="tbl"><table>
+    <tr><th>Key number</th><th>Value</th></tr>
+    <tr><td>Version / Android build</td><td>0.64.7 / 155</td></tr>
+    <tr><td>Hero height</td><td>28 game px (56 texture px at texel 2)</td></tr>
+    <tr><td>Tile, chunk</td><td>16 px tiles, 32×32-tile chunks</td></tr>
+    <tr><td>Lines of code</td><td>~33k GDScript, ~21k Python</td></tr>
+    <tr><td>Chapters, maps, abilities</td><td>32, 9, 18</td></tr>
+    <tr><td>Tests</td><td>48 test scenes, 54 screenshot scenes</td></tr>
+    <tr><td>Comic panels in the Prologue</td><td>46 in 7 scenes</td></tr>
+  </table></div>
+  <h3>Three stories to tell</h3>
+  <ol>
+    <li><strong>Consistent hero from an inconsistent generator:</strong> one version per sheet, one session, one scale set by the idle pose, ask again for only the broken rows.</li>
+    <li><strong>The black rooms:</strong> an old coordinate in the room generator; one fix repaired seven buildings; the exit-walking test confirmed it.</li>
+    <li><strong>The release-only crash:</strong> a stale delayed callback; reproduced with a debug export; now every log is checked for script errors.</li>
+  </ol>
+
+  <h3 id="glossary">Glossary</h3>
+  <p>Every term the course uses, in plain words, grouped by topic. Type to find one.</p>
+  <input class="gfind" id="gfind" type="search" placeholder="Find a word, e.g. shader" aria-label="Find a word in the glossary">
+  <div id="gloss"></div>
+</section>
+</div>
+
+<script>
+(function () {
+  var KEY = 'vh-course-';
+  function get(k) { try { return localStorage.getItem(KEY + k); } catch (e) { return null; } }
+  function set(k, v) { try { localStorage.setItem(KEY + k, v); } catch (e) {} }
+  var mods = Array.prototype.slice.call(document.querySelectorAll('section.mod'));
+  var toc = document.getElementById('toc');
+  mods.forEach(function (s, i) {
+    var a = document.createElement('a');
+    a.href = '#' + s.id;
+    a.id = 'toc-' + s.id;
+    a.innerHTML = '<span class="n">' + String(i + 1).padStart(2, '0') + '</span><span></span><span class="st">to do</span>';
+    a.children[1].textContent = s.dataset.title;
+    toc.appendChild(a);
+  });
+  function refresh() {
+    var n = 0;
+    mods.forEach(function (s) {
+      var done = get('done-' + s.id) === '1';
+      if (done) n++;
+      var a = document.getElementById('toc-' + s.id);
+      a.classList.toggle('done', done);
+      a.querySelector('.st').textContent = done ? 'done' : 'to do';
+      var b = document.querySelector('[data-done="' + s.id + '"]');
+      if (b) {
+        b.setAttribute('aria-pressed', done ? 'true' : 'false');
+        b.textContent = done ? 'Done: tap to undo' : 'Mark module ' + (mods.indexOf(s) + 1) + ' done';
+      }
+    });
+    document.getElementById('meter').style.width = (n / mods.length * 100) + '%';
+    document.getElementById('count').textContent = n + ' / ' + mods.length + ' modules';
+  }
+  document.querySelectorAll('[data-done]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var id = b.dataset.done;
+      set('done-' + id, get('done-' + id) === '1' ? '0' : '1');
+      refresh();
+    });
+  });
+  document.querySelectorAll('textarea').forEach(function (t) {
+    var v = get('ans-' + t.id);
+    if (v) t.value = v;
+    t.addEventListener('input', function () { set('ans-' + t.id, t.value); });
+  });
+  refresh();
+})();
+</script>
+<script>
+/* Plain-word help. One list feeds both the tap-to-explain terms in the text and the glossary. */
+(function () {
+  var C = 'Code and programs', F = 'Files, folders and history', G = 'Godot and the game', W = 'World and maps',
+      A = 'Art pipeline', S = 'Sound', T = 'Testing', B = 'Builds and phones', I = 'Working with AI', P = 'The game’s own words';
+  var TERMS = [
+    [C, 'Code / source code', ['source code', 'code'], 'The written instructions a computer follows, kept as plain text files. “Source” means the original files people edit, before anything is built from them.'],
+    [C, 'Game code', ['game code'], 'The code inside the game itself: it runs on the player’s phone or PC while they play. Here it is the GDScript in game/ (movement, combat, story, dialogue, saves, menus), about 33,000 lines.'],
+    [C, 'Tool code', ['tool code', 'python tools', 'tooling'], 'Helper programs that run only on the development computer, to make the game’s content: here the Python scripts in tools/ that generate maps, cut art into sprites and prepare sound. Players never run it; the game just loads the files it writes.'],
+    [C, 'Script', ['script', 'scripts', 'scripting language'], 'One file of code. player.gd is the script that controls Eirik; gen_world.py is the script that builds the island and Solaris maps. A scripting language is one made for writing such files quickly.'],
+    [C, 'Lines of code', ['lines of code', 'lines of gdscript', 'lines of python'], 'A rough measure of a program’s size: how many lines all its code files add up to.'],
+    [C, 'GDScript', ['gdscript'], 'Godot’s own programming language, built into the engine and similar to Python to read. All the game code is GDScript (.gd files).'],
+    [C, 'Python', ['python', 'python 3'], 'A popular general-purpose programming language. In this project it is used only for tool code, never inside the game.'],
+    [C, 'Library', ['library', 'libraries'], 'A package of ready-made code you use from your own code instead of writing it yourself. Pillow, NumPy and SciPy are libraries.'],
+    [C, 'Pillow (PIL)', ['pillow', 'pil'], 'A Python library for opening, editing, resizing and saving images.'],
+    [C, 'NumPy', ['numpy'], 'A Python library for fast maths on big grids of numbers. An image is a grid of pixel numbers, so NumPy can measure and change thousands of pixels at once.'],
+    [C, 'SciPy / ndimage', ['scipy', 'ndimage'], 'A Python library of scientific tools. Its ndimage part works on images: finding separate shapes, growing a mask. Its signal tools filter audio.'],
+    [C, 'Open source', ['open-source', 'open source'], 'Software whose code is public and free to use and change. Godot is open source, so there are no licence fees.'],
+    [C, 'Pipeline', ['content pipeline', 'pipeline'], 'A chain of steps that turns raw material into finished, game-ready files, like an assembly line: prompt, generated image, importer, sprite, game.'],
+    [C, 'Generator', ['generator', 'generators', 'map generators'], 'A tool script that builds content (here a whole map) from rules written in code, instead of someone placing everything by hand.'],
+    [C, 'Reproducible / repeatable', ['reproducible', 'repeatable'], 'Run it again and you get exactly the same result. A generated map or a prepared sound loop can always be remade identically.'],
+    [C, 'Data', ['data'], 'Information the code reads, as opposed to instructions. Keeping quests, dialogue and map objects in data files means they can change without touching the code.'],
+    [C, 'Function / callback', ['function', 'callback', 'callbacks'], 'A function is a named piece of code that does one job when called. A callback is a function handed over to be run later, for example “run this 0.55 seconds from now”.'],
+    [C, 'Variable / Variant / explicit types', ['explicit types', 'variant', 'variable', 'variables'], 'A variable is a named box holding a value. Its type says what kind of value (a number, text, a list). GDScript’s Variant means “could be anything”; writing explicit types lets the language catch mistakes before the game runs.'],
+    [C, 'Loop', ['loop', 'loops'], 'In code, a loop repeats the same steps for each item in a list. In sound, a loop is a recording that repeats endlessly with no audible join.'],
+    [C, 'Dictionary / cache', ['dictionary', 'cache'], 'A dictionary is a lookup table of name → value pairs. A cache keeps something already loaded so it is reused instead of being loaded again or thrown away.'],
+    [C, 'Singleton', ['singleton', 'singletons'], 'Something there is exactly one of, reachable from anywhere in the code.'],
+    [C, 'Loosely coupled', ['loosely coupled'], 'Parts that work together without depending on each other’s insides, so one can be changed or removed without breaking the other.'],
+    [C, 'Garbage-collected / freed', ['garbage-collected', 'freed'], 'A program automatically throws away things nothing is holding on to, to free memory. A picture nobody kept hold of got thrown away before it was drawn.'],
+    [C, 'Tween', ['tween', 'tweens'], 'A small automatic animation of one value over time, such as fading a picture in over half a second.'],
+    [C, 'Bug / crash / segfault', ['segfault', 'crash', 'crashes', 'bug', 'bugs'], 'A bug is any mistake that makes software behave wrongly. A crash is when the program stops completely; a segfault is a crash where the program touched memory it shouldn’t.'],
+    [C, 'Parse error / SCRIPT ERROR', ['parse error', 'script error', 'script errors'], 'A parse error means the language can’t even read a file because something is written wrongly, so the whole file stops working. SCRIPT ERROR is what Godot prints when game code fails while running.'],
+    [C, 'Coordinate / offset', ['coordinate', 'coordinates', 'offset'], 'A coordinate is a position as numbers (x across, y down). An offset is how far something is shifted from a starting point; one wrong offset put seven rooms in the wrong place.'],
+    [F, 'File / folder / path', ['path', 'paths'], 'A path is a file’s address, folders separated by slashes: tools/world/gen_world.py is gen_world.py in the world folder inside tools.'],
+    [F, 'JSON', ['json'], 'A plain-text way of writing down structured information (names, numbers, lists) that people and programs can both read. Saves, quests, map objects and sprite layouts are JSON files here.'],
+    [F, 'Binary file', ['binary', 'binary tile grid'], 'A file of raw bytes instead of readable text: compact and fast to load. Each map’s _map.bin stores one byte (a number from 0 to 255) per tile.'],
+    [F, 'PNG / transparency', ['png', 'pngs', 'transparency', 'transparent'], 'PNG is an image file format that loses no detail and can store transparency: see-through pixels, so a sprite has no background box around it.'],
+    [F, 'Markdown', ['markdown'], 'Plain text with light marks (# for a heading, ** for bold). The project’s documents, like README.md and the prompt files, are Markdown.'],
+    [F, 'README / change log', ['readme', 'change log', 'change-log'], 'README.md is the project’s front-page document. Its change log lists what each version added or fixed.'],
+    [F, 'Handoff document', ['handoff document', 'handoff'], 'PROJECT_HANDOFF.md: the project’s manual for whoever works on it next, including a fresh AI session: the rules, where things are, the status, the known traps.'],
+    [F, 'Command line', ['command line', 'terminal'], 'Typing commands as text instead of clicking buttons. Godot, the tests and the exports can all be run this way, which is what lets a script or an AI agent drive them.'],
+    [F, 'Git / version control', ['version control', 'git history', 'git', 'versioned'], 'Git keeps a history of every saved change to the project, so any earlier state can be looked at or restored. That is called version control.'],
+    [F, 'Commit', ['commit', 'commits'], 'One saved step in Git’s history, with a message saying what changed. d9045b4 is the short id of one commit.'],
+    [F, 'Cheat sheet', ['cheat sheet'], 'A one-page summary of the key facts, for revising the night before.'],
+    [F, 'Diff', ['diffed', 'diff'], 'A listing of exactly what changed between two versions of a file, line by line.'],
+    [F, 'GitHub', ['github'], 'A website that stores a copy of a Git project online. It refuses single files over 100 MB, which is one reason builds are kept out.'],
+    [F, 'MB / KiB', ['mb', 'kib'], 'Units of file size. A KiB is about a thousand bytes, a MB about a million. A Windows build is over 400 MB.'],
+    [G, 'Engine / game engine', ['game engine', 'engine'], 'Ready-made software that does the common, heavy work of any game (drawing, sound, input, physics, building for each platform), so you only write what makes yours different.'],
+    [G, 'Godot', ['godot', 'godot 4'], 'The free, open-source game engine this game is made in (version 4.7.2).'],
+    [G, 'Unity / Unreal', ['unreal engine 5', 'unreal', 'unity'], 'Two other well-known game engines. Unreal is aimed at high-end 3D; the project planned it first, then moved to Godot.'],
+    [G, 'Editor', ['editor'], 'The program window of an engine where you would normally arrange scenes by hand. This project writes most of them with code instead.'],
+    [G, 'Node / scene', ['node', 'nodes', 'scene', 'scenes'], 'Godot builds everything from nodes: a sprite, a sound, a camera, a collision area. A scene is a saved tree of nodes (a .tscn file) that can be reused. In the comics, a “scene” is one sequence of panels.'],
+    [G, 'Autoload', ['autoload', 'autoloads'], 'A part Godot starts automatically when the game opens and keeps alive the whole time, reachable from any code. This game has five: Events, Game, StoryState, SaveSystem and Quests.'],
+    [G, 'Signal / signal bus', ['signal bus', 'signal', 'signals'], 'A signal is a message one part sends (“the player was hit”) that any other part can listen for. The signal bus, Events, is one central place everyone sends and listens through.'],
+    [G, 'HUD', ['hud'], 'Heads-up display: the health bar and other information drawn on top of the game.'],
+    [G, 'Renderer / GPU / OpenGL', ['gl compatibility', 'renderer', 'opengl', 'graphics card', 'gpu'], 'The renderer is the part of the engine that draws each picture. A GPU (graphics card) is the chip built for drawing. GL Compatibility is Godot’s simplest renderer, based on OpenGL, which works on cheap phones and on a computer with no graphics card.'],
+    [G, 'Shader', ['shader', 'shaders'], 'A tiny program that runs on the graphics chip and decides the colour of each pixel. Here shaders make rivers flow, the sea roll and hit flashes glow.'],
+    [G, 'Viewport / resolution', ['viewport', 'resolution', '426×240'], 'Resolution is how many pixels something has. The viewport is the game’s own fixed canvas, 426×240 pixels, which is stretched to fill the real screen.'],
+    [G, 'Stretch mode / nearest-neighbour', ['stretch mode', 'nearest-neighbour'], 'How the small canvas is enlarged to the screen. Nearest-neighbour copies each pixel into a bigger square without blurring, so pixel art stays sharp.'],
+    [G, 'Frame / frames per second', ['frames per second', 'frame', 'frames', 'fps'], 'A frame is one still picture. Animations are frames shown in sequence, and the game redraws the whole screen about 60 times a second (frames per second).'],
+    [G, 'Physics', ['physics'], 'The engine’s rules for movement and bumping into things: speed, friction, solid walls.'],
+    [G, 'Collision / collider / Area2D', ['collision box', 'collision layers', 'colliders', 'collider', 'collision', 'area2d'], 'Collision is how the game knows two things touch. A collider is an invisible shape (often a box) that makes something solid. Area2D is Godot’s node for “notice when something enters this shape”.'],
+    [G, 'Hitbox / hurtbox', ['hitbox', 'hitboxes', 'hurtbox', 'hurtboxes'], 'Two invisible shapes: the hitbox is the area an attack hits with, the hurtbox is the area of a body that can be hit. When they overlap, the hit lands.'],
+    [G, 'Hit-stop / screen shake', ['hit-stop', 'screen shake'], 'Game-feel tricks: a freeze of a few hundredths of a second when a hit lands, and a short jolt of the camera. Both make hits feel heavy.'],
+    [G, 'Input / simulated input / input lock', ['input lock', 'input'], 'Input is what the player presses or taps. The input lock is a switch that ignores the player’s buttons while a story scene plays.'],
+    [G, 'Time scale', ['time scale'], 'A speed setting for the whole game; slow-motion effects change it, so it must be put back to normal afterwards.'],
+    [G, 'State machine', ['state machine'], 'A system that is always in exactly one of a fixed list of states and moves between them. Here the story is one: it is always in exactly one of 32 chapters.'],
+    [G, 'Flag', ['flag', 'flags'], 'A yes/no fact the game remembers, such as “Mattock was spared” or “the relic is open”.'],
+    [G, 'Save slot / save versioning / migration', ['save slot', 'save slots', 'save versioning', 'migrates', 'migrate', 'migration'], 'A save slot is one of three separate saved games. Save versioning stamps each save with a number; migration updates an older save on load so it still works after the game changed.'],
+    [G, 'NPC', ['npc', 'npcs'], 'Non-player character: anyone in the game the player doesn’t control.'],
+    [W, 'Tile / tile map / tile atlas', ['tile atlas', 'tile maps', 'tile map', 'tiles', 'tile'], 'The ground is built from small square pictures, 16×16 game pixels each, laid in a grid like floor tiles. The tile atlas is one image holding all of them.'],
+    [W, 'Chunk streaming', ['chunk streaming', 'chunks', 'chunk'], 'The map is cut into 32×32-tile pieces (chunks), and only those near the player are loaded; the rest are let go. That keeps a huge map fast on a phone.'],
+    [W, 'Prop', ['prop', 'props'], 'Any object placed in the world that isn’t ground or a person: barrels, trees, gates, carts, houses.'],
+    [W, 'Decal', ['decal', 'decals'], 'A flat picture painted onto the ground under everyone (a shadow, scattered debris). Cheap to draw because it never moves or needs sorting.'],
+    [W, 'Y-sort', ['y-sorting', 'y-sort'], 'Drawing things lower on the screen in front of things higher up, which gives depth in a top-down view: Eirik passes in front of a wall’s base and behind its top.'],
+    [W, 'Trigger', ['trigger', 'triggers'], 'An invisible spot that does something when the player walks into it, such as moving them to another map.'],
+    [W, 'Flood-fill', ['flood-fills', 'flood-fill'], 'Like the paint-bucket tool: start from one spot and spread to every connected open tile. It splits the map into separate areas, one per room and one for outdoors.'],
+    [W, 'Clamped camera', ['clamped'], 'Clamped means kept inside limits. The camera can’t move past the edges of the area the player is in.'],
+    [W, 'Noise / sampler', ['value noise', 'noise', 'sampler'], 'Noise is smooth randomness used to place things naturally, so trees don’t line up on a grid. A sampler picks positions one by one under rules, like fitting houses of different sizes along a row.'],
+    [W, 'Minimap / overview map', ['minimaps', 'minimap', 'overview map', 'overview maps'], 'The small map in the corner of the game, and the large pictures of each map drawn by the tools for the owner to check.'],
+    [W, 'Top-down / open world / action RPG', ['action rpg', 'top-down', 'open world'], 'Top-down: seen from above at an angle. Open world: you can roam freely, not just along levels. Action RPG: a role-playing game fought in real time, not in turns.'],
+    [W, 'Mobile-first', ['mobile-first'], 'Designed for phones first (small screen, touch controls, weak hardware), then also made for computers.'],
+    [A, 'Pixel art / game pixel', ['pixel art', 'game pixels', 'game pixel', 'game px', 'texture px', 'texture pixels'], 'Art made of visible square pixels. A game pixel is one pixel of the 426×240 canvas; at texel 2 it is made of 2×2 pixels in the image file (texture pixels).'],
+    [A, 'Texel 2 / hi-res', ['texel 2', 'texel', 'hi-res'], 'Every sprite is stored at twice the game’s resolution and drawn at half size: the same size on screen, but finer detail.'],
+    [A, 'Sprite / sprite sheet / atlas', ['sprite sheets', 'sprite sheet', 'sprites', 'sprite', 'sheets', 'sheet', 'atlas'], 'A sprite is a 2D picture of a character or object in the game. A sprite sheet (or atlas) is one image holding many of its animation frames in a grid; a small JSON file says where each animation is.'],
+    [A, 'Origin / ground line', ['ground line', 'bottom-centre', 'origin', 'anchored'], 'The point of a sprite that sits exactly on its spot in the world, here the middle of the feet. A shared ground line keeps every frame’s feet at the same height so nothing bobs.'],
+    [A, 'Image model / image generator', ['image-generation models', 'image-generation', 'image generator', 'image models', 'image model'], 'An AI that draws a picture from a written description (a prompt). The project’s sprites and comic panels were made this way.'],
+    [A, 'Prompt', ['prompts', 'prompt'], 'The written request given to an AI. Here the art prompts are kept in files (SPRITE_PROMPTS.md, COMIC_PROMPTS.md) with exact sizes, rows and reference images.'],
+    [A, 'Reference image / benchmark', ['reference images', 'reference image', 'benchmarks', 'benchmark'], 'A picture attached to a prompt to show the AI exactly what to copy: a face, an outfit, a place. A benchmark is the one agreed version every later picture must match.'],
+    [A, 'Importer', ['importers', 'importer'], 'Here: a Python tool script that takes a generated sprite sheet and cuts it into game-ready frames (tools/sprites/import_*.py). Not the same thing as Godot’s own import step.'],
+    [A, 'Godot import', ['reimport', 'import files', 'import', 'imports', 'imported', 'importing'], 'Godot converts each new image or sound into its own internal form before the game can use it, and keeps the result in .import files. A new PNG doesn’t appear in the game until this has run.'],
+    [A, 'Chroma key / magenta', ['chroma keying', 'chroma key', 'key out', 'magenta'], 'Drawing on one flat, unusual background colour (magenta, bright pink-purple) so a script can turn exactly that colour see-through, like a film studio’s green screen.'],
+    [A, 'Connected components', ['connected-component labelling', 'connected components', 'connected component'], 'Grouping pixels that touch into separate pieces, the way you would see separate islands on a map. It finds each figure on a sheet.'],
+    [A, 'Mask / threshold / dilation', ['dilation', 'threshold', 'mask', 'masks'], 'A mask is a black-and-white map of which pixels belong to something. A threshold makes each pixel fully on or off above or below a value, for crisp edges. Dilation grows a mask outward by a few pixels.'],
+    [A, 'Resampling / LANCZOS', ['resampling', 'lanczos', 'resize', 'resizing'], 'Resizing an image means working out new pixels from old ones (resampling). LANCZOS is a high-quality way of doing it that keeps edges sharp.'],
+    [A, 'Crop / colour grade', ['colour grade', 'crop', 'crops'], 'To crop is to cut away the edges of a picture. A colour grade adjusts its colours and brightness so a set of panels matches.'],
+    [S, 'CC0 / licence', ['licences', 'licence', 'licensing', 'cc0'], 'A licence says how you may use someone’s work. CC0 gives it to the public domain: free to use for anything, no credit required.'],
+    [S, 'Freesound', ['freesound'], 'A website of sound recordings shared by the people who made them, each under its own licence.'],
+    [S, 'libsndfile / soundfile', ['libsndfile', 'soundfile'], 'A library for reading and writing audio files; soundfile is its Python wrapper.'],
+    [S, 'Mono', ['mono'], 'Sound on a single channel, the same in both ears, instead of separate left and right (stereo). Best for a sound the game positions itself.'],
+    [S, 'Crossfade / seamless', ['crossfade', 'seamless', 'seamlessly', 'seam'], 'Blending the end of a sound into its start so it can repeat with no click or jump: a seamless loop.'],
+    [S, 'Filter / rumble', ['low rumble', 'sub-bass', 'filtering', 'filter'], 'A filter removes part of a sound. Here very low rumble (sub-bass), which only muddies the mix, is cut out.'],
+    [S, 'Headroom', ['headroom'], 'Keeping the loudest moment a little below the maximum so sounds can be mixed together without distorting.'],
+    [S, 'Audio bus / ducking', ['audio buses', 'buses', 'ducks', 'ducked'], 'A bus is a channel that groups sounds so their volume is set together (music, ambience, effects). Ducking lowers one bus automatically while something else, like dialogue, plays.'],
+    [S, 'Positional audio / listener', ['positional audio', 'positional players', 'positional', 'listener'], 'Sound placed at a spot in the world. The listener is the point that hears it (here on Eirik), so it gets louder and moves between ears as he approaches.'],
+    [S, 'SHA-256 hash', ['sha-256', 'hash'], 'A short fingerprint calculated from a file’s bytes. If the file changes at all, the fingerprint changes, so it proves which exact file was used.'],
+    [T, 'Test / test scene / test suite', ['automated test scenes', 'test scenes', 'test scene', 'full suite', 'suite', 'tests', 'test'], 'A test is code that runs part of the game by itself and checks the result, printing PASS or FAIL. A test scene is one such runner; the suite is all of them together.'],
+    [T, 'Assert / check', ['asserts', 'assert'], 'One yes-or-no check inside a test: “the chapter is now X”. If it is false, the test fails.'],
+    [T, 'Headless', ['headless'], 'Running the engine with no window at all, from the command line. Used for tests and exports on a computer with no screen attached.'],
+    [T, 'Bot / play bot', ['play bots', 'bots', 'bot'], 'A test that plays a whole section by itself, like a player would: walk here, talk to this person, fight these enemies.'],
+    [T, 'Simulated input', ['simulated input', 'simulates input'], 'A test pretending to press keys or tap the screen, so the game reacts exactly as it would to a real player.'],
+    [T, 'Screenshot scene', ['screenshot scenes', 'screenshots', 'screenshot'], 'A small runner that jumps to chosen places in the game and saves pictures of them, for a person to look at. It needs a real window.'],
+    [T, 'Log', ['logs', 'log'], 'The text a program prints while it runs: messages, warnings and errors. Test logs are searched for SCRIPT ERROR.'],
+    [T, 'Repro', ['repro', 'reproduced', 'reproduce'], 'Short for reproduction: the smallest setup that makes a bug happen on demand, so it can be studied and the fix proven.'],
+    [T, 'Debug build / release build', ['debug builds', 'debug build', 'debug export', 'debug-signed', 'release builds', 'release build'], 'A debug build carries extra checks and messages for developers and keeps going after some errors. A release build is the lean version for players and may crash on the same error. Debug-signed means signed with a test key: fine for your own phone, not for the Play Store.'],
+    [B, 'Export / build', ['export presets', 'export preset', 'exports', 'exported', 'export', 'builds', 'build'], 'Exporting (building) packs the project into an app file a device can run: an APK for Android, an .exe for Windows, a single program file for Linux. Export presets are the saved settings for each platform.'],
+    [B, 'Platform', ['platforms', 'platform'], 'A kind of device and system the game runs on: Android phones, Windows PCs, Linux PCs.'],
+    [B, 'APK', ['apk'], 'Android Package: the single file that installs an app on an Android phone.'],
+    [B, 'Android SDK', ['android sdk', 'sdk'], 'Software Development Kit: Google’s free set of tools for making and installing Android apps. adb and aapt2 come with it.'],
+    [B, 'adb', ['adb'], 'Android Debug Bridge: a command-line tool that talks to a phone over a USB cable, used here to install each new APK.'],
+    [B, 'aapt2', ['aapt2'], 'A tool from the Android SDK that reads an APK and reports its name, version and icon, to check the right build was made.'],
+    [B, 'Executable / ZIP', ['executable', 'zip'], 'An executable is a file you can run directly as a program, like Venheilheim.exe. A ZIP is one compressed file holding several files.'],
+    [B, 'Version name / version code', ['version code', 'version name', 'semantic-style'], 'The version name (0.64.7) is for people to read. The version code (155) is a whole number Android uses to know which build is newer; it must go up with every release.'],
+    [B, 'Linux', ['linux'], 'A free operating system (like Windows, but open source). The development computer runs it.'],
+    [I, 'AI coding agent / Claude Code', ['ai coding agent', 'coding agent', 'claude code', 'agent'], 'An AI that doesn’t just chat but works directly in the project: reads and edits files, runs commands, tests and builds. Claude Code is the one used here.'],
+    [I, 'Session', ['sessions', 'session'], 'One continuous working conversation with an AI. A new session forgets everything not written down, which is why the handoff document and the written rules exist.'],
+    [I, 'Antigravity / Gemini', ['antigravity', 'gemini'], 'Google’s AI coding tool and its AI model; some comic-integration tools came from sessions there.'],
+    [P, 'Aura / Ren / Miasma', ['miasma', 'aura', 'ren'], 'The story’s energies. Aura: the Humans’ power, stored in a Core. Ren: the older power that needs no Core, which Eirik learns in Act I. Miasma: the Uren’s, twisted by the Mark.'],
+    [P, 'Meridian View', ['meridian view', 'meridians'], 'The game screen showing Eirik’s body as energy channels (meridians); the player routes Ren through them with direction keys.'],
+    [P, 'Strain', ['strain'], 'The game’s limit on Ren: using it builds strain on Eirik’s meridians, and too much makes them seize briefly.'],
+    [P, 'Runestones / skill tree', ['skill tree', 'runestones'], 'Runestones are rare finds spent in the teaching book’s skill tree, a branching chart of upgrades where each purchase costs more.']
+  ];
+
+  var byAlias = {}, names = [];
+  TERMS.forEach(function (t, i) { t[2].forEach(function (a) { byAlias[a.toLowerCase()] = i; names.push(a); }); });
+  names.sort(function (a, b) { return b.length - a.length; });
+  var esc = function (s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); };
+  var RE = new RegExp('(?<![\\w\\-/.])(' + names.map(esc).join('|') + ')(?![\\w\\-/])', 'gi');
+  var SKIP = 'code,pre,summary,button,h1,h2,h3,h4,th,textarea,input,script,style,nav,a,.eyebrow,.bar,.tip,#gloss,.card b.lab,.gfind,.who';
+
+  function scopeOf(el) { return el.closest('.ans') || el.closest('section'); }
+  var used = new Map();
+  function take(scope, i) {
+    var s = used.get(scope);
+    if (!s) { s = new Set(); used.set(scope, s); }
+    if (s.has(i)) return false;
+    s.add(i);
+    return true;
+  }
+
+  function wrap(root) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        var p = n.parentElement;
+        if (!p || !n.nodeValue.trim() || p.closest(SKIP)) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function (n) {
+      var text = n.nodeValue, scope = scopeOf(n.parentElement), last = 0, m, frag = null;
+      if (!scope) return;
+      RE.lastIndex = 0;
+      while ((m = RE.exec(text))) {
+        var i = byAlias[m[1].toLowerCase()];
+        if (i === undefined || !take(scope, i)) continue;
+        frag = frag || document.createDocumentFragment();
+        frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'term';
+        b.dataset.k = i;
+        b.setAttribute('aria-expanded', 'false');
+        b.textContent = m[1];
+        frag.appendChild(b);
+        last = m.index + m[1].length;
+      }
+      if (!frag) return;
+      frag.appendChild(document.createTextNode(text.slice(last)));
+      n.parentNode.replaceChild(frag, n);
+    });
+  }
+
+  function tipFor(i) {
+    var t = TERMS[i], tip = document.createElement('span');
+    tip.className = 'tip';
+    tip.setAttribute('role', 'note');
+    var b = document.createElement('b');
+    b.textContent = t[1] + ': ';
+    tip.appendChild(b);
+    tip.appendChild(document.createTextNode(t[3]));
+    return tip;
+  }
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('button.term');
+    if (!b) return;
+    var open = b.nextSibling && b.nextSibling.classList && b.nextSibling.classList.contains('tip');
+    if (open) { b.nextSibling.remove(); b.setAttribute('aria-expanded', 'false'); return; }
+    var tip;
+    if (b.hasAttribute('data-demo')) {
+      tip = document.createElement('span');
+      tip.className = 'tip';
+      tip.textContent = 'Like this. Tap the word again to close it.';
+    } else {
+      tip = tipFor(+b.dataset.k);
+    }
+    b.after(tip);
+    b.setAttribute('aria-expanded', 'true');
+  });
+
+  // The glossary: every term, grouped by topic, filtered as you type.
+  var box = document.getElementById('gloss'), find = document.getElementById('gfind');
+  function build(q) {
+    q = (q || '').trim().toLowerCase();
+    box.textContent = '';
+    var groups = {}, order = [];
+    TERMS.forEach(function (t) {
+      if (q && (t[1] + ' ' + t[2].join(' ') + ' ' + t[3]).toLowerCase().indexOf(q) < 0) return;
+      if (!groups[t[0]]) { groups[t[0]] = []; order.push(t[0]); }
+      groups[t[0]].push(t);
+    });
+    order.forEach(function (g) {
+      var div = document.createElement('div'), h = document.createElement('h4'), dl = document.createElement('dl');
+      h.textContent = g;
+      dl.className = 'gloss';
+      groups[g].sort(function (a, b) { return a[1].localeCompare(b[1]); }).forEach(function (t) {
+        var dt = document.createElement('dt'), dd = document.createElement('dd');
+        dt.textContent = t[1];
+        dd.textContent = t[3];
+        dl.appendChild(dt);
+        dl.appendChild(dd);
+      });
+      div.appendChild(h);
+      div.appendChild(dl);
+      box.appendChild(div);
+    });
+    if (!order.length) { var p = document.createElement('p'); p.className = 'none'; p.textContent = 'No term matches that.'; box.appendChild(p); }
+  }
+  find.addEventListener('input', function () { build(find.value); });
+  build('');
+  wrap(document.querySelectorAll('.wrap')[1]);
+})();
+</script>
+
+</body></html>
