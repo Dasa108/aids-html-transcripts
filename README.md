@@ -1,12 +1,20 @@
 # AIDS HTML transcripts
 
-Claude Code conversation transcripts as one clickable page: each turn shows the
-prompt, with the response in a collapsed block below it.
+Claude Code and Codex conversation transcripts as one clickable page with three tabs
+(Venheilheim, FocusBank, Lecture notes). Each turn shows the prompt, with the response
+in a collapsed block below it.
 
-## Adding a transcript
+Live: https://dasa108.github.io/aids-html-transcripts/
 
-1. Put the file in `transcripts/` with the next number, e.g. `transcripts/transcript3.md`.
-2. Run `python3 build.py` to regenerate `index.html`.
-3. Commit and push. GitHub Pages republishes in a minute or two.
+Each tab also has its own standalone page in `transcripts/` (`transcripts.html`,
+`transcript_focusbank.html`, `transcript_lecture.html`).
 
-Both `/export` terminal dumps and `## User` / `## Claude` Markdown files work.
+## Adding or updating a transcript
+
+1. Put the `.md` file in `transcripts/`. The raw `.md` files stay local and are not
+   committed (see `.gitignore`); only the built HTML is published.
+2. Add it to `TABS` in `build.py`, either as a new tab or as another part of an existing tab.
+3. Run `python3 build.py`, then commit and push.
+
+Claude Code `/export` files, `## User` / `## Claude` Markdown and Codex exports all work.
+Anything listed in `REDACT` in `build.py` is replaced before publishing.
