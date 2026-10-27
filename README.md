@@ -17,4 +17,6 @@ Each tab also has its own standalone page in `transcripts/` (`transcripts.html`,
 3. Run `python3 build.py`, then commit and push.
 
 Claude Code `/export` files, `## User` / `## Claude` Markdown and Codex exports all work.
+Each tab uses its project website's colours and fonts (`STYLE` in `build.py`); the Venheilheim
+fonts are in `fonts/` under the SIL Open Font License.
 Anything listed in `REDACT` in `build.py` is replaced before publishing.

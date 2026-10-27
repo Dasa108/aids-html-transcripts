@@ -139,35 +139,68 @@ def render_tab(tid, title, parts):
             f'{"".join(items)}</section>')
 
 
+# Each tab wears the theme of its project's own website.
+FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
+         '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+         '<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700'
+         '&family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700'
+         '&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">')
+
 STYLE = """
-:root{--bg:#f6f5f1;--card:#fff;--text:#1d1d1b;--muted:#6b6a65;--line:#e3e1da;--accent:#9a5b13;--user:#fbf6ec;--resp:#fafaf8}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161614;--card:#1f1f1c;--text:#e9e7e1;--muted:#9c9a92;--line:#33322e;--accent:#e0a35a;--user:#2a251d;--resp:#1a1a18}}
-:root[data-theme="dark"]{--bg:#161614;--card:#1f1f1c;--text:#e9e7e1;--muted:#9c9a92;--line:#33322e;--accent:#e0a35a;--user:#2a251d;--resp:#1a1a18}
+@font-face{font-family:"Cinzel";src:url("FONTS/Cinzel.woff2") format("woff2");font-weight:400 900;font-display:swap}
+@font-face{font-family:"IM Fell English";src:url("FONTS/IMFellEnglish-Regular.woff2") format("woff2");font-display:swap}
+@font-face{font-family:"IM Fell English";src:url("FONTS/IMFellEnglish-Italic.woff2") format("woff2");font-style:italic;font-display:swap}
+:root{--sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --display:var(--sans);--body:var(--sans);--radius:10px;--user-text:var(--text);--accent-ink:#fff;
+  --bg:#f6f5f1;--card:#fff;--text:#1d1d1b;--muted:#6b6a65;--line:#e3e1da;--accent:#9a5b13;--user:#fbf6ec;--resp:#fafaf8}
+/* Venheilheim: the game site's night sky and gold, period fonts, prompts on parchment (dark only, like the site) */
+html[data-tab="venheilheim"]{--display:"Cinzel","Trajan Pro",Georgia,serif;--body:"IM Fell English",Georgia,serif;
+  --bg:#0b1020;--card:#121a30;--text:#e9e2d0;--muted:#b3ad9d;--line:rgba(217,179,106,.28);--accent:#d9b36a;--accent-ink:#0b1020;
+  --user:#efe4c8;--user-text:#33210f;--resp:#0e1528;color-scheme:dark}
+html[data-tab="venheilheim"] .user{font-size:17px;line-height:1.5}
+html[data-tab="venheilheim"] .bar h1,html[data-tab="venheilheim"] h2{letter-spacing:.08em;text-transform:uppercase}
+html[data-tab="venheilheim"] .resp{color:#d6d0c0}
+/* FocusBank: the app site's vault green (navy and lime in dark mode) */
+html[data-tab="focusbank"]{--display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;--body:"Figtree",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;--radius:14px;
+  --bg:#f3f6ef;--card:#fff;--text:#152012;--muted:#56624f;--line:#d6dfcc;--accent:#3f6418;--accent-ink:#fff;--user:#e9efe2;--resp:#f8faf5}
+/* Lecture notes: the course site's warm paper and orange */
+html[data-tab="lecture"]{--display:Fraunces,Georgia,serif;--body:Inter,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;
+  --bg:#faf7f2;--card:#fff;--text:#1c1917;--muted:#57534e;--line:#e7e0d6;--accent:#c2410c;--accent-ink:#fff;--user:#fdf1e3;--resp:#fcfaf6}
+@media (prefers-color-scheme:dark){
+  html[data-tab="focusbank"]{--bg:#0b1426;--card:#12203a;--text:#e7eef8;--muted:#9fb0c8;--line:#22355a;--accent:#b9f27c;--accent-ink:#10200a;
+    --user:#182a4a;--resp:#0f1b31;color-scheme:dark}
+  html[data-tab="lecture"]{--bg:#12100e;--card:#1c1916;--text:#f5f0e8;--muted:#b8afa4;--line:#2f2a25;--accent:#fb923c;--accent-ink:#12100e;
+    --user:#3a2414;--resp:#171411;color-scheme:dark}
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 var(--body)}
 .bar{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.bar h1{font-size:17px;margin:0 12px 0 0}
-button,input{font:inherit;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:5px 10px}
-button{cursor:pointer}button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-weight:600}
+.bar h1{font:700 17px var(--display);margin:0 12px 0 0}
+button,input{font:500 14px var(--sans);color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:5px 10px}
+button{cursor:pointer}button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+button[data-show]{font-family:var(--display)}
 input{flex:1;min-width:140px}
 main{max-width:900px;margin:0 auto;padding:16px}
-h2{font-size:20px;margin:8px 0 16px}.count,.len{color:var(--muted);font-weight:400;font-size:13px}
-.part{font-size:15px;margin:24px 0 10px;padding-bottom:4px;border-bottom:2px solid var(--accent);color:var(--accent)}
-.turn{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:0 0 12px;overflow:hidden}
-.turn header{padding:8px 14px 0}.num{color:var(--accent);font-weight:700;text-decoration:none;font-size:13px;letter-spacing:.03em}
-.user{padding:6px 14px 12px;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--user)}
+h2{font:700 22px var(--display);margin:8px 0 16px}.count,.len{color:var(--muted);font:400 13px var(--sans);text-transform:none;letter-spacing:0}
+.part{font:700 16px var(--display);margin:24px 0 10px;padding-bottom:4px;border-bottom:2px solid var(--accent);color:var(--accent)}
+.turn{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin:0 0 12px;overflow:hidden}
+.turn header{padding:8px 14px 0;background:var(--user)}.num{color:var(--accent);font:700 13px var(--display);text-decoration:none;letter-spacing:.04em}
+html[data-tab="venheilheim"] .num{color:#8c1f16}
+.user{padding:6px 14px 12px;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--user);color:var(--user-text)}
 details{border-top:1px solid var(--line)}
-summary{cursor:pointer;padding:8px 14px;font-weight:600;font-size:14px;user-select:none}
+summary{cursor:pointer;padding:8px 14px;font:600 14px var(--display);user-select:none}
 summary:hover{color:var(--accent)}
-.pv{display:block;font-weight:400;color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pv{display:block;font:400 13px var(--body);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 details[open] .pv{display:none}
-.resp{padding:10px 14px 14px;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.5 ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;background:var(--resp);max-height:80vh;overflow:auto}
+.resp{padding:10px 14px 14px;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.5 var(--mono);background:var(--resp);max-height:80vh;overflow:auto}
+.transcript,.turn{scroll-margin-top:110px}
 .hidden{display:none}
 """
 
 SCRIPT = """
 const secs=[...document.querySelectorAll('.transcript')],tabs=[...document.querySelectorAll('[data-show]')];
-function show(id){secs.forEach(s=>s.classList.toggle('hidden',s.id!==id));tabs.forEach(t=>t.setAttribute('aria-pressed',t.dataset.show===id));}
+function show(id){secs.forEach(s=>s.classList.toggle('hidden',s.id!==id));tabs.forEach(t=>t.setAttribute('aria-pressed',t.dataset.show===id));document.documentElement.dataset.tab=id;}
 tabs.forEach(t=>t.onclick=()=>{show(t.dataset.show);history.replaceState(null,'','#'+t.dataset.show)});
 const h=location.hash.slice(1),el=h&&document.getElementById(h);
 if(el){show(el.closest('.transcript').id);if(el.classList.contains('turn'))el.scrollIntoView();}else show(secs[0].id);
@@ -179,11 +212,11 @@ cur().querySelectorAll('.turn').forEach(t=>t.classList.toggle('hidden',q&&!t.tex
 """
 
 
-def page(title, tabs):
+def page(title, tabs, fonts):
     buttons = "".join(f'<button data-show="{tid}" aria-pressed="false">{t}</button>' for tid, t, _ in tabs) if len(tabs) > 1 else ""
-    return (f'<!doctype html>\n<html lang="en"><head><meta charset="utf-8">\n'
+    return (f'<!doctype html>\n<html lang="en" data-tab="{tabs[0][0]}"><head><meta charset="utf-8">\n'
             f'<meta name="viewport" content="width=device-width, initial-scale=1">\n'
-            f'<title>{title}</title><style>{STYLE}</style></head><body>\n'
+            f'<title>{title}</title>{FONTS}<style>{STYLE.replace("FONTS/", fonts)}</style></head><body>\n'
             f'<div class="bar"><h1>{title}</h1>{buttons}\n'
             f'<input id="q" type="search" placeholder="Filter turns…">\n'
             f'<button id="open">Expand all</button><button id="close">Collapse all</button></div>\n'
@@ -192,7 +225,7 @@ def page(title, tabs):
 
 built = [(tid, title, out, render_tab(tid, title, parts)) for tid, title, out, parts in TABS]
 with open(f"{root}/index.html", "w", encoding="utf-8") as f:
-    f.write(page("AIDS Transcripts", [(tid, t, body) for tid, t, _, body in built]))
+    f.write(page("AIDS Transcripts", [(tid, t, body) for tid, t, _, body in built], "fonts/"))
 for tid, t, out, body in built:
     with open(f"{root}/transcripts/{out}", "w", encoding="utf-8") as f:
-        f.write(page(f"{t} Transcript", [(tid, t, body)]))
+        f.write(page(f"{t} Transcript", [(tid, t, body)], "../fonts/"))
