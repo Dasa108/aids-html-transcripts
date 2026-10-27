@@ -1,0 +1,992 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>xG Match Companion Course</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a coach's study notebook. Sticky module list on the left, one readable column on the right; stacks on phones. */
+:root {
+  --bg: #f2f5f1;
+  --surface: #ffffff;
+  --sunk: #e7ede8;
+  --ink: #15241c;
+  --muted: #55675d;
+  --line: #d2dbd5;
+  --pitch: #1b6a44;
+  --pitch-soft: #dcebe2;
+  --gold: #8f6408;
+  --gold-soft: #f6ecd2;
+  --blue: #255f9c;
+  --blue-soft: #dfe9f5;
+  --red: #b23446;
+  --font-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1613; --surface: #16201b; --sunk: #1c2822; --ink: #e7efe9; --muted: #9db1a6;
+    --line: #2b3b33; --pitch: #4fc28b; --pitch-soft: #183528; --gold: #e2b34f; --gold-soft: #33290f;
+    --blue: #74aee6; --blue-soft: #172a3d; --red: #f07686; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1613; --surface: #16201b; --sunk: #1c2822; --ink: #e7efe9; --muted: #9db1a6;
+  --line: #2b3b33; --pitch: #4fc28b; --pitch-soft: #183528; --gold: #e2b34f; --gold-soft: #33290f;
+  --blue: #74aee6; --blue-soft: #172a3d; --red: #f07686; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.62;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--pitch); }
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.08; text-wrap: balance; letter-spacing: 0.005em; }
+h2 { font-size: 2.3rem; margin: 0; }
+h3 { font-size: 1.45rem; margin: 2rem 0 0.4rem; }
+p, li { max-width: 68ch; }
+code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+code { background: var(--sunk); padding: 0.08em 0.35em; border-radius: 4px; }
+strong { font-weight: 700; }
+.eyebrow { font-family: var(--font-display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.95rem; color: var(--pitch); }
+.muted { color: var(--muted); }
+
+/* page frame */
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 48px; padding-block: 32px 80px; }
+@media (max-width: 860px) { .wrap { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-block: 20px 60px; } }
+
+/* hero */
+.hero { grid-column: 1 / -1; display: grid; gap: 14px; padding-block: 12px 8px; border-bottom: 2px solid var(--ink); padding-bottom: 24px; }
+.hero h1 { font-size: clamp(2.6rem, 7vw, 4.6rem); margin: 0; text-transform: uppercase; letter-spacing: 0.01em; }
+.hero h1 span { color: var(--pitch); }
+.hero p { margin: 0; font-size: 1.12rem; }
+.hero-meta { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 0.92rem; color: var(--muted); }
+.hero-meta b { color: var(--ink); font-family: var(--font-mono); font-weight: 600; font-size: 0.92em; }
+
+/* side nav */
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); align-self: start; max-height: calc(100vh - 32px); overflow-y: auto; }
+nav.toc details { border: 0; }
+nav.toc summary { list-style: none; cursor: pointer; font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.95rem; color: var(--muted); padding-block: 4px; }
+nav.toc summary::-webkit-details-marker { display: none; }
+@media (min-width: 861px) { nav.toc summary { pointer-events: none; } }
+@media (max-width: 860px) {
+  nav.toc { position: static; max-height: none; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+  nav.toc summary::after { content: " ▾"; }
+}
+.progress { margin: 10px 0 14px; display: grid; gap: 6px; font-size: 0.85rem; color: var(--muted); }
+.bar { height: 6px; background: var(--sunk); border-radius: 3px; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--pitch); transition: width 0.3s ease; }
+nav.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+nav.toc li a { display: grid; grid-template-columns: 26px 1fr 16px; gap: 6px; align-items: baseline; text-decoration: none; color: var(--ink); padding: 5px 6px; border-radius: 6px; font-size: 0.93rem; line-height: 1.3; }
+nav.toc li a:hover { background: var(--sunk); }
+nav.toc li a .n { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+nav.toc li a .tick { color: var(--pitch); font-weight: 700; visibility: hidden; }
+nav.toc li a.done .tick { visibility: visible; }
+nav.toc li a.done span:nth-child(2) { color: var(--muted); }
+
+/* modules */
+main { min-width: 0; display: grid; gap: 64px; }
+section.module { display: grid; gap: 4px; scroll-margin-top: 16px; }
+section.module > header { display: grid; gap: 6px; margin-bottom: 10px; }
+section.module > header .lede { font-size: 1.1rem; color: var(--muted); margin: 0; }
+
+/* callouts */
+.callout { border-radius: 10px; padding: 14px 18px; margin: 14px 0; display: grid; gap: 4px; max-width: 72ch; }
+.callout > .tag { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.85rem; }
+.callout p { margin: 0; }
+.callout p + p { margin-top: 8px; }
+.plain { background: var(--pitch-soft); }
+.plain > .tag { color: var(--pitch); }
+.say { background: var(--gold-soft); }
+.say > .tag { color: var(--gold); }
+.say p { font-style: italic; }
+.trap { background: var(--blue-soft); }
+.trap > .tag { color: var(--blue); }
+
+/* tables */
+.tbl { overflow-x: auto; margin: 12px 0; max-width: 100%; }
+table { border-collapse: collapse; width: 100%; font-size: 0.93rem; background: var(--surface); }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.85rem; color: var(--muted); background: var(--sunk); }
+td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* number board */
+.board { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin: 14px 0; }
+.board div { background: var(--surface); padding: 12px 14px; display: grid; gap: 2px; align-content: start; }
+.board b { font-family: var(--font-display); font-size: 2rem; line-height: 1; color: var(--pitch); font-variant-numeric: tabular-nums; }
+.board span { font-size: 0.86rem; color: var(--muted); line-height: 1.35; }
+
+/* flow diagram */
+.flow { display: grid; gap: 10px; margin: 16px 0; }
+.lane { border: 1px dashed var(--line); border-radius: 12px; padding: 12px; display: grid; gap: 8px; background: var(--surface); }
+.lane > .lane-title { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.85rem; color: var(--muted); }
+.steps { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.step { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 6px 10px; font-size: 0.9rem; line-height: 1.3; }
+.step small { display: block; color: var(--muted); font-size: 0.78rem; }
+.step.key { border-color: var(--pitch); background: var(--pitch-soft); }
+.arrow { color: var(--muted); font-family: var(--font-mono); }
+.down { text-align: center; color: var(--muted); font-family: var(--font-mono); font-size: 0.9rem; }
+
+/* figures */
+figure { margin: 16px 0; display: grid; gap: 8px; max-width: 640px; }
+figure svg { width: 100%; height: auto; display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+figcaption { font-size: 0.88rem; color: var(--muted); }
+
+pre.code { background: var(--sunk); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.84rem; line-height: 1.5; margin: 12px 0; max-width: 100%; }
+
+/* glossary-style definition list */
+dl.terms { display: grid; grid-template-columns: minmax(120px, max-content) minmax(0, 1fr); gap: 8px 18px; margin: 12px 0; }
+dl.terms dt { font-weight: 700; }
+dl.terms dd { margin: 0; max-width: 62ch; }
+@media (max-width: 560px) { dl.terms { grid-template-columns: minmax(0, 1fr); gap: 2px; } dl.terms dd { margin-bottom: 10px; } }
+
+/* story cards (bugs) */
+.stories { display: grid; gap: 12px; margin: 12px 0; }
+.story { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; }
+.story h4 { margin: 0; font-size: 1.05rem; }
+.story dl { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 4px 12px; margin: 0; font-size: 0.95rem; }
+.story dt { font-family: var(--font-display); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.8rem; color: var(--muted); padding-top: 3px; }
+.story dd { margin: 0; }
+
+/* studied checkbox */
+.studied { margin-top: 18px; display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-top: 1px solid var(--line); font-size: 0.95rem; color: var(--muted); }
+.studied input { width: 20px; height: 20px; accent-color: var(--pitch); }
+.studied label { cursor: pointer; }
+
+/* viva */
+.drill { background: var(--surface); border: 2px solid var(--ink); border-radius: 12px; padding: 18px; display: grid; gap: 12px; margin: 14px 0 24px; }
+.drill .q { font-family: var(--font-display); font-size: 1.6rem; line-height: 1.15; font-weight: 700; margin: 0; }
+.drill .a { border-top: 1px solid var(--line); padding-top: 10px; }
+.drill .a p { margin: 0 0 8px; }
+.drill .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.drill .count { font-size: 0.85rem; color: var(--muted); margin-left: auto; font-variant-numeric: tabular-nums; }
+button { font: inherit; font-weight: 700; border-radius: 8px; padding: 8px 14px; cursor: pointer; border: 1px solid var(--ink); background: var(--ink); color: var(--bg); }
+button.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+button:hover { opacity: 0.88; }
+.qa-group { display: grid; gap: 6px; margin: 8px 0 18px; }
+details.qa { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+details.qa summary { cursor: pointer; padding: 10px 14px; font-weight: 700; list-style: none; display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+details.qa summary::-webkit-details-marker { display: none; }
+details.qa summary::after { content: "+"; font-family: var(--font-mono); color: var(--muted); }
+details.qa[open] summary::after { content: "−"; }
+details.qa .ans { padding: 0 14px 12px; }
+details.qa .ans p { margin: 0 0 8px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Interview prep course · your own project</div>
+    <h1>xG Match <span>Companion</span></h1>
+    <p>Everything you built, how it works, and why it was built that way, in plain words. Read the modules in order. Each one ends with a line you can say in the interview. The question bank at the end lets you practise the viva.</p>
+    <div class="hero-meta">
+      <span>Built <b>10–21 Sep 2026</b></span>
+      <span>Repo <b>~/Desktop/AIDS/xG</b></span>
+      <span>Live at <a href="https://dasa108.github.io/xg-match-companion/">dasa108.github.io/xg-match-companion</a></span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Course modules">
+    <details id="tocDetails" open>
+      <summary>Modules</summary>
+      <div class="progress"><span id="progText">0 of 17 studied</span><div class="bar"><i id="progBar"></i></div></div>
+      <ol id="tocList">
+        <li><a href="#start"><span class="n">00</span><span>Start here</span><span class="tick">✓</span></a></li>
+        <li><a href="#xg"><span class="n">01</span><span>What xG means</span><span class="tick">✓</span></a></li>
+        <li><a href="#web"><span class="n">02</span><span>Websites from zero</span><span class="tick">✓</span></a></li>
+        <li><a href="#arch"><span class="n">03</span><span>The big picture</span><span class="tick">✓</span></a></li>
+        <li><a href="#plan"><span class="n">04</span><span>Planning first</span><span class="tick">✓</span></a></li>
+        <li><a href="#data"><span class="n">05</span><span>Data and features</span><span class="tick">✓</span></a></li>
+        <li><a href="#model"><span class="n">06</span><span>The model</span><span class="tick">✓</span></a></li>
+        <li><a href="#eval"><span class="n">07</span><span>Testing the model</span><span class="tick">✓</span></a></li>
+        <li><a href="#onnx"><span class="n">08</span><span>Model in the browser</span><span class="tick">✓</span></a></li>
+        <li><a href="#app"><span class="n">09</span><span>The app screens</span><span class="tick">✓</span></a></li>
+        <li><a href="#report"><span class="n">10</span><span>The full-time report</span><span class="tick">✓</span></a></li>
+        <li><a href="#design"><span class="n">11</span><span>Visual design</span><span class="tick">✓</span></a></li>
+        <li><a href="#offline"><span class="n">12</span><span>Offline and deploy</span><span class="tick">✓</span></a></li>
+        <li><a href="#bugs"><span class="n">13</span><span>Bugs and lessons</span><span class="tick">✓</span></a></li>
+        <li><a href="#exp"><span class="n">14</span><span>Algorithm experiment</span><span class="tick">✓</span></a></li>
+        <li><a href="#limits"><span class="n">15</span><span>Limits and next steps</span><span class="tick">✓</span></a></li>
+        <li><a href="#viva"><span class="n">16</span><span>Viva practice</span><span class="tick">✓</span></a></li>
+      </ol>
+    </details>
+  </nav>
+
+  <main>
+
+  <!-- 00 -->
+  <section class="module" id="start">
+    <header>
+      <div class="eyebrow">Module 00</div>
+      <h2>Start here</h2>
+      <p class="lede">The one-minute answer, the numbers to remember, and how to talk about how it was built.</p>
+    </header>
+
+    <h3>Your 60-second answer to "Tell me about your project"</h3>
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"I built xG Match Companion, a mobile website for logging shots during a local football match. You tap where each shot happened on a drawing of the pitch, and a machine-learning model running inside the phone's browser gives the shot's expected goals: the chance that kind of shot becomes a goal. At full time it produces a report showing which team created the better chances, a player leaderboard, charts and downloadable exports.</p>
+      <p>I trained the model in Python with LightGBM on 34,809 real shots from StatsBomb's open data, calibrated it so its percentages can be trusted, and exported it to ONNX so it runs in the browser. The front end is React with TypeScript, built with Vite. All data stays on the phone in IndexedDB, and a service worker makes the whole app work offline. There is no server. It's hosted on GitHub Pages, deployed automatically by GitHub Actions, and covered by 593 automated tests."</p>
+    </div>
+
+    <h3>Numbers worth memorising</h3>
+    <div class="board">
+      <div><b>34,809</b><span>real shots used to train the model</span></div>
+      <div><b>1,374</b><span>professional matches, 13 competitions</span></div>
+      <div><b>0.805</b><span>AUC on unseen test shots (full detail)</span></div>
+      <div><b>0.263</b><span>log loss on the test set; the simple baseline scored 0.274</span></div>
+      <div><b>0.90</b><span>correlation with StatsBomb's own professional xG</span></div>
+      <div><b>0.76</b><span>fixed xG for every penalty</span></div>
+      <div><b>593</b><span>automated tests in the app</span></div>
+      <div><b>0</b><span>servers. Everything runs on the phone.</span></div>
+    </div>
+
+    <h3>How to talk about how it was built</h3>
+    <p>Every commit in the repo is co-authored with Claude Code, an AI coding assistant. That is normal now, and interviewers usually respect it if you are upfront. What they test is whether <em>you</em> understand the decisions. This course exists so you can explain every one of them.</p>
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"I built it with an AI coding assistant as a pair programmer. I set the goals and made the product decisions, like offline-first, no server and one model that copes with missing inputs. I reviewed and tested every change in a real browser, and I kept a build journal explaining each decision."</p>
+    </div>
+    <p>The project itself has three study files you can open later: <code>LEARN.md</code> (the story in simple language), <code>spec.md</code> (the plan, the source of truth) and <code>process.md</code> (the detailed build diary).</p>
+    <div class="studied"><input type="checkbox" id="done-start" data-mod="start"><label for="done-start">I've studied this module</label></div>
+  </section>
+
+  <!-- 01 -->
+  <section class="module" id="xg">
+    <header>
+      <div class="eyebrow">Module 01</div>
+      <h2>What xG means</h2>
+      <p class="lede">The football idea behind the whole project.</p>
+    </header>
+    <p><strong>xG</strong> stands for <strong>expected goals</strong>. It is a number between 0 and 1 for every shot: how often a shot like that ends up as a goal.</p>
+    <ul>
+      <li>A tap-in from 2 metres in front of an empty goal might be <strong>0.8</strong>. Eight out of ten go in.</li>
+      <li>A shot from just inside the penalty box, straight on, might be around <strong>0.1–0.3</strong>.</li>
+      <li>A hopeful strike from 35 metres might be <strong>0.02</strong>. Two in a hundred go in.</li>
+    </ul>
+    <p>Add up all of a team's shots and you get the team's xG for the match. That tells you how many goals they "should" have scored from the chances they made.</p>
+    <div class="callout plain"><span class="tag">In plain words</span>
+      <p>The scoreline can lie. Team A can win 1–0 with one lucky long shot (0.04 xG) while Team B created 2.3 xG of chances and missed them all. xG shows who actually played better. The app's report says exactly this in one sentence at full time.</p>
+    </div>
+    <h3>Two kinds of xG in this project</h3>
+    <dl class="terms">
+      <dt>Pre-shot xG</dt><dd>How good the <em>chance</em> was before the ball was struck: where, which foot, defenders in the way, the keeper's position. This is the main model, and every shot gets it.</dd>
+      <dt>Post-shot xG (PSxG)</dt><dd>How good the <em>finish</em> was, judged by where the ball went in the goal frame. A shot into the top corner is harder to save than one at the keeper. It's optional, only for shots that were on target, and you add it by tapping a drawing of the goal.</dd>
+    </dl>
+    <h3>Who uses the app</h3>
+    <p>One person on the sideline of a local match, with one phone, logging one match at a time. Often there is no mobile signal. That single fact shaped almost every technical decision in the project.</p>
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"xG is the probability that a given shot becomes a goal, learned from thousands of past shots. Summed over a match, it shows which team created the better chances, whatever the scoreline says."</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-xg" data-mod="xg"><label for="done-xg">I've studied this module</label></div>
+  </section>
+
+  <!-- 02 -->
+  <section class="module" id="web">
+    <header>
+      <div class="eyebrow">Module 02</div>
+      <h2>Websites from zero</h2>
+      <p class="lede">The basic building blocks, each one shown in your own project.</p>
+    </header>
+    <p>A website is just a set of files. Your phone's browser downloads them and runs them. Three languages do almost all the work:</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Piece</th><th>Its job</th><th>House analogy</th><th>In your project</th></tr></thead>
+      <tbody>
+        <tr><td><strong>HTML</strong></td><td>Structure: headings, buttons, lists</td><td>The walls and rooms</td><td><code>app/index.html</code>, plus what React produces</td></tr>
+        <tr><td><strong>CSS</strong></td><td>Looks: colours, fonts, spacing, animation</td><td>Paint and furniture</td><td><code>app/src/styles.css</code></td></tr>
+        <tr><td><strong>JavaScript</strong></td><td>Behaviour: what happens when you tap</td><td>Electricity and plumbing</td><td>Everything in <code>app/src/</code>, written as TypeScript</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>The tools on top of those three</h3>
+    <dl class="terms">
+      <dt>TypeScript</dt><dd>JavaScript with labels saying what kind of data each thing holds ("this is a number", "this is a Match"). The computer checks the labels before the code runs, so many mistakes are caught early. In this project, adding two new fields to <code>Match</code> made TypeScript flag three test files that had not been updated.</dd>
+      <dt>React</dt><dd>A way to build a page out of small reusable pieces called <strong>components</strong>, like Lego bricks. <code>Pitch</code> draws the pitch, <code>ShotEntry</code> is the shot form, <code>Charts</code> draws the graphs. When data changes (called <strong>state</strong>), React redraws only the parts that need it.</dd>
+      <dt>Vite</dt><dd>The build tool. While you work, it runs a local preview server (<code>npm run dev</code>). For release, it packs and shrinks all the code into a few small files (<code>npm run build</code>). Think of it as the kitchen that turns raw ingredients into a plated meal.</dd>
+      <dt>Node and npm</dt><dd>Node runs JavaScript on your computer rather than in a browser. npm downloads the libraries the project uses (React, Dexie and so on). <code>package.json</code> lists them. This project uses Node 24.</dd>
+      <dt>SVG</dt><dd>A picture made of shapes and coordinates rather than pixels, so it stays sharp at any size. The pitch, the goal frame, all charts and all icons in this app are SVG drawn in code. No charting library is used.</dd>
+      <dt>Mobile-first</dt><dd>Design for a phone screen first, then let it stretch for bigger screens. The user here is always on a phone on a sideline.</dd>
+      <dt>Frontend / backend</dt><dd>The frontend is what runs on your device. A backend is a server somewhere else that stores data or does work. This project has <strong>no backend</strong>. It is a <strong>static site</strong>: just files that get downloaded.</dd>
+      <dt>localStorage</dt><dd>A tiny notepad inside the browser for small settings. Used here to remember the last open match and the offline-mode setting.</dd>
+      <dt>IndexedDB</dt><dd>A real database inside the browser. Every match, player and shot is saved here, on the phone only. The project uses a library called <strong>Dexie</strong> to make it easier to use.</dd>
+      <dt>Service worker</dt><dd>A small background script that saves a copy of the whole site onto the phone, so it keeps working with no internet. Like downloading an offline map before a hike.</dd>
+      <dt>PWA</dt><dd>Progressive Web App: a website that behaves like an installed app (works offline, can update itself). The service worker is what makes this one a PWA.</dd>
+      <dt>WebAssembly (wasm)</dt><dd>A way to run fast, pre-compiled code inside the browser. The model is run by a library called onnxruntime-web, which uses wasm under the hood.</dd>
+    </dl>
+    <div class="callout trap"><span class="tag">Likely follow-up</span>
+      <p><strong>"Why React and not plain HTML?"</strong> The app has many pieces that change on every tap (markers on the pitch, live xG, the clock, tallies). React keeps the screen in sync with the data automatically, and splits the UI into components that are easy to reuse. For example, the same pitch markings are drawn on the shot-entry screen and on the report's shot map.</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-web" data-mod="web"><label for="done-web">I've studied this module</label></div>
+  </section>
+
+  <!-- 03 -->
+  <section class="module" id="arch">
+    <header>
+      <div class="eyebrow">Module 03</div>
+      <h2>The big picture</h2>
+      <p class="lede">Two halves: a Python "factory" on the laptop that makes the model, and a website that uses it on the phone.</p>
+    </header>
+    <div class="flow" role="img" aria-label="Architecture: training on a laptop produces model files, which the website loads and runs on the phone">
+      <div class="lane">
+        <div class="lane-title">1 · On the laptop, once (Python, folder training/)</div>
+        <div class="steps">
+          <div class="step">pull_data.py<small>download StatsBomb shots</small></div><span class="arrow">→</span>
+          <div class="step">build_dataset.py<small>turn shots into features</small></div><span class="arrow">→</span>
+          <div class="step key">train.py<small>LightGBM + calibration</small></div><span class="arrow">→</span>
+          <div class="step">evaluate.py<small>release gate pass/fail</small></div><span class="arrow">→</span>
+          <div class="step">export_onnx.py<small>save as ONNX</small></div>
+        </div>
+      </div>
+      <div class="down">↓ model files (folder models/): model.onnx · calibrators.json · feature_spec.json ↓</div>
+      <div class="lane">
+        <div class="lane-title">2 · On the phone, every match (React + TypeScript, folder app/)</div>
+        <div class="steps">
+          <div class="step">Tap on pitch<small>Pitch.tsx</small></div><span class="arrow">→</span>
+          <div class="step">Compute features<small>xg/features.ts</small></div><span class="arrow">→</span>
+          <div class="step key">Run model<small>onnxruntime-web</small></div><span class="arrow">→</span>
+          <div class="step">Calibrate<small>xg/calibrate.ts</small></div><span class="arrow">→</span>
+          <div class="step">Save shot<small>IndexedDB (Dexie)</small></div><span class="arrow">→</span>
+          <div class="step">Report<small>verdict, charts, export</small></div>
+        </div>
+      </div>
+      <div class="down">↑ the site's files are hosted on GitHub Pages and cached on the phone by a service worker ↑</div>
+    </div>
+
+    <h3>Folder map</h3>
+<pre class="code">xG/
+  spec.md          the plan: every decision, written before code
+  process.md       the build diary: what, why, how, gotchas
+  LEARN.md         the same story in simple language
+  training/        Python: data → features → train → evaluate → export
+  models/          the finished model files + metrics reports
+  app/             the website (React + Vite + TypeScript)
+    src/pitch/     pitch drawing, goal frame, geometry maths
+    src/xg/        features, model loading, verdict, report, exports
+    src/db/        database schema + match lifecycle
+    src/screens/   MatchList → Setup → Live → Report
+    src/components/ ShotEntry, Charts, Icon, Confetti …
+  .github/workflows/deploy-pages.yml   auto-deploy robot</pre>
+
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"Training happens once, offline, in Python. The result is exported as an ONNX file that the website loads, so every prediction happens on the phone itself. That's why the app needs no server and works without signal."</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-arch" data-mod="arch"><label for="done-arch">I've studied this module</label></div>
+  </section>
+
+  <!-- 04 -->
+  <section class="module" id="plan">
+    <header>
+      <div class="eyebrow">Module 04</div>
+      <h2>Planning first</h2>
+      <p class="lede">How the work was organised before and during the build.</p>
+    </header>
+    <p>Before any code, a specification (<code>spec.md</code>) answered: what exactly does the sideline person tap, what does the model need to know, and what score counts as "good enough to ship". When reality disagreed with the plan, the plan was updated on purpose, so it never went stale.</p>
+    <p>Every step was also logged in <code>process.md</code> as a learning journal: what was done, why, how, and what went wrong.</p>
+    <h3>The four milestones</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Milestone</th><th>What it delivered</th></tr></thead>
+      <tbody>
+        <tr><td><strong>M1</strong> Model</td><td>Data pipeline, training, calibration, ONNX export, release gate passed</td></tr>
+        <tr><td><strong>M2</strong> Logging app</td><td>React app, TypeScript copy of the feature maths, match lifecycle, local database</td></tr>
+        <tr><td><strong>M3</strong> Reporting</td><td>Verdict sentence, player leaderboard, charts, JSON/CSV export</td></tr>
+        <tr><td><strong>M4</strong> Hardening</td><td>Real-browser testing, smaller downloads, offline service worker, full pitch</td></tr>
+        <tr><td>Extras</td><td>PSxG, downloadable HTML report, visual redesign, GitHub Pages deploy, auto-update, many usability fixes</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Decisions locked early</h3>
+    <ul>
+      <li>Train on <strong>StatsBomb Open Data</strong>, because it records where every player stood at the moment of a shot, which matches what the operator marks on the pitch.</li>
+      <li><strong>One adaptive model</strong> instead of separate "quick" and "detailed" modes.</li>
+      <li><strong>Penalties fixed at 0.76</strong>, not modelled.</li>
+      <li><strong>Everything on the device</strong>: inference in the browser, storage in IndexedDB, offline via a service worker.</li>
+      <li>Team sheets entered before kickoff, so picking the shooter is one tap.</li>
+    </ul>
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"I wrote a spec first and treated it as the source of truth, and kept a build journal. It meant every decision was made once, with the real user in mind: one person on a sideline with no signal."</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-plan" data-mod="plan"><label for="done-plan">I've studied this module</label></div>
+  </section>
+
+  <!-- 05 -->
+  <section class="module" id="data">
+    <header>
+      <div class="eyebrow">Module 05</div>
+      <h2>Data and features</h2>
+      <p class="lede">What the model learns from, and the clues it looks at.</p>
+    </header>
+    <h3>The data</h3>
+    <p><strong>StatsBomb Open Data</strong> is free, real, shot-by-shot data from professional football, released for non-commercial use. The project used <strong>34,809 shots from 1,374 matches across 13 competitions</strong> (Premier League, World Cups, Euros, women's leagues and more). A mix of competitions was used on purpose, so the model learns "what makes a good chance" rather than "this one team is good".</p>
+    <p>A key reason for choosing StatsBomb: each shot has a <strong>freeze frame</strong>, a snapshot of where every visible player was at the moment of the shot. That lines up with the keeper and defender markers the operator drops on the pitch.</p>
+    <p>Positions use StatsBomb's pitch units: <strong>120 × 80</strong>, with the goal at x = 120 between y = 36 and y = 44. These are not metres.</p>
+
+    <h3>Features: the clues</h3>
+    <p>A <strong>feature</strong> is one number or category the model uses to guess. The two strongest by far are <strong>distance</strong> and <strong>angle</strong>.</p>
+    <figure>
+      <svg viewBox="-2 -6 84 36" role="img" aria-label="Attacking end of a pitch. A central shot sees a wide angle of goal; a shot from near the goal line sees a narrow angle.">
+        <rect x="0" y="0" width="80" height="30" fill="var(--pitch-soft)"/>
+        <line x1="0" y1="0" x2="80" y2="0" stroke="var(--muted)" stroke-width="0.3"/>
+        <rect x="18" y="0" width="44" height="18" fill="none" stroke="var(--muted)" stroke-width="0.3"/>
+        <rect x="30" y="0" width="20" height="6" fill="none" stroke="var(--muted)" stroke-width="0.3"/>
+        <rect x="36" y="-1.6" width="8" height="1.6" fill="var(--surface)" stroke="var(--ink)" stroke-width="0.4"/>
+        <polygon points="40,14 36,0 44,0" fill="var(--pitch)" fill-opacity="0.28"/>
+        <line x1="40" y1="14" x2="36" y2="0" stroke="var(--pitch)" stroke-width="0.35"/>
+        <line x1="40" y1="14" x2="44" y2="0" stroke="var(--pitch)" stroke-width="0.35"/>
+        <circle cx="40" cy="14" r="1.1" fill="var(--pitch)"/>
+        <text x="42" y="17.5" font-size="2.3" fill="var(--ink)" font-family="Atkinson Hyperlegible, sans-serif">A: central, wide angle</text>
+        <polygon points="60,5 36,0 44,0" fill="var(--red)" fill-opacity="0.22"/>
+        <line x1="60" y1="5" x2="36" y2="0" stroke="var(--red)" stroke-width="0.35"/>
+        <line x1="60" y1="5" x2="44" y2="0" stroke="var(--red)" stroke-width="0.35"/>
+        <circle cx="60" cy="5" r="1.1" fill="var(--red)"/>
+        <text x="62" y="6" font-size="2.3" fill="var(--ink)" font-family="Atkinson Hyperlegible, sans-serif">B: tight angle</text>
+        <text x="40" y="-2.6" font-size="2" fill="var(--muted)" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif">goal</text>
+        <text x="20" y="23" font-size="2" fill="var(--muted)" font-family="Atkinson Hyperlegible, sans-serif">penalty box</text>
+      </svg>
+      <figcaption>Shots A and B are similar distances from goal, but A "sees" a much wider slice of the goal. The shaded wedge is the <em>angle</em> feature, and it is why A is a far better chance.</figcaption>
+    </figure>
+    <p>Features are organised into <strong>groups</strong>. Only the core group is always available. The others depend on how much the operator had time to enter.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Group</th><th>Features (code names)</th><th>Comes from</th></tr></thead>
+      <tbody>
+        <tr><td><strong>core</strong></td><td>distance, angle, dist_x, abs_y, in_box, in_six_yard, body_part, shot_type, play_pattern, under_pressure</td><td>The shot tap + quick chips</td></tr>
+        <tr><td><strong>freeze_frame</strong></td><td>defenders_in_cone, nearest_def_dist, def_within_3/5, gk_dist, gk_dist_from_goal, gk_lateral, gk_in_cone, teammates_in_box</td><td>Keeper and defender markers</td></tr>
+        <tr><td><strong>assist</strong></td><td>assist_type</td><td>"+ more detail"</td></tr>
+        <tr><td><strong>technique</strong></td><td>technique (volley, lob, header…)</td><td>"+ more detail"</td></tr>
+        <tr><td><strong>context</strong></td><td>first_time, follows_dribble, one_on_one, open_goal, rebound</td><td>"+ more detail"</td></tr>
+        <tr><td><strong>pass_origin</strong></td><td>pass_origin_dist, angle_swing</td><td>The "pass" tool on the pitch</td></tr>
+      </tbody>
+    </table></div>
+    <p>"In the cone" means inside the triangle between the ball and the two posts, the shaded wedge in the picture. A defender in the cone is in the way of the shot.</p>
+    <h3>Why penalties are a fixed 0.76</h3>
+    <p>Penalties are almost the same every time (same spot, only the keeper), and their real-world scoring rate is well known. So they skip the model and always get 0.76. This is a documented exception, not a shortcut.</p>
+    <div class="callout trap"><span class="tag">Likely follow-up</span>
+      <p><strong>"What is feature engineering?"</strong> Turning raw facts (x and y of a tap, marker positions) into clues a model can use (distance, angle, how many defenders block the view). The same feature maths exists twice: in Python for training and TypeScript in the app. Module 08 explains how they're kept identical.</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-data" data-mod="data"><label for="done-data">I've studied this module</label></div>
+  </section>
+
+  <!-- 06 -->
+  <section class="module" id="model">
+    <header>
+      <div class="eyebrow">Module 06</div>
+      <h2>The model</h2>
+      <p class="lede">LightGBM, explained without maths, plus the trick that lets it cope with missing information.</p>
+    </header>
+    <h3>From one decision tree to LightGBM</h3>
+    <ol>
+      <li><strong>A decision tree</strong> is a flowchart of yes/no questions. "Is the shot inside the box? Yes. Is it from a header? No. Is a defender in the cone? No." At the end you get a guess.</li>
+      <li>One tree is crude. <strong>Gradient boosting</strong> builds many small trees one after another. Each new tree focuses on the mistakes the trees before it made, like a team of students where each one corrects the previous person's homework.</li>
+      <li><strong>LightGBM</strong> is a popular, fast library that does gradient boosting. It's strong on table-shaped data like this.</li>
+    </ol>
+    <p>It is a <strong>binary classifier</strong>: the answer is goal (1) or no goal (0), and it outputs a probability between them. That probability is the xG.</p>
+    <h3>Key settings, in plain words</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Setting</th><th>Value</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>learning_rate</td><td class="num">0.02</td><td>Each tree only nudges the answer a little, so learning is slow and careful</td></tr>
+        <tr><td>n_estimators + early stopping</td><td class="num">≤ 4000, stop after 120 with no gain</td><td>Keep adding trees until the validation score stops improving</td></tr>
+        <tr><td>max_depth / num_leaves</td><td class="num">5 / 31</td><td>Keeps each tree small so it can't memorise</td></tr>
+        <tr><td>min_child_samples</td><td class="num">60</td><td>A rule needs at least 60 shots behind it</td></tr>
+        <tr><td>subsample / colsample</td><td class="num">0.8 / 0.8</td><td>Each tree sees a random 80% of shots and features, which adds variety</td></tr>
+        <tr><td>monotone_constraints</td><td>on</td><td>Common-sense rules (below)</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Monotone constraints: built-in common sense</h3>
+    <p>The model is <em>forced</em> to obey football logic, even if the data is noisy: further away can never raise xG, a wider angle can never lower it, more defenders in the cone can never raise it, and a one-on-one or open goal can never lower it. This stops strange predictions.</p>
+    <h3>The baseline: the bar to beat</h3>
+    <p>Before trusting LightGBM, a simple <strong>logistic regression</strong> using only geometry (distance and angle) was trained. If the fancy model can't beat that, it isn't worth shipping. Baseline test log loss was 0.274. LightGBM got 0.263.</p>
+
+    <h3>One model that copes with missing inputs</h3>
+    <p>On a real sideline you may only have time to tap where the shot was. Other times you mark the keeper, the defenders and more. Rather than build a "quick mode" and a "detailed mode", the project trained <strong>one model</strong> that handles both, by practising with missing information.</p>
+    <p>Each real training shot was copied <strong>five times</strong>:</p>
+    <ol>
+      <li>Once with everything filled in.</li>
+      <li>Once with only the core features (all optional groups blanked).</li>
+      <li>Three more times with random groups blanked, and marker positions slightly shifted (<strong>jitter</strong>) to imitate a rushed thumb tap being about 1.5 m off.</li>
+    </ol>
+    <p>This is called <strong>feature-group dropout</strong> and <strong>data augmentation</strong>. Every entry is then labelled with a <strong>completeness bucket</strong>:</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Bucket</th><th>What was entered</th></tr></thead>
+      <tbody>
+        <tr><td><strong>minimal</strong></td><td>Only the core: shot spot, body part, situation, pressure</td></tr>
+        <tr><td><strong>partial</strong></td><td>Core + keeper/defender markers</td></tr>
+        <tr><td><strong>full</strong></td><td>Everything, including assist, technique, pass origin and context</td></tr>
+      </tbody>
+    </table></div>
+    <div class="callout plain"><span class="tag">In plain words</span>
+      <p>Like a doctor who still gives a sensible diagnosis with whichever test results are back, instead of refusing to guess until every test is in.</p>
+    </div>
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"It's a LightGBM gradient-boosted tree model with monotone constraints, so it can't learn things like 'further away is better'. I trained one model on augmented data where optional feature groups were randomly dropped, so it works whether the operator enters two things or twenty."</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-model" data-mod="model"><label for="done-model">I've studied this module</label></div>
+  </section>
+
+  <!-- 07 -->
+  <section class="module" id="eval">
+    <header>
+      <div class="eyebrow">Module 07</div>
+      <h2>Testing the model honestly</h2>
+      <p class="lede">How the data was split, why calibration matters, and what each score means.</p>
+    </header>
+    <h3>Hide some data, and hide it by match</h3>
+    <p>If you test a model on the shots it learned from, it looks perfect, because it's remembering answers. So shots are split into separate piles: <strong>train</strong> (learn), <strong>validation</strong> (decide when to stop), <strong>calibration</strong> (tune the percentages) and <strong>test</strong> (the final exam, 15%: 4,988 shots from 197 matches).</p>
+    <p>The split is <strong>by match</strong>, not by shot. Two shots from the same game share teams, weather and referee, so if one is in training and one in the test, the test is too easy. A match's ID is put through a fixed hash function to decide its pile, so the split is the same every time.</p>
+    <div class="callout trap"><span class="tag">A real mistake, and the lesson</span>
+      <p>The first attempt held out whole tournaments for testing. Those tournaments happened to have a different mix of easy and hard chances, so the model's percentages came out slightly off, even though it ranked chances well. Switching to holding out individual matches from every competition fixed it. The lesson: "<strong>is it accurate</strong>" and "<strong>is it calibrated</strong>" are two different questions.</p>
+    </div>
+    <h3>Calibration: making percentages trustworthy</h3>
+    <p>If the model says 0.30 for a hundred shots, about 30 of them should be goals. A model can rank chances correctly and still have wrong percentages.</p>
+    <div class="callout plain"><span class="tag">In plain words</span>
+      <p>A weather forecaster who says "70% rain" but it only rains 20% of those days is badly calibrated, even if rainy days do get higher numbers.</p>
+    </div>
+    <p>The fix is <strong>isotonic regression</strong>: a correction table, learned on held-out data, that maps the raw score to a trustworthy probability. It only ever moves numbers up or down in order, never swapping two shots' ranking. A separate table was fitted <strong>for each completeness bucket</strong>, because guesses made with little information go wrong in different ways from guesses made with full information. The tables ship as <code>calibrators.json</code>.</p>
+
+    <h3>The scores, explained</h3>
+    <dl class="terms">
+      <dt>Log loss</dt><dd>Punishes confident wrong guesses heavily. Lower is better. Main score here: 0.263.</dd>
+      <dt>Brier score</dt><dd>The average squared gap between the predicted probability and what happened (0 or 1). Lower is better: 0.071.</dd>
+      <dt>AUC</dt><dd>If you pick one goal and one miss at random, how often does the goal have the higher xG? 0.5 is coin-flipping, 1.0 is perfect. Here: 0.805.</dd>
+      <dt>ECE</dt><dd>Expected calibration error: how far the percentages are from reality, on average. Lower is better: 0.013.</dd>
+      <dt>Calibration-in-the-large</dt><dd>Total predicted goals ÷ actual goals. 1.03 means it predicted 3% more goals than happened, very close to perfect.</dd>
+      <dt>Correlation with StatsBomb xG</dt><dd>How closely it agrees with the professional provider's own xG: 0.90.</dd>
+    </dl>
+    <h3>Test results by completeness bucket</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>Bucket</th><th>Log loss</th><th>AUC</th><th>Brier</th><th>Corr. vs StatsBomb</th></tr></thead>
+      <tbody>
+        <tr><td>full</td><td class="num">0.263</td><td class="num">0.805</td><td class="num">0.071</td><td class="num">0.90</td></tr>
+        <tr><td>partial</td><td class="num">0.260</td><td class="num">0.792</td><td class="num">0.072</td><td class="num">0.90</td></tr>
+        <tr><td>minimal</td><td class="num">0.267</td><td class="num">0.770</td><td class="num">0.075</td><td class="num">0.80</td></tr>
+        <tr><td><em>baseline (geometry only)</em></td><td class="num">0.274</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
+      </tbody>
+    </table></div>
+    <p>Quality drops gently as less is entered, which is exactly what you want. Every bucket beats the baseline.</p>
+    <h3>The release gate</h3>
+    <p>Pass/fail thresholds were written into the spec <em>before</em> training (section 8.6). The model only shipped once every bucket passed every check. Gate result: <strong>PASS</strong>. Full numbers are in <code>models/metrics.md</code>.</p>
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"I split by match to prevent leakage, set pass/fail thresholds before training, and calibrated with isotonic regression per completeness level. On 4,988 unseen shots it got AUC 0.805 and log loss 0.263, beat the geometry baseline at every level, and correlated 0.90 with StatsBomb's own xG."</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-eval" data-mod="eval"><label for="done-eval">I've studied this module</label></div>
+  </section>
+
+  <!-- 08 -->
+  <section class="module" id="onnx">
+    <header>
+      <div class="eyebrow">Module 08</div>
+      <h2>Getting the model into the browser</h2>
+      <p class="lede">ONNX, onnxruntime-web, and the "answer key" that keeps two languages in agreement.</p>
+    </header>
+    <h3>ONNX</h3>
+    <p>The model was trained in Python, but browsers run JavaScript. <strong>ONNX</strong> is a standard file format for trained models. Python saves the model as <code>model.onnx</code> (422 KB), and <strong>onnxruntime-web</strong> loads and runs it inside the browser using WebAssembly.</p>
+    <div class="callout plain"><span class="tag">In plain words</span>
+      <p>Like saving a Word document as a PDF. It isn't a Word file any more, but any PDF reader on any computer shows exactly the same thing.</p>
+    </div>
+    <p>The export was checked: the ONNX version gives the same answer as the Python model to seven decimal places.</p>
+    <h3>Two copies of the same maths, kept honest</h3>
+    <p>The feature maths (distance, angle, defenders in the cone…) exists twice: in Python (<code>training/features.py</code>) and in TypeScript (<code>app/src/xg/features.ts</code>). If they ever drifted apart, the app would quietly give wrong xG and nobody would notice.</p>
+    <p>The fix is a shared <strong>answer key</strong>: 48 real shots were run through the Python code, and the exact outputs were saved to <code>feature_fixtures.json</code>. The app's tests run the same shots through the TypeScript code and fail loudly if any number differs beyond tiny rounding. These are called <strong>parity tests</strong> (340 of them at first). The same approach was reused for the PSxG model.</p>
+    <h3>Making it fast enough on a phone</h3>
+    <ul>
+      <li><strong>Lazy loading</strong>: the model library is only downloaded when you open the live screen, not on the first page. The main bundle shrank from 694 KB to 277 KB.</li>
+      <li><strong>Smaller wasm</strong>: importing the wasm-only build of onnxruntime-web cut the wasm file from 28 MB to 14 MB.</li>
+      <li><strong>Single thread</strong>: the multi-threaded mode needs special server security headers that GitHub Pages doesn't send, and it froze the page. One thread is plenty for one small model.</li>
+    </ul>
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"I exported the LightGBM model to ONNX and run it with onnxruntime-web, so inference is on the device. Because the feature code exists in both Python and TypeScript, I built parity tests from a shared fixture file, so any drift between the two fails the build."</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-onnx" data-mod="onnx"><label for="done-onnx">I've studied this module</label></div>
+  </section>
+
+  <!-- 09 -->
+  <section class="module" id="app">
+    <header>
+      <div class="eyebrow">Module 09</div>
+      <h2>The app screens</h2>
+      <p class="lede">What the user sees, in order, and what happens behind each tap.</p>
+    </header>
+    <div class="flow" role="img" aria-label="Screen flow: Match list, Setup, Live, Report">
+      <div class="steps">
+        <div class="step">Match list<small>pick or create a match</small></div><span class="arrow">→</span>
+        <div class="step">Setup<small>teams, players, half length</small></div><span class="arrow">→</span>
+        <div class="step key">Live<small>clock + shot logging</small></div><span class="arrow">→</span>
+        <div class="step">Report<small>verdict, charts, export</small></div>
+      </div>
+    </div>
+    <h3>How the app decides which screen to show</h3>
+    <p>Each match has a <strong>status</strong>: <code>setup</code> → <code>live</code> → <code>finished</code>. The screen shown simply follows the status stored in the database. Press "Kick off" and the status becomes <code>live</code>, so the Live screen appears. This is a <strong>state machine</strong>: a fixed set of states with clear moves between them.</p>
+    <h3>Logging one shot</h3>
+    <ol>
+      <li>Choose a tool: <strong>shot</strong>, <strong>keeper</strong>, <strong>defender</strong> (up to 6) or <strong>pass</strong>. Then tap the pitch to place it.</li>
+      <li>Pick the team and the shooter from the team sheet.</li>
+      <li>Quick chips with sensible defaults: body part, situation (open play, corner, penalty…), pressure.</li>
+      <li>Optional "+ more detail": technique, beat a defender, open goal, rebound.</li>
+      <li>Choose the outcome: goal, saved, off target, blocked, post.</li>
+    </ol>
+    <p>Only the shot spot, the shooter and the outcome are required. The live xG updates instantly as you change anything, with a one-line reason ("close range, tight angle") and a confidence band. Mis-placed a defender? Tap it to remove it, or press <strong>undo</strong> to remove the last one.</p>
+    <p>Turning a tap into pitch coordinates is simple proportion: where you tapped inside the drawing, as a fraction of its width and height, mapped onto the 120 × 80 pitch (<code>pitch/Pitch.tsx</code>, <code>pitch/geometry.ts</code>).</p>
+    <div class="callout trap"><span class="tag">Be precise about this</span>
+      <p>The one-line reason is a <strong>rule-of-thumb</strong> reading of the inputs, not the model explaining itself. True model explanations need a technique like SHAP, which this project deliberately didn't claim to have. Saying this clearly in a viva shows maturity.</p>
+    </div>
+    <h3>The match clock</h3>
+    <p>The clock stores two things: when it was last started, and how much time had built up before that. Elapsed time = saved time + (now − start), if it's running. Halftime is just a pause. Past the half length it shows broadcast style, like <code>45+3'</code>. A "2nd half →" button switches the half. Pressing "Full time" early shows a warning and asks you to confirm.</p>
+    <h3>Where the data lives</h3>
+    <p>Three tables in IndexedDB via Dexie: <strong>matches</strong>, <strong>players</strong> and <strong>shots</strong>. Deleting a match also deletes its players and shots (a <strong>cascading delete</strong>), after asking for confirmation. Nothing leaves the phone.</p>
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"Screens are driven by a match state machine stored in IndexedDB. Logging a shot needs only three required inputs; everything else has a default, so a shot can be logged in about five seconds or in full detail if there's time."</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-app" data-mod="app"><label for="done-app">I've studied this module</label></div>
+  </section>
+
+  <!-- 10 -->
+  <section class="module" id="report">
+    <header>
+      <div class="eyebrow">Module 10</div>
+      <h2>The full-time report</h2>
+      <p class="lede">The verdict sentence, the leaderboard, the charts, and three export formats.</p>
+    </header>
+    <h3>The verdict rules</h3>
+    <p>Team xG is the sum of its shots' xG. The difference between the two teams picks the sentence:</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Situation</th><th>Sentence</th></tr></thead>
+      <tbody>
+        <tr><td>xG gap under 0.3</td><td>"Even game on chances."</td></tr>
+        <tr><td>Higher-xG team also won</td><td>"Deserved result."</td></tr>
+        <tr><td>Losing team led xG by 0.75 or more</td><td>"Smash-and-grab / unlucky loss for {team}."</td></tr>
+        <tr><td>Draw, but xG gap 0.75 or more</td><td>"{team} will feel they should have won."</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Player leaderboard</h3>
+    <p>Per player: shots, total xG, xG per shot, biggest chance, goals, and <strong>goals − xG</strong> (positive = finished better than expected). Two awards: <strong>best xG</strong> (most total xG) and <strong>most efficient</strong> (highest xG per shot, minimum 3 shots, so one lucky shot doesn't win).</p>
+    <h3>Charts, all hand-drawn SVG</h3>
+    <ul>
+      <li><strong>Shot map</strong>: each shot on the pitch, bigger circle for higher xG, shape and colour by outcome.</li>
+      <li><strong>Cumulative xG timeline</strong>: each team's xG building up minute by minute, as a step chart.</li>
+      <li><strong>Chance-quality histogram</strong>: how many shots were poor, decent or great chances.</li>
+    </ul>
+    <p>The calculations (<code>verdict.ts</code>, <code>report.ts</code>) are kept completely separate from the drawing. Maths is easy to test automatically. Drawing mostly needs a human to look at it. Keeping them apart means a visual tweak can't silently break a number.</p>
+    <h3>Exports, no server needed</h3>
+    <ul>
+      <li><strong>Full report</strong>: one self-contained HTML file with score, verdict, charts, tables and every shot. It opens offline and prints or saves as PDF cleanly.</li>
+      <li><strong>JSON</strong>: the same data, machine-readable.</li>
+      <li><strong>CSV</strong>: one row per shot, for spreadsheets.</li>
+    </ul>
+    <h3>PSxG: the optional second model</h3>
+    <p>For goals, saves and post hits, you can tap where the ball went on a goal-frame drawing. A second model, trained the same rigorous way on <strong>12,423 on-target shots</strong>, rates how good the placement was. It uses features such as distance from the nearest post, height, and far post vs near post. Its test log loss was 0.372 against a baseline of 0.507, and AUC 0.879 against 0.772. PSxG is shown alongside xG but never changes the verdict sentence.</p>
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"The report logic is pure functions with unit tests: team xG, a rule-based verdict, and a player leaderboard. Charts are hand-drawn SVG with no chart library. You can export a self-contained HTML report, JSON or CSV, all generated on the phone."</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-report" data-mod="report"><label for="done-report">I've studied this module</label></div>
+  </section>
+
+  <!-- 11 -->
+  <section class="module" id="design">
+    <header>
+      <div class="eyebrow">Module 11</div>
+      <h2>Visual design</h2>
+      <p class="lede">The "sports broadcast" look, and how design choices were checked instead of guessed.</p>
+    </header>
+    <h3>Design tokens</h3>
+    <p>All colours, corner radii and timings are defined once at the top of <code>styles.css</code> as <strong>CSS variables</strong> (also called design tokens), and everything else refers to them. Change one variable and every button using it updates.</p>
+<pre class="code">:root {
+  --bg: #0a0f0c;      /* page background */
+  --home: #1fae66;    /* home team green */
+  --away: #2c86d1;    /* away team blue */
+  --pos: #bd8a12;     /* good / goal gold */
+  --neg: #e2465c;     /* bad red */
+}
+.button { background: var(--home); }</pre>
+    <h3>Three separate colour jobs</h3>
+    <p>Originally one green meant "brand", "home team" and "success" all at once, which was confusing. The redesign split colours into three roles that never clash: <strong>team identity</strong> (home green, away blue), <strong>value judgement</strong> (good gold, bad red) and <strong>shot outcome</strong> (goal, saved, post, blocked, off target).</p>
+    <h3>Colour-blind safety, checked by calculation</h3>
+    <p>About 1 in 12 men have some colour blindness. So every outcome has its own <strong>shape</strong> as well as a colour: ★ goal, ● saved, ◆ post, ▲ blocked, ○ off target. The palette was also run through a validator using <strong>OKLab</strong>, a model of how humans see colour. It found a real problem: the violet "post" and blue "saved" looked almost identical to people with red-green colour blindness. Post was changed to magenta.</p>
+    <h3>Other design details</h3>
+    <ul>
+      <li><strong>Tabular numerals</strong>: all digits the same width, so the score and xG don't jiggle as they change.</li>
+      <li><strong>Hand-made icon set</strong>: no emoji or icon font, so nothing needs downloading and it works offline. The first icons were thin outlines that looked like scribbles at small size. They were redrawn as solid shapes.</li>
+      <li><strong>Motion</strong>: screens fade in, the live xG number "pops" when it changes, and a confetti burst plays on a goal. All done with CSS, no animation library.</li>
+      <li><strong>Background art</strong>: faint grain texture, pitch-line watermark, soft team-coloured glows, and an original anime-style illustration of a ball bursting through a splash.</li>
+    </ul>
+    <div class="callout trap"><span class="tag">A design story worth telling</span>
+      <p>A stock photo was first used as the background. Before making the repo public, its licence was checked and it turned out to be copyrighted, so it was replaced with original vector art drawn in code. Player silhouettes were also tried twice, didn't look right to the owner, and were removed. Good design includes removing things that don't work.</p>
+    </div>
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"I used design tokens so colours are defined once, split colour into three roles so meanings never collide, and made outcomes colour-blind safe with shapes plus a palette checked by an OKLab-based validator. That check caught a real collision I wouldn't have seen by eye."</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-design" data-mod="design"><label for="done-design">I've studied this module</label></div>
+  </section>
+
+  <!-- 12 -->
+  <section class="module" id="offline">
+    <header>
+      <div class="eyebrow">Module 12</div>
+      <h2>Offline, deployment and updates</h2>
+      <p class="lede">How the site gets onto the internet, onto the phone, and stays up to date.</p>
+    </header>
+    <h3>Working offline</h3>
+    <p>The service worker is built with <strong>Workbox</strong> (through vite-plugin-pwa). On first visit it <strong>precaches</strong> the app, both ONNX models, the calibration files and the wasm runtime, about 14 MB in total. After that, logging, predictions, reports and exports all work in airplane mode.</p>
+    <h3>Hosting: GitHub Pages + GitHub Actions</h3>
+    <p><strong>GitHub Pages</strong> hosts static sites for free. A <strong>GitHub Actions workflow</strong> (<code>.github/workflows/deploy-pages.yml</code>) is a small robot. On every push it installs packages, runs the build, and publishes <code>app/dist</code>. This is <strong>CI/CD</strong>: continuous integration and deployment. It runs on Node 24, after Node 20 was deprecated.</p>
+    <div class="callout trap"><span class="tag">The blank-page bug</span>
+      <p>GitHub Pages serves the site from a sub-folder: <code>/xg-match-companion/</code>. Vite has a <code>base</code> setting for this. At first it was switched on for every build, so the local preview asked for files at a path that didn't exist and showed a blank page with no error. The fix: only use the sub-folder when an environment variable <code>GH_PAGES</code> is set, which only the CI robot does.</p>
+    </div>
+    <h3>Updating people who already have it</h3>
+    <p>Once the site is cached on someone's phone, how do they get a new version? Two approaches were tried:</p>
+    <ol>
+      <li>A banner saying "A new version is ready" with a Reload button.</li>
+      <li><strong>Kept:</strong> update automatically as soon as a new version is found, with no button.</li>
+    </ol>
+    <p>With auto-update, the app can only be out of date while offline. So it shows a quiet note: "Offline — may not be the latest version." There's also a toggle to turn offline caching off for anyone who always wants the freshest version.</p>
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"It's a static PWA on GitHub Pages, deployed by a GitHub Actions workflow. A Workbox service worker precaches everything, including the models, so it works fully offline. It auto-updates when online and honestly flags when it's offline and might be stale."</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-offline" data-mod="offline"><label for="done-offline">I've studied this module</label></div>
+  </section>
+
+  <!-- 13 -->
+  <section class="module" id="bugs">
+    <header>
+      <div class="eyebrow">Module 13</div>
+      <h2>Bugs and lessons</h2>
+      <p class="lede">Real problems from this build. These are your answers to "Tell me about a challenge you faced".</p>
+    </header>
+    <p>The app has <strong>593 automated tests</strong> run by <strong>Vitest</strong>: feature parity, verdict logic, database lifecycle (using a fake in-memory IndexedDB), report HTML and more. They all passed, yet several serious bugs only showed up by opening the real app in a browser.</p>
+    <div class="stories">
+      <div class="story"><h4>The app never started</h4><dl>
+        <dt>Problem</dt><dd>All tests green, but the page was blank in a real browser.</dd>
+        <dt>Cause</dt><dd>The model library was told to load its files from the <code>public/</code> folder, which Vite refuses to import code from.</dd>
+        <dt>Fix</dt><dd>Let the bundler find the library's files itself.</dd></dl></div>
+      <div class="story"><h4>The page froze on the live screen</h4><dl>
+        <dt>Problem</dt><dd>Opening the live screen froze the whole tab.</dd>
+        <dt>Cause</dt><dd>onnxruntime-web defaults to multi-threaded wasm, which needs <code>SharedArrayBuffer</code> and special security headers (COOP/COEP) the site doesn't send.</dd>
+        <dt>Fix</dt><dd>Force one thread, and load the library lazily with a dynamic <code>import()</code> only when needed.</dd></dl></div>
+      <div class="story"><h4>Blank local preview</h4><dl>
+        <dt>Problem</dt><dd>After setting up GitHub Pages, the local preview showed nothing, with no error.</dd>
+        <dt>Cause</dt><dd>The Pages sub-folder path was applied to local builds too.</dd>
+        <dt>Fix</dt><dd>Apply it only when the <code>GH_PAGES</code> variable is set in CI.</dd></dl></div>
+      <div class="story"><h4>Old version kept showing</h4><dl>
+        <dt>Problem</dt><dd>After a rebuild, the browser still showed old code.</dd>
+        <dt>Cause</dt><dd>The service worker was doing its job: serving the cached copy.</dd>
+        <dt>Fix</dt><dd>During testing, unregister it and clear caches. For real users, it led to the auto-update design.</dd></dl></div>
+      <div class="story"><h4>Hidden colour clash</h4><dl>
+        <dt>Problem</dt><dd>Two outcome colours were indistinguishable for colour-blind users.</dd>
+        <dt>Cause</dt><dd>Violet and blue collapse together under red-green colour blindness.</dd>
+        <dt>Fix</dt><dd>Found by an OKLab validator, fixed by shifting to magenta, and shapes added to every outcome.</dd></dl></div>
+      <div class="story"><h4>No way back to the home page</h4><dl>
+        <dt>Problem</dt><dd>The owner said that after the report there was no clear way back to the match list.</dd>
+        <dt>Cause</dt><dd>Investigating showed some navigation callbacks were leftover code that did nothing.</dd>
+        <dt>Fix</dt><dd>A real "Back to matches" button. The lesson: understand <em>why</em> before adding things.</dd></dl></div>
+    </div>
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"My biggest lesson was that unit tests and real-browser testing catch different kinds of bugs. I had hundreds of passing tests, but the app froze in the browser because the ML runtime defaulted to multi-threaded WebAssembly, which needs security headers my host didn't send. I found it by actually clicking through, and fixed it by forcing a single thread and lazy-loading the runtime."</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-bugs" data-mod="bugs"><label for="done-bugs">I've studied this module</label></div>
+  </section>
+
+  <!-- 14 -->
+  <section class="module" id="exp">
+    <header>
+      <div class="eyebrow">Module 14</div>
+      <h2>Algorithm experiment</h2>
+      <p class="lede">Did bagging, XGBoost or a random forest beat the shipped model?</p>
+    </header>
+    <p>The question came up: "Did we try bagging or boosting, since we used XGBoost?" First, a correction: the model is <strong>LightGBM</strong>, not XGBoost. Both are gradient boosting libraries, and LightGBM already uses random sampling of rows and features.</p>
+    <dl class="terms">
+      <dt>Boosting</dt><dd>Trees built one after another, each fixing the last one's mistakes (LightGBM, XGBoost).</dd>
+      <dt>Bagging</dt><dd>Many models trained on random resamples of the data, then averaged. Reduces randomness.</dd>
+      <dt>Random forest</dt><dd>Bagging applied to many deep, independent decision trees.</dd>
+    </dl>
+    <p>A separate experiment script compared all of them on the same test set: the shipped LightGBM, a tuned LightGBM, an average of 5 random seeds, 5 bagged copies, XGBoost and a random forest. Differences were checked with a <strong>bootstrap over matches</strong>, which tests whether a gap is real or just luck.</p>
+    <h3>Result</h3>
+    <ul>
+      <li>Nothing clearly beat the shipped model. Bagging added nothing.</li>
+      <li>The random forest was 38 times bigger and scored worse.</li>
+      <li>A tuned LightGBM (smaller trees) was slightly better, by 0.003 log loss, and only with full inputs. That is the same size as the normal variation from changing the random seed, so it wasn't worth rebuilding the shipped model.</li>
+    </ul>
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"I benchmarked bagging, XGBoost and a random forest against the shipped LightGBM with a paired bootstrap over test matches. None clearly won. The only real gain was 0.003 log loss from tuning, within seed noise, so I kept the shipped model and documented the tuned settings for the next retrain."</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-exp" data-mod="exp"><label for="done-exp">I've studied this module</label></div>
+  </section>
+
+  <!-- 15 -->
+  <section class="module" id="limits">
+    <header>
+      <div class="eyebrow">Module 15</div>
+      <h2>Limits and next steps</h2>
+      <p class="lede">Interviewers almost always ask "what would you improve?" Knowing your weak spots is a strength.</p>
+    </header>
+    <ul>
+      <li><strong>Pro data, local matches.</strong> The model learned from professional football but is used at local matches, where players and keepers differ. This is called <strong>domain shift</strong>. Retraining on locally logged shots would fix it, but needs a server to collect data from many users.</li>
+      <li><strong>No real match trial yet.</strong> Everything was tested in the browser, but not across a full live match on a sideline.</li>
+      <li><strong>Counter-attack tagging</strong> hasn't been tested with a real operator under time pressure.</li>
+      <li><strong>Pitch size.</strong> Local pitches vary in size. Calibrating to the real pitch was planned but not built.</li>
+      <li><strong>Explanations are rules of thumb</strong>, not true model explanations like SHAP. The confidence band widths are illustrative.</li>
+      <li><strong>One device only.</strong> No accounts or sync between phones. That would need a backend.</li>
+      <li><strong>Licence.</strong> StatsBomb Open Data is for non-commercial use, so the project can't be sold as-is.</li>
+    </ul>
+    <div class="callout say"><span class="tag">In the interview</span>
+      <p>"The biggest limitation is domain shift: it's trained on professional matches but used at local ones. The next step would be a real pitchside trial, then optional sync so logged local shots could be used to retrain the model."</p>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-limits" data-mod="limits"><label for="done-limits">I've studied this module</label></div>
+  </section>
+
+  <!-- 16 -->
+  <section class="module" id="viva">
+    <header>
+      <div class="eyebrow">Module 16</div>
+      <h2>Viva practice</h2>
+      <p class="lede">Answer each question out loud before revealing the answer. The drill picks random questions from the bank below.</p>
+    </header>
+
+    <div class="drill" aria-live="polite">
+      <div class="row"><span class="eyebrow" id="drillCat">Random question</span><span class="count" id="drillCount"></span></div>
+      <p class="q" id="drillQ">Loading a question…</p>
+      <div class="a" id="drillA" hidden></div>
+      <div class="row">
+        <button type="button" id="drillShow">Show answer</button>
+        <button type="button" class="ghost" id="drillNext">Next question</button>
+      </div>
+    </div>
+
+    <h3>The project</h3>
+    <div class="qa-group" data-cat="The project">
+      <details class="qa"><summary>What problem does your project solve?</summary><div class="ans"><p>Scorelines don't show who created better chances. At local matches there's no data provider, so the app lets one person on the sideline log shots and get instant xG for each, then a full-time report on which team and player created the best chances.</p></div></details>
+      <details class="qa"><summary>Who is the user and how did that shape the design?</summary><div class="ans"><p>One operator, one phone, one match, often with no signal. That led to: everything running on the phone, offline support, only three required inputs per shot, and one model that works with however much was entered.</p></div></details>
+      <details class="qa"><summary>Why is there no backend?</summary><div class="ans"><p>The user often has no signal, so a server would make the app useless at the moment it's needed. One user and one device means nothing needs sharing. No server also means no accounts, no hosting costs and no personal data leaving the phone.</p></div></details>
+      <details class="qa"><summary>What would you do differently?</summary><div class="ans"><p>Do a real pitchside trial earlier, since the most useful feedback came from actually using it. And test in a real browser from day one, because the worst bugs were invisible to unit tests.</p></div></details>
+      <details class="qa"><summary>Did you use AI tools to build it?</summary><div class="ans"><p>Yes, Claude Code as a pair programmer. I set the goals and product decisions, reviewed the changes, tested in the browser, and documented the reasoning in a build journal. I can explain why each part works the way it does.</p></div></details>
+    </div>
+
+    <h3>Machine learning</h3>
+    <div class="qa-group" data-cat="Machine learning">
+      <details class="qa"><summary>What is xG?</summary><div class="ans"><p>Expected goals: the probability a shot becomes a goal, based on how often similar shots scored in the past. A team's xG is the sum over its shots.</p></div></details>
+      <details class="qa"><summary>Which algorithm did you use and why?</summary><div class="ans"><p>LightGBM, a gradient-boosted decision tree library. It's very strong on tabular data, handles missing values natively, supports monotone constraints, and exports cleanly to ONNX. A geometry-only logistic regression was the baseline it had to beat.</p></div></details>
+      <details class="qa"><summary>Explain gradient boosting simply.</summary><div class="ans"><p>Build many small decision trees in sequence. Each new tree tries to correct the errors left by the trees so far. The final prediction combines all of them. A low learning rate means each tree only makes a small correction.</p></div></details>
+      <details class="qa"><summary>What data did you train on?</summary><div class="ans"><p>StatsBomb Open Data: 34,809 shots from 1,374 professional matches in 13 competitions. It includes freeze frames (positions of players at the moment of each shot), which match the keeper and defender markers in the app.</p></div></details>
+      <details class="qa"><summary>What are the most important features?</summary><div class="ans"><p>Distance to goal and shot angle (how wide a view of the goal the shooter has). After that: defenders in the shooting cone, keeper position, body part, and situation like open play or corner.</p></div></details>
+      <details class="qa"><summary>How did you handle missing inputs?</summary><div class="ans"><p>One adaptive model trained with feature-group dropout: each shot appeared in training in full, minimal, and three random partial versions with jittered marker positions. Then a separate isotonic calibration for each completeness bucket: minimal, partial and full.</p></div></details>
+      <details class="qa"><summary>What are monotone constraints?</summary><div class="ans"><p>Rules forcing the model's output to only move one way with a feature. Here, xG can't rise with distance or with defenders in the cone, and can't fall with a wider angle. It prevents nonsensical predictions from noisy data.</p></div></details>
+      <details class="qa"><summary>How did you split the data and why by match?</summary><div class="ans"><p>Train, validation, calibration and test sets (test 15%), assigned by a fixed hash of the match ID. Shots from the same match are correlated, so splitting by shot would leak information and make the test look better than it really is.</p></div></details>
+      <details class="qa"><summary>What is calibration and how did you do it?</summary><div class="ans"><p>Making predicted probabilities match real frequencies: 30% predictions should score about 30% of the time. I used isotonic regression fitted on held-out data, separately for each completeness bucket.</p></div></details>
+      <details class="qa"><summary>What is the difference between AUC and log loss?</summary><div class="ans"><p>AUC measures ranking: does a goal usually get a higher xG than a miss? Log loss measures the probabilities themselves and heavily punishes confident wrong ones. A model can rank well but be poorly calibrated, so both matter.</p></div></details>
+      <details class="qa"><summary>What were your results?</summary><div class="ans"><p>On 4,988 unseen shots with full inputs: log loss 0.263 (baseline 0.274), AUC 0.805, Brier 0.071, calibration-in-the-large 1.03 and correlation 0.90 with StatsBomb's own xG. Every bucket passed the release gate.</p></div></details>
+      <details class="qa"><summary>What is a release gate?</summary><div class="ans"><p>Pass/fail thresholds written into the spec before training. The model only ships if every completeness bucket meets every threshold and beats the baseline. It stops you moving the goalposts after seeing the results.</p></div></details>
+      <details class="qa"><summary>Why are penalties fixed at 0.76?</summary><div class="ans"><p>Penalties are nearly identical every time and their conversion rate is well known, so a model adds nothing. It's a documented exception.</p></div></details>
+      <details class="qa"><summary>What is PSxG?</summary><div class="ans"><p>Post-shot xG: how likely an on-target shot was to score given where it went in the goal. It's a second LightGBM model, trained on 12,423 on-target shots. It's optional and shown alongside xG, but doesn't change the verdict.</p></div></details>
+      <details class="qa"><summary>Did you compare other algorithms?</summary><div class="ans"><p>Yes: bagging, seed averaging, XGBoost and a random forest, with a paired bootstrap over test matches. None clearly beat the shipped model. A tuned LightGBM was 0.003 better in log loss, within seed noise, so I kept the original.</p></div></details>
+      <details class="qa"><summary>Is the "reason" text a model explanation?</summary><div class="ans"><p>No. It's a rule-of-thumb description of the inputs, like "close range, tight angle". A true explanation would need something like SHAP. I documented that distinction rather than overclaiming.</p></div></details>
+    </div>
+
+    <h3>Web and engineering</h3>
+    <div class="qa-group" data-cat="Web and engineering">
+      <details class="qa"><summary>What is your tech stack?</summary><div class="ans"><p>Frontend: React, TypeScript and Vite. Model inference: onnxruntime-web. Storage: IndexedDB through Dexie. Offline: a Workbox service worker. Training: Python with LightGBM, scikit-learn and pandas. Hosting: GitHub Pages, deployed by GitHub Actions.</p></div></details>
+      <details class="qa"><summary>How does the model run in the browser?</summary><div class="ans"><p>The trained model is exported to ONNX. onnxruntime-web loads it and runs it with WebAssembly. The TypeScript code computes the features from the taps, runs the model, then applies the calibration table.</p></div></details>
+      <details class="qa"><summary>How do you know the Python and TypeScript features match?</summary><div class="ans"><p>Parity tests. 48 real shots were run through the Python feature code and the outputs saved as fixtures. The TypeScript tests compute the same shots and fail if anything differs beyond rounding.</p></div></details>
+      <details class="qa"><summary>What is a component and a state in React?</summary><div class="ans"><p>A component is a reusable piece of UI, like the Pitch or the ShotEntry form. State is data that can change, like where markers are placed. When state changes, React redraws the affected components.</p></div></details>
+      <details class="qa"><summary>Why TypeScript instead of JavaScript?</summary><div class="ans"><p>Types catch mistakes before the code runs. For example, when new fields were added to the Match type, the compiler pointed to every place that needed updating.</p></div></details>
+      <details class="qa"><summary>What is IndexedDB and why not localStorage for shots?</summary><div class="ans"><p>IndexedDB is a proper database inside the browser that can store structured records and query them. localStorage only holds small strings, so it's used just for small settings like the last open match.</p></div></details>
+      <details class="qa"><summary>What is a service worker?</summary><div class="ans"><p>A background script that intercepts the site's network requests. Here it precaches the whole app and both models on the first visit, so everything works offline afterwards.</p></div></details>
+      <details class="qa"><summary>How is the site deployed?</summary><div class="ans"><p>A GitHub Actions workflow builds the app on each push and publishes the output folder to GitHub Pages. Because Pages serves from a sub-path, Vite's base path is set only when the GH_PAGES variable is present in CI.</p></div></details>
+      <details class="qa"><summary>How do users get updates?</summary><div class="ans"><p>The service worker auto-updates and reloads as soon as a new version is found while online. While offline it can't check, so the app shows a passive "may not be the latest version" note.</p></div></details>
+      <details class="qa"><summary>How did you test the app?</summary><div class="ans"><p>593 Vitest tests: feature parity, verdict and leaderboard logic, the database lifecycle with a fake IndexedDB, report HTML and clock logic. Plus manual walkthroughs in a real browser, which caught bugs the tests couldn't.</p></div></details>
+      <details class="qa"><summary>How did you make the page load faster?</summary><div class="ans"><p>Lazy-loaded the model runtime with a dynamic import so it isn't in the first download (main bundle 694 KB → 277 KB), and used the wasm-only build, halving the wasm file from 28 MB to 14 MB.</p></div></details>
+      <details class="qa"><summary>Why did the page freeze and how did you fix it?</summary><div class="ans"><p>onnxruntime-web defaulted to multi-threaded WebAssembly, which needs SharedArrayBuffer and COOP/COEP headers that GitHub Pages doesn't send. I set it to one thread and lazy-loaded the runtime.</p></div></details>
+    </div>
+
+    <h3>Design</h3>
+    <div class="qa-group" data-cat="Design">
+      <details class="qa"><summary>What are design tokens?</summary><div class="ans"><p>Named values (CSS variables) for colours, sizes and timings, defined once and reused everywhere. They keep the design consistent and easy to change.</p></div></details>
+      <details class="qa"><summary>How did you make it accessible for colour-blind users?</summary><div class="ans"><p>Every outcome has a unique shape as well as a colour, so colour is never the only signal. The palette was checked with an OKLab-based validator, which caught a violet/blue pair that collided under red-green colour blindness.</p></div></details>
+      <details class="qa"><summary>What does mobile-first mean?</summary><div class="ans"><p>Designing for a small phone screen first, then adapting for larger screens. The user is always on a phone, so big tap targets and a portrait pitch came first.</p></div></details>
+      <details class="qa"><summary>Why draw charts yourself instead of using a library?</summary><div class="ans"><p>The charts are simple, SVG keeps them sharp at any size, and the same drawing code is reused in the exported HTML report. It also avoids an extra download, which matters for an offline-first app.</p></div></details>
+      <details class="qa"><summary>Why was the background photo replaced?</summary><div class="ans"><p>Before making the repo public, its licence was checked and it was copyrighted. It was replaced with original vector art drawn in code, so nothing shipped has a licence problem.</p></div></details>
+    </div>
+    <div class="studied"><input type="checkbox" id="done-viva" data-mod="viva"><label for="done-viva">I've practised the viva questions</label></div>
+  </section>
+
+  </main>
+</div>
+
+<script>
+(function () {
+  var KEY = "xg-course-done";
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { done = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll(".studied input"));
+  var total = boxes.length;
+
+  function render() {
+    var n = 0;
+    boxes.forEach(function (b) {
+      var id = b.getAttribute("data-mod");
+      b.checked = !!done[id];
+      if (done[id]) n++;
+      var link = document.querySelector('nav.toc a[href="#' + id + '"]');
+      if (link) link.classList.toggle("done", !!done[id]);
+    });
+    document.getElementById("progText").textContent = n + " of " + total + " studied";
+    document.getElementById("progBar").style.width = (total ? (n / total) * 100 : 0) + "%";
+  }
+  boxes.forEach(function (b) {
+    b.addEventListener("change", function () {
+      done[b.getAttribute("data-mod")] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {}
+      render();
+    });
+  });
+  render();
+
+  // Collapse the module list on phones after picking a module
+  var tocDetails = document.getElementById("tocDetails");
+  if (window.matchMedia("(max-width: 860px)").matches) tocDetails.open = false;
+  document.querySelectorAll("#tocList a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      if (window.matchMedia("(max-width: 860px)").matches) tocDetails.open = false;
+    });
+  });
+
+  // Viva drill: draws from the static question bank
+  var items = Array.prototype.slice.call(document.querySelectorAll("details.qa")).map(function (d) {
+    return {
+      q: d.querySelector("summary").textContent,
+      a: d.querySelector(".ans").innerHTML,
+      cat: d.closest(".qa-group").getAttribute("data-cat")
+    };
+  });
+  var order = [], pos = -1;
+  function shuffle() {
+    order = items.map(function (_, i) { return i; });
+    for (var i = order.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = order[i]; order[i] = order[j]; order[j] = t;
+    }
+  }
+  var qEl = document.getElementById("drillQ"), aEl = document.getElementById("drillA");
+  var catEl = document.getElementById("drillCat"), countEl = document.getElementById("drillCount");
+  var showBtn = document.getElementById("drillShow");
+  function next() {
+    pos++;
+    if (pos >= order.length || order.length === 0) { shuffle(); pos = 0; }
+    var it = items[order[pos]];
+    qEl.textContent = it.q;
+    catEl.textContent = it.cat;
+    aEl.innerHTML = it.a;
+    aEl.hidden = true;
+    showBtn.textContent = "Show answer";
+    countEl.textContent = "Question " + (pos + 1) + " of " + order.length;
+  }
+  showBtn.addEventListener("click", function () {
+    aEl.hidden = !aEl.hidden;
+    showBtn.textContent = aEl.hidden ? "Show answer" : "Hide answer";
+  });
+  document.getElementById("drillNext").addEventListener("click", next);
+  next();
+})();
+</script>
+
+</body></html>

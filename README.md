@@ -1,7 +1,7 @@
 # AIDS HTML transcripts
 
-Claude Code and Codex conversation transcripts as one clickable page with three tabs
-(Venheilheim, FocusBank, Lecture notes). Each turn shows the prompt, with the response
+Claude Code and Codex conversation transcripts as one clickable page with tabs
+(Venheilheim, FocusBank, Lecture notes, xG Companion). Each turn shows the prompt, with the response
 in a collapsed block below it.
 
 Live: https://dasa108.github.io/aids-html-transcripts/
@@ -18,6 +18,7 @@ linked from each tab (`PREP` in `build.py`):
 - `prep/focusbank-learning-lab.html`: FocusBank Learning Lab, with an Interview Prep tab
 - `prep/lecture-notes-field-guide.html`: Lecture Notes Field Guide, interview guide
 - `prep/lecture-notes-course.html`: Lecture Notes Build Course
+- `prep/xg-match-companion.html`: xG Match Companion, interview prep course (its own tab; no transcript yet)
 
 Saved answers and progress on these pages stay in each visitor's own browser.
 

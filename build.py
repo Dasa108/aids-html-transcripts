@@ -23,6 +23,8 @@ TABS = [
      [("transcript_focusbank.md", None)]),
     ("lecture", "Lecture notes", "transcript_lecture.html",
      [("conversation_transcript.md", "Precursor (Antigravity)"), ("transript_lecture.md", "Claude Code")]),
+    # No transcript yet: the tab carries only its interview-prep link.
+    ("xg", "xG Companion", "transcript_xg.html", []),
 ]
 
 # Interview-prep pages in prep/ (published copies of the study artifacts), linked from each tab.
@@ -31,6 +33,7 @@ PREP = {
     "focusbank": [("FocusBank Learning Lab (incl. interview prep)", "focusbank-learning-lab.html")],
     "lecture": [("Lecture Notes Field Guide (interview guide)", "lecture-notes-field-guide.html"),
                 ("Lecture Notes Build Course", "lecture-notes-course.html")],
+    "xg": [("xG Match Companion (interview prep course)", "xg-match-companion.html")],
 }
 
 # Personal details that must not appear on the public site.
@@ -175,7 +178,10 @@ def render_tab(tid, title, parts):
         print(f"{title}: {fname} {len(turns)} turns")
     prep = "".join(f'<a href="PREP/{href}">{html.escape(label)} →</a>' for label, href in PREP.get(tid, []))
     prep = f'<nav class="prep"><span>Interview prep</span>{prep}</nav>' if prep else ""
-    return (f'<section class="transcript" id="{tid}"><h2>{title} <span class="count">{n} turns</span></h2>'
+    if not parts:
+        items.append('<p class="none">No conversation transcript has been added for this project yet.</p>')
+    count = f'<span class="count">{n} turns</span>' if parts else ""
+    return (f'<section class="transcript" id="{tid}"><h2>{title} {count}</h2>'
             f'{prep}{"".join(items)}</section>')
 
 
@@ -184,7 +190,8 @@ FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
          '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
          '<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700'
          '&family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700'
-         '&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">')
+         '&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500'
+         '&family=Barlow+Condensed:wght@600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">')
 
 STYLE = """
 @font-face{font-family:"Cinzel";src:url("FONTS/Cinzel.woff2") format("woff2");font-weight:400 900;font-display:swap}
@@ -207,7 +214,14 @@ html[data-tab="focusbank"]{--display:"Bricolage Grotesque","Avenir Next",system-
 /* Lecture notes: the course site's warm paper and orange */
 html[data-tab="lecture"]{--display:Fraunces,Georgia,serif;--body:Inter,system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;
   --bg:#faf7f2;--card:#fff;--text:#1c1917;--muted:#57534e;--line:#e7e0d6;--accent:#c2410c;--accent-ink:#fff;--user:#fdf1e3;--resp:#fcfaf6}
+/* xG Companion: the course's pitch green and condensed match-programme headings */
+html[data-tab="xg"]{--display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;--body:"Atkinson Hyperlegible",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  --bg:#f2f5f1;--card:#fff;--text:#15241c;--muted:#55675d;--line:#d2dbd5;--accent:#1b6a44;--accent-ink:#fff;--user:#dcebe2;--resp:#f7faf8}
+html[data-tab="xg"] h2,html[data-tab="xg"] .bar h1{text-transform:uppercase;letter-spacing:.02em}
 @media (prefers-color-scheme:dark){
+  html[data-tab="xg"]{--bg:#0f1613;--card:#16201b;--text:#e7efe9;--muted:#9db1a6;--line:#2b3b33;--accent:#4fc28b;--accent-ink:#0f1613;
+    --user:#183528;--resp:#121b17;color-scheme:dark}
   html[data-tab="focusbank"]{--bg:#0b1426;--card:#12203a;--text:#e7eef8;--muted:#9fb0c8;--line:#22355a;--accent:#b9f27c;--accent-ink:#10200a;
     --user:#182a4a;--resp:#0f1b31;color-scheme:dark}
   html[data-tab="lecture"]{--bg:#12100e;--card:#1c1916;--text:#f5f0e8;--muted:#b8afa4;--line:#2f2a25;--accent:#fb923c;--accent-ink:#12100e;
@@ -238,6 +252,7 @@ details[open] .pv{display:none}
 .prep span{font:600 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .prep a{font:600 14px var(--display);color:var(--accent-ink);background:var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none}
 .prep a:hover{filter:brightness(1.1)}
+.none{color:var(--muted)}
 .transcript,.turn{scroll-margin-top:110px}
 .hidden{display:none}
 """
